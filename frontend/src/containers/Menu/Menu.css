@@ -1,0 +1,9 @@
+/* To convert to CSS */
+
+.menu-cont {
+  @apply absolute left-0 top-0 flex h-screen w-full bg-gray-400;
+}
+
+.nav-cont {
+  @apply flex h-[11%] w-full border-b-2 border-gray-300 2xl:h-[8%];
+}

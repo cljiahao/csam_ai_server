@@ -1,0 +1,13 @@
+/* To convert to CSS */
+
+.imageholder {
+  @apply flex h-full w-full flex-col justify-center overflow-scroll overflow-x-hidden overflow-y-hidden;
+}
+
+.holder {
+  @apply flex items-center justify-center;
+}
+
+.placeholder {
+  @apply m-auto mx-10 h-5/6 rounded-xl border-4 border-dashed border-gray-400 bg-gray-100;
+}

@@ -1,0 +1,18 @@
+/* To convert to CSS */
+
+.App {
+  justify-content: space-between;
+  flex: auto;
+  margin: 0;
+  padding: 0;
+  top: 0;
+  @apply top-0 m-0 flex h-screen max-h-screen w-screen justify-between p-0;
+}
+
+.App-main {
+  @apply flex h-full max-h-screen w-[62%];
+}
+
+.App-side {
+  @apply relative flex h-full max-h-screen w-[38%] flex-col;
+}

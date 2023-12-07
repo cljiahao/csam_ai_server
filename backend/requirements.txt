@@ -1,0 +1,21 @@
+fastapi==0.104.1                    # API (Backend <==> Frontend)              
+uvicorn==0.24.0.post1                
+gunicorn==21.2.0
+
+SQLAlchemy==2.0.23                  # Sql Engine
+requests==2.31.0                    # HTTP Request
+python-dotenv==1.0.0                # Env File Reader
+
+python-multipart==0.0.6             # Form Data Usage
+pydantic==2.5.1                     # Data Validation
+pydantic[email]==2.5.1              # Email Checking
+passlib[bcrypt]==1.7.4              # Hashing
+python-jose==3.3.0                  # Authentication
+
+pytest==7.4.2                       # For Testing
+
+asyncio==3.4.3                      # Asynchronous Operations
+aiofiles==0.8.0                     # Asynchronous File Operations 
+
+opencv-python==4.8.0.76             # Processing Images
+tensorflow==2.15.0                  # AI Model

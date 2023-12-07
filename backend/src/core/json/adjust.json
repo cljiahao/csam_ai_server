@@ -1,0 +1,18 @@
+{
+  "GCM32ER71E106KA59_+B55-E01GJ": {
+    "batch": {
+      "threshold": 150,
+      "close_x": 11,
+      "close_y": 21,
+      "erode_x": 3,
+      "erode_y": 3
+    },
+    "chip": {
+      "threshold": 200,
+      "close_x": 3,
+      "close_y": 3,
+      "erode_x": 7,
+      "erode_y": 7
+    }
+  }
+}

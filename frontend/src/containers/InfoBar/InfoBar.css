@@ -1,0 +1,29 @@
+/* To convert to CSS */
+
+.infobar {
+  flex: auto;
+  border: 2;
+  border-color: gray;
+  width: 100%;
+  @apply flex h-[11%] w-full gap-2 border-b-2 border-gray-300 bg-gray-100 2xl:h-[8%] 2xl:gap-6;
+}
+
+.info_list_cont {
+  @apply flex w-full items-center justify-between gap-3 text-xs 2xl:gap-6 2xl:text-sm;
+}
+
+.button_cont {
+  @apply my-1 mr-3 flex h-12 w-fit items-center justify-between gap-7 2xl:my-2 2xl:mr-5 2xl:h-14 2xl:gap-16;
+}
+
+.button {
+  @apply flex h-full cursor-pointer items-center justify-center rounded-lg;
+}
+
+#label {
+  @apply ml-1 w-20 border-2 border-gray-600 bg-gray-600 text-center text-base text-white duration-300 ease-in hover:bg-gray-300 hover:text-gray-600 2xl:ml-3 2xl:w-28 2xl:text-lg;
+}
+
+.button {
+  @apply w-20 bg-blue-300 px-3 hover:bg-blue-200;
+}

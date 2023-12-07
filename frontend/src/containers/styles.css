@@ -1,0 +1,19 @@
+.menu-icon {
+  @apply mx-1 flex h-full w-8 cursor-pointer items-center justify-center 2xl:mx-2 2xl:w-12;
+}
+
+.info_list {
+  @apply w-full italic;
+}
+
+.info_head {
+  @apply w-full text-center italic;
+}
+
+.info_desc {
+  @apply items-center pb-1 pt-1 text-center;
+}
+
+.info_unit {
+  @apply float-right;
+}

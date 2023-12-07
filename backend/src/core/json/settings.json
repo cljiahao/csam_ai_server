@@ -1,0 +1,11 @@
+{
+    "colors": [
+        "yellow",
+        "green",
+        "cyan"
+    ],
+    "folders": {
+        "ng": "yellow",
+        "others": "cyan"
+    }
+}
