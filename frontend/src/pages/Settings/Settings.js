@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Transition } from "@headlessui/react";
 import { initialSettings } from "../../core/config";
 import { AppContext } from "../../contexts/context";
 
+import getSettings from "../../utils/getSettings";
 import IniBar from "../../containers/IniBar/IniBar";
 import Folders from "../../containers/Folders/Folders";
 import Adjust from "../../containers/Adjust/Adjust";
@@ -10,8 +11,18 @@ import FoldMenu from "../../containers/Folders/components/FoldMenu";
 
 function Settings() {
   const [range, setRange] = useState({});
+  const [inText, setInText] = useState({});
   const [settings, setSettings] = useState(structuredClone(initialSettings));
   const [menu, setMenu] = useState(false);
+
+  useEffect(() => {
+    const setStates = async () => {
+      const set_dict = await getSettings();
+      setRange(set_dict);
+      setInText(set_dict);
+    };
+    setStates();
+  }, [settings.batchUrl, settings.chipUrl]);
 
   const openMenu = () => {
     setMenu(!menu);
@@ -26,6 +37,8 @@ function Settings() {
         setMenu,
         range,
         setRange,
+        inText,
+        setInText,
       }}
     >
       <div className="max-w-screen flex h-screen max-h-screen w-screen overflow-hidden bg-sky-50">

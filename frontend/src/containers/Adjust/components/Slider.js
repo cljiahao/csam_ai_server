@@ -1,9 +1,9 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import { AppContext } from "../../../contexts/context";
 
 const Slider = ({ type }) => {
-  const { settings, range, setRange } = useContext(AppContext);
-  const [inText, setInText] = useState(range);
+  const { settings, range, setRange, inText, setInText } =
+    useContext(AppContext);
   const chip_type = settings.chip_type;
 
   const rangeChange = (e) => {

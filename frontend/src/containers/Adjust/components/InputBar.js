@@ -5,12 +5,16 @@ import Button from "../../common/Button";
 import getSettings from "../../../utils/getSettings";
 
 const InputBar = ({ type }) => {
-  const { settings, range, setRange } = useContext(AppContext);
+  const { settings, range, setRange, setInText } = useContext(AppContext);
   const chip_type = settings.chip_type;
 
-  const setStates = async (e) => {
+  const setStates = async () => {
     const set_dict = await getSettings();
     setRange({
+      ...range,
+      [chip_type]: { ...range[chip_type], [type]: set_dict[chip_type][type] },
+    });
+    setInText({
       ...range,
       [chip_type]: { ...range[chip_type], [type]: set_dict[chip_type][type] },
     });
@@ -23,9 +27,12 @@ const InputBar = ({ type }) => {
         id={type}
         onClick={setStates}
       />
-      <div className="flex items-center justify-center gap-3">
-        <label className="text-black">Quantity: </label>
-        <input className="h-7 w-16 border-2 border-gray-500" type="text" />
+      <div className="flex items-center justify-center gap-3 text-black">
+        <label>Quantity: </label>
+        <input
+          className="h-7 w-16 border-2 border-gray-500 text-center"
+          type="text"
+        />
         <div className="h-8 w-8 rounded-full bg-gray-500"></div>
       </div>
     </div>

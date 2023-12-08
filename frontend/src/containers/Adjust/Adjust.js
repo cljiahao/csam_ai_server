@@ -3,23 +3,14 @@ import React, { useEffect, useContext, useRef } from "react";
 import { AppContext } from "../../contexts/context";
 import Slider from "./components/Slider";
 import InputBar from "./components/InputBar";
-import getSettings from "../../utils/getSettings";
 import batch_chip_img from "../../utils/batch_chip_img";
 
 const Adjust = () => {
-  const { settings, range, setRange } = useContext(AppContext);
+  const { settings, range } = useContext(AppContext);
   const batch_chip = useRef({
     batch: useRef(null),
     chip: useRef(null),
   });
-
-  useEffect(() => {
-    const setStates = async () => {
-      const set_dict = await getSettings();
-      setRange(set_dict);
-    };
-    setStates();
-  }, [settings.batchUrl, settings.chipUrl]);
 
   useEffect(() => {
     batch_chip_img(settings, range, batch_chip, "batch");
