@@ -8,7 +8,7 @@ from core.read_json import read_config
 from apis.utils.batch_process import find_batch_no
 
 
-def chips(border_img, batch_data, prog, chip_type) -> dict:
+def chips(border_img, gray, batch_data, prog, chip_type) -> dict:
     """
     Main function to call sub functions for retrieiving chip data
 
@@ -16,6 +16,8 @@ def chips(border_img, batch_data, prog, chip_type) -> dict:
     ----------
     border_img : MatLike
         Directory to check if files exists
+    gray : numpy array
+        Gray Image for masking purposes
     batch_data : list
         An array of each batches coordinate found in the form of
         [{index: int, x1: double, y1: double, x2: double, y2: double}...]
@@ -38,7 +40,7 @@ def chips(border_img, batch_data, prog, chip_type) -> dict:
     x_crop_limit = math.ceil(x_crop * math.sqrt(2) / 10) * 10
     y_crop_limit = math.ceil(y_crop * math.sqrt(2) / 10) * 10
 
-    mask = mask_chips(border_img.copy(), chip_type)
+    mask = mask_chips(gray, chip_type)
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     # Average contour area of the chips
@@ -79,12 +81,12 @@ def chips(border_img, batch_data, prog, chip_type) -> dict:
     return no_of_chips, temp_dict, ng_dict
 
 
-def mask_chips(img, chip_type):
+def mask_chips(gray, chip_type):
     """
     Parameters
     ----------
-    img : numpy array
-        Image to mask out background
+    gray : numpy array
+        Gray Image for masking purposes
     chip_type : str
         chip_type associated with lot number
 
@@ -95,12 +97,6 @@ def mask_chips(img, chip_type):
     """
     adjust_chip = read_config("./core/json/adjust.json")[chip_type]["chip"]
 
-    # Mask for background and convert all to 255 for easier threshold (remove background)
-    background = np.where(
-        (img[:, :, 0] >= 130) & (img[:, :, 1] >= 130) & (img[:, :, 2] >= 130)
-    )
-    img[background] = (255, 255, 255)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     th, ret = cv2.threshold(gray, adjust_chip["threshold"], 255, cv2.THRESH_BINARY_INV)
     morph = cv2.morphologyEx(
         ret, cv2.MORPH_CLOSE, (adjust_chip["close_x"], adjust_chip["close_y"])

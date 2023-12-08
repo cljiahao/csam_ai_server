@@ -58,7 +58,7 @@ def inspect(image, lot_no, chip_type, db, get_ratio):
 
     new_start = time_print(start, "Directory Checking")
 
-    border_img, img_shape = create_border_img(image, dir_dict["save"])
+    border_img, gray, img_shape = create_border_img(image, dir_dict["save"])
     if any(chips_dict.values()):
         # If exists, return to quicken retrieval (caching)
         return (
@@ -69,8 +69,8 @@ def inspect(image, lot_no, chip_type, db, get_ratio):
             img_shape,
         )
 
-    batch_data = mask(border_img, img_shape, chip_type)
-    no_of_chips, temp_dict, ng_dict = chips(border_img, batch_data, "CAI", chip_type)
+    batch_data = mask(gray,img_shape, chip_type)
+    no_of_chips, temp_dict, ng_dict = chips(border_img, gray,batch_data, "CAI", chip_type)
 
     new_start = time_print(new_start, "Chip Masking and Processing")
 

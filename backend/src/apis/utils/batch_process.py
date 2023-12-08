@@ -4,13 +4,13 @@ import numpy as np
 from core.read_json import read_config
 
 
-def mask(border_img, img_shape, chip_type) -> list:
+def mask(gray, img_shape, chip_type) -> list:
     """Main function to call sub functions for retrieving batch data
 
     Parameters
     ----------
-    border_img : MatLike
-        Border added image
+    gray : numpy array
+        Gray Image for masking purposes
     img_shape : list
         Image Height and Width in a list
     chip_type : str
@@ -22,18 +22,18 @@ def mask(border_img, img_shape, chip_type) -> list:
         An array of each batches coordinate found in the form of
         [{index: int, x1: double, y1: double, x2: double, y2: double}...]
     """
-    mask_img = mask_batch(border_img.copy(), chip_type)
+    mask_img = mask_batch(gray, chip_type)
     batch_data = find_batch(mask_img, img_shape)
 
     return batch_data
 
 
-def mask_batch(img, chip_type):
+def mask_batch(gray, chip_type):
     """
     Parameters
     ----------
-    img : numpy array
-        Image to mask out background
+    gray : numpy array
+        Gray Image for masking purposes
     chip_type : str
         chip_type associated with lot number
 
@@ -43,8 +43,6 @@ def mask_batch(img, chip_type):
         A masked image of non background
     """
     adjust_batch = read_config("./core/json/adjust.json")[chip_type]["batch"]
-    blur = cv2.blur(img, (27, 27))
-    gray = cv2.cvtColor(blur, cv2.COLOR_BGR2GRAY)
     th, ret = cv2.threshold(gray, adjust_batch["threshold"], 255, cv2.THRESH_BINARY_INV)
     # Merge neighbouring chips to form a huge blob mask
     morph = cv2.morphologyEx(
