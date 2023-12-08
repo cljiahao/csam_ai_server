@@ -20,11 +20,6 @@ const SettingsUpload = () => {
         try {
           const img = cv.imread(imgRef.current);
 
-          // For Batch image processing
-          const batch_gray = new cv.Mat();
-          cv.cvtColor(img, batch_gray, cv.COLOR_BGR2GRAY);
-
-          // For Chips image processing
           const remove_bg = new cv.Mat();
           const blank = new cv.Mat(
             img.rows,
@@ -35,13 +30,12 @@ const SettingsUpload = () => {
           cv.compare(img, blank, remove_bg, cv.CMP_GT);
           img.setTo(new cv.Scalar.all(255), remove_bg);
 
-          const chip_gray = new cv.Mat();
-          cv.cvtColor(img, chip_gray, cv.COLOR_BGR2GRAY);
+          const gray = new cv.Mat();
+          cv.cvtColor(img, gray, cv.COLOR_BGR2GRAY);
 
           setSettings({
             ...settings,
-            batchUrl: batch_gray,
-            chipUrl: chip_gray,
+            imgUrl: gray,
             file_name: e.target.files[0].name,
           });
         } catch (e) {

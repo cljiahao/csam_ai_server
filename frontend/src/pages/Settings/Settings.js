@@ -28,12 +28,12 @@ function Settings() {
         setRange,
       }}
     >
-      <div className="max-w-screen flex h-screen max-h-screen w-screen overflow-hidden">
+      <div className="max-w-screen flex h-screen max-h-screen w-screen overflow-hidden bg-sky-50">
         <section className="h-full w-[70%]">
-          <div className="h-[18%] bg-purple-300 p-3 2xl:h-[15%]">
+          <div className="h-[18%] p-3 2xl:h-[15%]">
             <IniBar />
           </div>
-          <div className="h-[82%] bg-pink-300 2xl:h-[85%]">
+          <div className="h-[82%] 2xl:h-[85%]">
             <Adjust />
           </div>
         </section>

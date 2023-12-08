@@ -1,14 +1,27 @@
 import React, { useContext, useState } from "react";
+import Swal from "sweetalert2";
 
 import { AppContext } from "../../../contexts/context";
 import Button from "../../common/Button";
+import updateSettings from "../../../utils/setSettings";
 
 const ChipTypeInput = () => {
   const [short, setShort] = useState(false);
   const { settings, setSettings, range } = useContext(AppContext);
 
+  const update_set = async () => {
+    const alert = await updateSettings(range);
+
+    Swal.fire({
+      title: alert.title,
+      text: alert.text,
+      icon: alert.icon,
+      confirmButtonText: alert.confirmButtonText,
+    });
+  };
+
   return (
-    <div className="mr-5 grid h-full w-full grid-cols-7 gap-3 bg-red-300 p-2">
+    <div className="mr-5 grid h-full w-full grid-cols-7 gap-3 p-2">
       <input
         className="col-span-5 rounded-md bg-gray-200 pl-3 text-gray-700"
         type="text"
@@ -37,7 +50,7 @@ const ChipTypeInput = () => {
         <Button
           className="flex h-8 w-32 cursor-pointer items-center justify-center rounded-lg border-2 border-gray-600 bg-gray-600 duration-300 ease-in hover:bg-gray-300 2xl:h-10 2xl:w-40 2xl:text-lg"
           text={"Update Settings"}
-          onClick={() => setSettings(range)}
+          onClick={update_set}
         />
       </div>
     </div>

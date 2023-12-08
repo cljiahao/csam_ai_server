@@ -5,7 +5,7 @@ import ChipTypeInput from "./components/ChipTypeInput";
 
 const IniBar = () => {
   return (
-    <div className="flex h-full w-full gap-3 rounded-lg bg-blue-300">
+    <div className="flex h-full w-full gap-3 rounded-lg bg-red-300">
       <SettingsUpload />
       <ChipTypeInput />
     </div>

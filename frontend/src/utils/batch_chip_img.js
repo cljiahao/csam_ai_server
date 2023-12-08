@@ -1,9 +1,9 @@
 import cv from "@techstark/opencv-js";
 
 const batch_chip_img = (settings, range, batch_chip, type) => {
-  if (settings[type + "Url"] !== null) {
+  if (settings.imgURl !== null) {
     try {
-      const image = settings[type + "Url"];
+      const image = settings.imgUrl;
       const subrange = range[settings.chip_type];
 
       const thres = new cv.Mat();

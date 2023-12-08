@@ -2,6 +2,7 @@ import React, { useEffect, useContext, useRef } from "react";
 
 import { AppContext } from "../../contexts/context";
 import Slider from "./components/Slider";
+import InputBar from "./components/InputBar";
 import getSettings from "../../utils/getSettings";
 import batch_chip_img from "../../utils/batch_chip_img";
 
@@ -27,13 +28,13 @@ const Adjust = () => {
 
   return (
     <div className="h-full w-full">
-      <div className="h-full w-full flex-col bg-teal-200">
+      <div className="flex h-full w-full flex-col gap-3">
         {settings.chip_type in range &&
           Object.keys(range[settings.chip_type]).map((k) => {
             return (
-              <div className="flex h-[50%] w-full" key={k}>
-                <div className="flex h-full w-[50%] flex-col justify-center overflow-scroll overflow-x-hidden overflow-y-hidden bg-rose-400">
-                  {settings.batchUrl || settings.chipUrl ? (
+              <div className="flex h-[50%] w-full gap-3" key={k}>
+                <div className="flex h-full w-[47%] flex-col justify-center overflow-scroll overflow-x-hidden overflow-y-hidden rounded-lg bg-red-300">
+                  {settings.imgUrl ? (
                     <canvas
                       className="h-full w-full"
                       ref={batch_chip.current[k]}
@@ -42,8 +43,9 @@ const Adjust = () => {
                     <div className="m-auto mx-10 h-5/6 rounded-xl border-4 border-dashed border-gray-400 bg-gray-100" />
                   )}
                 </div>
-                <div className="h-full w-[50%] bg-yellow-300 px-3 text-sm">
+                <div className="flex h-full w-[53%] flex-col pr-3 text-sm">
                   <Slider type={k} />
+                  <InputBar type={k} />
                 </div>
               </div>
             );

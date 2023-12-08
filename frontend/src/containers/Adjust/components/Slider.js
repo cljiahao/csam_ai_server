@@ -1,11 +1,9 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { AppContext } from "../../../contexts/context";
-
-import Button from "../../common/Button";
-import getSettings from "../../../utils/getSettings";
 
 const Slider = ({ type }) => {
   const { settings, range, setRange } = useContext(AppContext);
+  const [inText, setInText] = useState(range);
   const chip_type = settings.chip_type;
 
   const rangeChange = (e) => {
@@ -20,62 +18,83 @@ const Slider = ({ type }) => {
         [type]: { ...range[chip_type][type], [e.target.id]: value },
       },
     });
+    setInText({
+      ...range,
+      [chip_type]: {
+        ...range[chip_type],
+        [type]: { ...range[chip_type][type], [e.target.id]: value },
+      },
+    });
   };
 
-  const setStates = async (e) => {
-    const set_dict = await getSettings();
-    setRange({
+  const inputChange = (e) => {
+    const value =
+      e.target.value === ""
+        ? 0
+        : parseInt(e.target.value) > 50
+          ? 50
+          : parseInt(e.target.value);
+    setInText({
       ...range,
-      [chip_type]: { ...range[chip_type], [type]: set_dict[chip_type][type] },
+      [chip_type]: {
+        ...range[chip_type],
+        [type]: { ...range[chip_type][type], [e.target.id]: value },
+      },
     });
   };
 
   return (
-    <div className="h-[40%] w-full">
-      <div className="w-full py-2">
+    <div className="flex h-full w-full flex-col rounded-lg bg-red-300 p-2">
+      <div className="flex h-full w-full flex-col">
         <label htmlFor="threshold">Threshold</label>
-        <input
-          className="w-full"
-          type="range"
-          id="threshold"
-          min="1"
-          max="255"
-          value={range[chip_type][type].threshold}
-          onChange={rangeChange}
-        />
+        <div className="flex gap-2">
+          <input
+            className="w-full"
+            type="range"
+            id="threshold"
+            min="1"
+            max="255"
+            value={range[chip_type][type].threshold}
+            onChange={rangeChange}
+          />
+          <input
+            className="h-6 w-12 border-2 border-gray-500 text-center"
+            type="text"
+            value={range[chip_type][type].threshold}
+          />
+        </div>
       </div>
       <div className="grid grid-cols-2 gap-x-2">
         {Object.keys(range[chip_type][type])
           .filter((k) => k !== "threshold")
           .map((key, i) => {
             return (
-              <div key={i}>
+              <div className="flex flex-col" key={i}>
                 <label htmlFor={key}>{key}</label>
-                <input
-                  className="w-full"
-                  id={key}
-                  type="range"
-                  min="1"
-                  max="50"
-                  value={range[chip_type][type][key]}
-                  onChange={rangeChange}
-                />
+                <div className="flex gap-2">
+                  <input
+                    className="w-full"
+                    id={key}
+                    type="range"
+                    min="1"
+                    max="50"
+                    value={range[chip_type][type][key]}
+                    onChange={rangeChange}
+                  />
+                  <input
+                    className="h-6 w-12 border-2 border-gray-500 text-center"
+                    id={key}
+                    value={inText[chip_type][type][key]}
+                    type="text"
+                    onChange={inputChange}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") rangeChange(e);
+                    }}
+                  />
+                </div>
               </div>
             );
           })}
-      </div>
-      <div className="flex h-full w-full items-end justify-between px-3 pb-3 text-white">
-        <Button
-          className="h-10 w-16 cursor-pointer items-center justify-center rounded-lg border-2 border-gray-600 bg-gray-600 duration-300 ease-in hover:bg-gray-300 2xl:h-10 2xl:w-40 2xl:text-lg"
-          text="reset"
-          id={type}
-          onClick={setStates}
-        />
-        <div className="flex items-center justify-center gap-3">
-          <label className="text-black">Quantity: </label>
-          <input className="h-7 w-16 border-2 border-gray-500" type="text" />
-          <div className="h-8 w-8 rounded-full bg-gray-500"></div>
-        </div>
       </div>
     </div>
   );
