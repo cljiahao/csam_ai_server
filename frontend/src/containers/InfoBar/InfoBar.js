@@ -118,13 +118,13 @@ const InfoBar = ({ save, insertDB, openMenu }) => {
       </div>
       <div className="my-1 mr-3 flex h-12 w-fit items-center justify-between gap-3 2xl:my-2 2xl:mr-5 2xl:h-14 2xl:gap-2">
         <Input
-          className="flex h-full w-20 cursor-pointer items-center justify-center rounded-lg border-2 border-gray-600 bg-gray-600 text-center text-base text-white duration-300 ease-in hover:bg-gray-300 hover:text-gray-600 2xl:ml-3 2xl:w-28 2xl:text-lg"
+          className="flex h-full w-20 cursor-pointer items-center justify-center rounded-lg border-2 border-gray-600 bg-gray-600 text-center text-base text-white hover:bg-gray-300 hover:text-gray-600 2xl:ml-3 2xl:w-28 2xl:text-lg"
           text={type + " Upload"}
           onChange={process}
         />
         {type === "CDC" ? (
           <Button
-            className="flex h-full w-20 cursor-pointer items-center justify-center rounded-lg border-2 border-blue-500 bg-blue-500 text-center text-base text-white duration-300 ease-in hover:bg-blue-300 hover:text-blue-600 2xl:ml-3 2xl:w-28 2xl:text-lg"
+            className="flex h-full w-20 cursor-pointer items-center justify-center rounded-lg border-2 border-blue-500 bg-blue-500 text-center text-base text-white hover:bg-blue-300 hover:text-blue-600 2xl:ml-3 2xl:w-28 2xl:text-lg"
             text="Submit"
             onClick={save}
           />

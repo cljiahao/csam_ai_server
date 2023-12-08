@@ -6,18 +6,35 @@ import Button from "../../common/Button";
 import updateSettings from "../../../utils/setSettings";
 
 const ChipTypeInput = () => {
+  const { settings, setSettings, range, quantity } = useContext(AppContext);
   const [short, setShort] = useState(false);
-  const { settings, setSettings, range } = useContext(AppContext);
 
   const update_set = async () => {
-    const alert = await updateSettings(range);
-
-    Swal.fire({
-      title: alert.title,
-      text: alert.text,
-      icon: alert.icon,
-      confirmButtonText: alert.confirmButtonText,
+    let result = 0;
+    Object.keys(quantity.input).forEach((key) => {
+      if (
+        quantity.input[key] !== quantity.output[key] ||
+        quantity.input[key] === 0
+      )
+        result += 1;
     });
+    if (result === 0) {
+      const alert = await updateSettings(range);
+
+      Swal.fire({
+        title: alert.title,
+        text: alert.text,
+        icon: alert.icon,
+        confirmButtonText: alert.confirmButtonText,
+      });
+    } else {
+      Swal.fire({
+        title: "Quantity don't match",
+        text: "Please ensure quantity match the image quantity or input quantity is more than 0",
+        icon: "error",
+        confirmButtonText: "Confirm",
+      });
+    }
   };
 
   return (
@@ -48,7 +65,7 @@ const ChipTypeInput = () => {
       </div>
       <div className="col-span-2 flex items-center pl-2 text-center text-base text-white hover:text-gray-600 2xl:pl-5">
         <Button
-          className="flex h-8 w-32 cursor-pointer items-center justify-center rounded-lg border-2 border-gray-600 bg-gray-600 duration-300 ease-in hover:bg-gray-300 2xl:h-10 2xl:w-40 2xl:text-lg"
+          className="flex h-8 w-32 cursor-pointer items-center justify-center rounded-lg border-2 border-gray-600 bg-gray-600 hover:bg-gray-300 2xl:h-10 2xl:w-40 2xl:text-lg"
           text={"Update Settings"}
           onClick={update_set}
         />

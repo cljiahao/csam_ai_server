@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Transition } from "@headlessui/react";
-import { initialSettings } from "../../core/config";
+import { initialSettings, initialQuantity } from "../../core/config";
 import { AppContext } from "../../contexts/context";
 
 import getSettings from "../../utils/getSettings";
@@ -13,6 +13,7 @@ function Settings() {
   const [range, setRange] = useState({});
   const [inText, setInText] = useState({});
   const [settings, setSettings] = useState(structuredClone(initialSettings));
+  const [quantity, setQuantity] = useState(structuredClone(initialQuantity));
   const [menu, setMenu] = useState(false);
 
   useEffect(() => {
@@ -22,7 +23,7 @@ function Settings() {
       setInText(set_dict);
     };
     setStates();
-  }, [settings.batchUrl, settings.chipUrl]);
+  }, [settings.imgUrl]);
 
   const openMenu = () => {
     setMenu(!menu);
@@ -39,10 +40,12 @@ function Settings() {
         setRange,
         inText,
         setInText,
+        quantity,
+        setQuantity,
       }}
     >
       <div className="max-w-screen flex h-screen max-h-screen w-screen overflow-hidden bg-sky-50">
-        <section className="h-full w-[70%]">
+        <section className="flex h-full w-[70%] flex-col">
           <div className="h-[18%] p-3 2xl:h-[15%]">
             <IniBar />
           </div>

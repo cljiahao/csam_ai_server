@@ -56,7 +56,7 @@ const SettingsUpload = () => {
     <div className="ml-5 flex w-[40%] items-center gap-3 break-all">
       <img className="hidden" alt="input" ref={imgRef} />
       <Input
-        className="flex h-10 w-28 cursor-pointer items-center justify-center rounded-lg border-2 border-gray-600 bg-gray-600 text-center text-white duration-300 ease-in hover:bg-gray-300 hover:text-gray-600 2xl:ml-3 2xl:h-12 2xl:w-28 2xl:text-lg"
+        className="flex h-10 w-28 cursor-pointer items-center justify-center rounded-lg border-2 border-gray-600 bg-gray-600 text-center text-white hover:bg-gray-300 hover:text-gray-600 2xl:ml-3 2xl:h-12 2xl:w-28 2xl:text-lg"
         text={"Upload"}
         onChange={sendData}
       />

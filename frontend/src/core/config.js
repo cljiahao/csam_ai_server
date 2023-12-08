@@ -48,11 +48,16 @@ const initialInfo = {
   no_of_real_ng: {},
 };
 
+const initialQuantity = {
+  input: { batch: 1, chip: 1 },
+  output: { batch: null, chip: null },
+  match: { batch: false, chip: false },
+};
+
 const initialSettings = {
   chip_type: null,
   file_name: null,
-  batchUrl: null,
-  chipUrl: null,
+  imgUrl: null,
 };
 
 const initialState = {
@@ -72,6 +77,7 @@ export {
   initialData,
   initialFocus,
   initialInfo,
+  initialQuantity,
   initialState,
   initialSettings,
 };

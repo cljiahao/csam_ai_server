@@ -44,23 +44,28 @@ const Slider = ({ type }) => {
   };
 
   return (
-    <div className="flex h-full w-full flex-col rounded-lg bg-red-300 p-2">
+    <div className="flex h-full w-full flex-col rounded-lg bg-red-300 p-2 2xl:text-xl">
       <div className="flex h-full w-full flex-col">
         <label htmlFor="threshold">Threshold</label>
         <div className="flex gap-2">
           <input
             className="w-full"
-            type="range"
             id="threshold"
+            type="range"
             min="1"
             max="255"
             value={range[chip_type][type].threshold}
             onChange={rangeChange}
           />
           <input
-            className="h-6 w-12 border-2 border-gray-500 text-center"
+            className="h-6 w-12 border-2 border-gray-500 text-center 2xl:h-8 2xl:w-16"
+            id="threshold"
             type="text"
-            value={range[chip_type][type].threshold}
+            value={inText[chip_type][type].threshold}
+            onChange={inputChange}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") rangeChange(e);
+            }}
           />
         </div>
       </div>
@@ -82,10 +87,10 @@ const Slider = ({ type }) => {
                     onChange={rangeChange}
                   />
                   <input
-                    className="h-6 w-12 border-2 border-gray-500 text-center"
+                    className="h-6 w-12 border-2 border-gray-500 text-center 2xl:h-8 2xl:w-16"
                     id={key}
-                    value={inText[chip_type][type][key]}
                     type="text"
+                    value={inText[chip_type][type][key]}
                     onChange={inputChange}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") rangeChange(e);

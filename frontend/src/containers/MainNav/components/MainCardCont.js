@@ -35,6 +35,7 @@ const MainCardCont = () => {
       {Object.values(card_info).map((values, i) => {
         return (
           <MainCard
+            key={values}
             src={values.src}
             title={values.title}
             short={values.short}

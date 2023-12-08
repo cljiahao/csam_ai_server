@@ -53,7 +53,7 @@ const Folders = ({ openMenu }) => {
       <div className="flex h-[10%] w-full items-center justify-between rounded-lg px-2 text-center 2xl:h-[8%] 2xl:px-3">
         <IoMenu className="cursor-pointer" size="1.5rem" onClick={openMenu} />
         <Button
-          className="flex h-10 w-32 cursor-pointer items-center justify-center rounded-lg border-2 border-gray-600 bg-gray-600 text-white duration-300 ease-in hover:bg-gray-300 hover:text-gray-600 2xl:ml-3 2xl:h-12 2xl:w-40 "
+          className="flex h-10 w-32 cursor-pointer items-center justify-center rounded-lg border-2 border-gray-600 bg-gray-600 text-white hover:bg-gray-300 hover:text-gray-600 2xl:ml-3 2xl:h-12 2xl:w-40 "
           text={"Update Folders"}
           onClick={updateBackend}
         />
@@ -85,7 +85,7 @@ const Folders = ({ openMenu }) => {
             );
           })}
       </div>
-      <div className="flex h-[10%] w-full items-center justify-end gap-3 rounded-lg p-3 2xl:h-[8%] 2xl:gap-5 2xl:p-5">
+      <div className="flex h-[10%] w-full items-center justify-end gap-3 rounded-lg p-3 text-white 2xl:h-[8%] 2xl:gap-5 2xl:p-5">
         <ButtonCont
           count={count}
           setCount={setCount}
