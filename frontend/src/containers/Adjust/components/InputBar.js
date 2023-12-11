@@ -20,7 +20,7 @@ const InputBar = ({ type }) => {
       [chip_type]: { ...range[chip_type], [type]: set_dict[chip_type][type] },
     });
   };
-  console.log(quantity.match);
+
   return (
     <div className="flex h-full w-full items-end justify-between bg-pink-100 px-3 pb-3 text-white 2xl:text-xl">
       <Button

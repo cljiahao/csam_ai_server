@@ -50,8 +50,8 @@ def mask_batch(gray, chip_type):
         cv2.MORPH_CLOSE,
         np.ones(
             (
-                adjust_batch["close_x"],
                 adjust_batch["close_y"],
+                adjust_batch["close_x"],
             ),
             np.uint8,
         ),
@@ -62,8 +62,8 @@ def mask_batch(gray, chip_type):
         cv2.MORPH_ERODE,
         np.ones(
             (
-                adjust_batch["erode_x"],
                 adjust_batch["erode_y"],
+                adjust_batch["erode_x"],
             ),
             np.uint8,
         ),

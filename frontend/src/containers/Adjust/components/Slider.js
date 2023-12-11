@@ -7,10 +7,7 @@ const Slider = ({ type }) => {
   const chip_type = settings.chip_type;
 
   const rangeChange = (e) => {
-    const value =
-      e.target.value % 2 === 0
-        ? parseInt(e.target.value)
-        : parseInt(e.target.value) + 1;
+    const value = parseInt(e.target.value);
     setRange({
       ...range,
       [chip_type]: {
@@ -28,11 +25,12 @@ const Slider = ({ type }) => {
   };
 
   const inputChange = (e) => {
+    const limit = e.target.id === "threshold" ? 255 : 50;
     const value =
       e.target.value === ""
         ? 0
-        : parseInt(e.target.value) > 50
-          ? 50
+        : parseInt(e.target.value) > limit
+          ? limit
           : parseInt(e.target.value);
     setInText({
       ...range,

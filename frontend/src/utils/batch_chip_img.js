@@ -8,7 +8,7 @@ const batch_chip_img = (settings, range, batch_chip, type) => {
         const subrange = range[settings.chip_type];
 
         let img = image;
-        // if (type === "chip") img = image.roi(new cv.Rect(100, 100, 600, 400));
+        if (type === "chip") img = image.roi(new cv.Rect(100, 90, 600, 300));
 
         const thres = new cv.Mat();
         cv.threshold(
@@ -19,6 +19,8 @@ const batch_chip_img = (settings, range, batch_chip, type) => {
           cv.THRESH_BINARY_INV,
         );
 
+        const anchor = new cv.Point(-1, -1);
+        const border_val = cv.morphologyDefaultBorderValue();
         const c_ones = cv.Mat.ones(
           subrange[type].close_y,
           subrange[type].close_x,
@@ -30,10 +32,10 @@ const batch_chip_img = (settings, range, batch_chip, type) => {
           close,
           cv.MORPH_CLOSE,
           c_ones,
-          new cv.Point(-1, -1),
+          anchor,
           1,
           cv.BORDER_CONSTANT,
-          cv.morphologyDefaultBorderValue(),
+          border_val,
         );
 
         const e_ones = cv.Mat.ones(
@@ -42,15 +44,14 @@ const batch_chip_img = (settings, range, batch_chip, type) => {
           cv.CV_8U,
         );
         const erode = new cv.Mat();
-        cv.morphologyEx(
+        cv.erode(
           close,
           erode,
-          cv.MORPH_ERODE,
           e_ones,
-          new cv.Point(-1, -1),
+          anchor,
           1,
           cv.BORDER_CONSTANT,
-          cv.morphologyDefaultBorderValue(),
+          border_val,
         );
 
         cv.imshow(batch_chip.current[type].current, erode);
