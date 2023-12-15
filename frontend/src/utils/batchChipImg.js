@@ -1,6 +1,6 @@
 import cv from "@techstark/opencv-js";
 
-const batch_chip_img = (settings, range, batch_chip, type) => {
+const batchChipImg = (settings, range, batch_chip, type) => {
   if (settings.imgUrl) {
     try {
       if (cv.getBuildInformation) {
@@ -84,4 +84,4 @@ const batch_chip_img = (settings, range, batch_chip, type) => {
   }
 };
 
-export default batch_chip_img;
+export default batchChipImg;

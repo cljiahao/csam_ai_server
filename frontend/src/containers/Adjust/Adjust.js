@@ -3,7 +3,7 @@ import React, { useEffect, useContext, useRef } from "react";
 import { AppContext } from "../../contexts/context";
 import Slider from "./components/Slider";
 import InputBar from "./components/InputBar";
-import batch_chip_img from "../../utils/batch_chip_img";
+import batchChipImg from "../../utils/batchChipImg";
 
 const Adjust = () => {
   const { settings, range, quantity, setQuantity } = useContext(AppContext);
@@ -15,8 +15,8 @@ const Adjust = () => {
 
   useEffect(() => {
     if ((new Date() - prev_time.current) / 1000 > 0.5) {
-      const batch_qty = batch_chip_img(settings, range, batch_chip, "batch");
-      const chip_qty = batch_chip_img(settings, range, batch_chip, "chip");
+      const batch_qty = batchChipImg(settings, range, batch_chip, "batch");
+      const chip_qty = batchChipImg(settings, range, batch_chip, "chip");
       quantity.match.batch = batch_qty === quantity.input.batch ? true : false;
       quantity.match.chip = chip_qty === quantity.input.chip ? true : false;
       setQuantity({
