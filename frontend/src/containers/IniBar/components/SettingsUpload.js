@@ -20,15 +20,17 @@ const SettingsUpload = () => {
         try {
           const img = cv.imread(imgRef.current);
 
-          const remove_bg = new cv.Mat();
-          const blank = new cv.Mat(
-            img.rows,
-            img.cols,
-            img.type(),
-            [130, 130, 130, 255],
-          );
-          cv.compare(img, blank, remove_bg, cv.CMP_GT);
-          img.setTo(new cv.Scalar.all(255), remove_bg);
+          // Split image, threshold for background only mask and return background as full white
+          const channel = new cv.MatVector();
+          cv.split(img, channel);
+          let combine = new cv.Mat();
+          for (let j = 0; j < channel.size() - 1; ++j) {
+            const cn_thres = new cv.Mat();
+            cv.threshold(channel.get(j), cn_thres, 100, 255, cv.THRESH_BINARY);
+            if (j === 0) combine = cn_thres;
+            cv.bitwise_and(combine, cn_thres, combine);
+          }
+          img.setTo(new cv.Scalar.all(255), combine);
 
           const gray = new cv.Mat();
           cv.cvtColor(img, gray, cv.COLOR_BGR2GRAY);
