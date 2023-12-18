@@ -124,7 +124,7 @@ const InfoBar = ({ save, insertDB, openMenu }) => {
         />
         {type === "CDC" ? (
           <Button
-            className="flex h-full w-20 cursor-pointer items-center justify-center rounded-lg border-2 border-blue-500 bg-blue-500 text-center text-base text-white hover:bg-blue-300 hover:text-blue-600 2xl:ml-3 2xl:w-28 2xl:text-lg"
+            but_class="flex h-full w-20 cursor-pointer items-center justify-center rounded-lg border-2 border-blue-500 bg-blue-500 text-center text-base text-white hover:bg-blue-300 hover:text-blue-600 2xl:ml-3 2xl:w-28 2xl:text-lg"
             text="Submit"
             onClick={save}
           />

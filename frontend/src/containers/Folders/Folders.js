@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { IoMenu } from "react-icons/io5";
 import Swal from "sweetalert2";
+import { IoMenu } from "react-icons/io5";
 import "./Folders.css";
 
 import Button from "../common/Button";
@@ -53,7 +53,7 @@ const Folders = ({ openMenu }) => {
       <div className="flex h-[10%] w-full items-center justify-between rounded-lg px-2 text-center 2xl:h-[8%] 2xl:px-3">
         <IoMenu className="cursor-pointer" size="1.5rem" onClick={openMenu} />
         <Button
-          className="flex h-10 w-32 cursor-pointer items-center justify-center rounded-lg border-2 border-gray-600 bg-gray-600 text-white hover:bg-gray-300 hover:text-gray-600 2xl:ml-3 2xl:h-12 2xl:w-40 "
+          but_class="flex h-10 w-32 cursor-pointer items-center justify-center rounded-lg border-2 border-gray-600 bg-gray-600 text-white hover:bg-gray-300 hover:text-gray-600 2xl:ml-3 2xl:h-12 2xl:w-40 "
           text={"Update Folders"}
           onClick={updateBackend}
         />

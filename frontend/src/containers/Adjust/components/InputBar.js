@@ -24,7 +24,7 @@ const InputBar = ({ type }) => {
   return (
     <div className="flex h-full w-full items-end justify-between bg-pink-100 px-3 pb-3 text-white 2xl:text-xl">
       <Button
-        className="h-10 w-16 cursor-pointer items-center justify-center rounded-lg border-2 border-gray-600 bg-gray-600 hover:bg-gray-300 2xl:h-12 2xl:w-24 2xl:text-lg"
+        but_class="h-10 w-16 cursor-pointer items-center justify-center rounded-lg border-2 border-gray-600 bg-gray-600 hover:bg-gray-300 2xl:h-12 2xl:w-24 2xl:text-lg"
         text="reset"
         id={type}
         onClick={setStates}

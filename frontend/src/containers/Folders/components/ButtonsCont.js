@@ -21,12 +21,12 @@ const ButtonCont = ({ count, setCount, folders, setFolders }) => {
   return (
     <>
       <Button
-        className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-600 text-xl font-bold 2xl:h-14 2xl:w-14"
+        but_class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-600 text-xl font-bold 2xl:h-14 2xl:w-14"
         text={"+"}
         onClick={() => setCount(count + 1)}
       />
       <Button
-        className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-600 text-xl font-bold 2xl:h-14 2xl:w-14"
+        but_class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-600 text-xl font-bold 2xl:h-14 2xl:w-14"
         text={"-"}
         onClick={deleteRow}
       />

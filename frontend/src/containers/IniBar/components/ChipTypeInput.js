@@ -65,7 +65,7 @@ const ChipTypeInput = () => {
       </div>
       <div className="col-span-2 flex items-center pl-2 text-center text-base text-white hover:text-gray-600 2xl:pl-5">
         <Button
-          className="flex h-8 w-32 cursor-pointer items-center justify-center rounded-lg border-2 border-gray-600 bg-gray-600 hover:bg-gray-300 2xl:h-10 2xl:w-40 2xl:text-lg"
+          but_class="flex h-8 w-32 cursor-pointer items-center justify-center rounded-lg border-2 border-gray-600 bg-gray-600 hover:bg-gray-300 2xl:h-10 2xl:w-40 2xl:text-lg"
           text={"Update Settings"}
           onClick={update_set}
         />
