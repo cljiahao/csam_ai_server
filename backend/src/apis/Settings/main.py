@@ -9,20 +9,6 @@ from apis.utils.batch_process import mask_batch
 from apis.utils.chip_process import mask_chips
 
 
-def time_print(start, func_name) -> None:
-    """
-    Parameters
-    ----------
-    start : float
-        Start time from previous recording
-    func_name : string
-        Description for previous recording
-    """
-    print(f"{func_name} took: {round(time.time()-start,2)} secs")
-
-    return time.time()
-
-
 def set_upload(file, uuid):
     np_img = np.asarray(bytearray(file.file.read()))
     image = cv2.imdecode(np_img, cv2.IMREAD_COLOR)

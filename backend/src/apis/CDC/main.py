@@ -2,24 +2,11 @@ import os
 import cv2
 import time
 
+from apis.utils.misc import time_print
 from apis.utils.batch_process import mask
 from apis.utils.chip_process import chips
 from apis.utils.image_process import create_border_img
 from apis.utils.initialize import initialize
-
-
-def time_print(start, func_name) -> None:
-    """
-    Parameters
-    ----------
-    start : float
-        Start time from previous recording
-    func_name : string
-        Description for previous recording
-    """
-    print(f"{func_name} took: {round(time.time()-start,2)} secs")
-
-    return time.time()
 
 
 def inspect(image, lot_no, chip_type, db, get_ratio):
@@ -69,13 +56,18 @@ def inspect(image, lot_no, chip_type, db, get_ratio):
             img_shape,
         )
 
+    new_start = time_print(new_start, "Create Border Image")
+
     batch_data = mask(gray, img_shape, chip_type)
+
+    new_start = time_print(new_start, "Chip Masking")
+
     no_of_chips, temp_dict, ng_dict = chips(
         border_img, gray, batch_data, "CDC", chip_type
     )
     hold_dict = {**temp_dict, **ng_dict}
 
-    new_start = time_print(new_start, "Chip Masking and Processing")
+    new_start = time_print(new_start, "Chip Processing")
 
     no_of_batches = len(batch_data)
     chips_dict = {}
