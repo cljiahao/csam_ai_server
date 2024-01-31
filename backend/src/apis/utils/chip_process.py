@@ -1,14 +1,16 @@
 import cv2
+import time
 import math
 import numpy as np
 from PIL import Image
 
 from core.config import settings
 from core.read_json import read_config
+from apis.utils.misc import time_print
 from apis.utils.batch_process import find_batch_no
 
 
-def chips(border_img, gray, batch_data, prog, chip_type) -> dict:
+def chips(border_img, gray, batch_data, prog, chip_type):
     """
     Main function to call sub functions for retrieiving chip data
 
@@ -33,6 +35,8 @@ def chips(border_img, gray, batch_data, prog, chip_type) -> dict:
     hold_dict : dict
         Images stored in dictionary to be send back to frontend
     """
+    start = time.time()
+
     no_of_chips = 0
     temp_dict, ng_dict = {}, {}
 
@@ -42,6 +46,7 @@ def chips(border_img, gray, batch_data, prog, chip_type) -> dict:
 
     mask = mask_chips(gray, chip_type)
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    blank = np.zeros(border_img.shape[:2], np.uint8)
 
     # Average contour area of the chips
     # TODO : dynamic changes to the limits
@@ -51,32 +56,41 @@ def chips(border_img, gray, batch_data, prog, chip_type) -> dict:
     lower_def_area = cArea * 0.75
     upper_def_area = cArea * 1.5
 
+    new_start = time_print(start, "Chip Process: Masking image")
+
     for cnt in contours:
-        rect = cv2.minAreaRect(cnt)
-        ((xc, yc), (w, h), theta) = rect
         chip_area = cv2.contourArea(cnt)
+        rect = cv2.minAreaRect(cnt)
+        if upper_def_area < chip_area:
+            rect_arr = check_single(blank.copy(), cnt, rect)
+        else:
+            rect_arr = [rect]
 
-        if lower_chip_area < chip_area < upper_chip_area:
-            no_of_chips += 1
-            batch = find_batch_no(xc, yc, batch_data)
-            padx, pady = [math.ceil(i / 10) * 10 for i in settings.IMAGESIZE]
-            # 0 first element of name is to indicate image not selected yet
-            # xc, yc - 20 to remove the the added borders previously
-            fName = "{}_{}_{}_{}_{}.png".format(
-                0, batch, no_of_chips, int(xc - padx), int(yc - pady)
-            )
+        for rect in rect_arr:
+            ((xc, yc), _, _) = rect
+            if lower_chip_area < chip_area < upper_chip_area:
+                no_of_chips += 1
+                batch = find_batch_no(xc, yc, batch_data)
+                padx, pady = [math.ceil(j / 10) * 10 for j in settings.IMAGESIZE]
+                # 0 first element of name is to indicate image not selected yet
+                # xc, yc - 20 to remove the the added borders previously
+                fName = "{}_{}_{}_{}_{}.png".format(
+                    0, batch, no_of_chips, int(xc - padx), int(yc - pady)
+                )
 
-            rotated_img = rotate_chips(border_img, rect, x_crop_limit, y_crop_limit)
-            # Convert colour to RGB for AI Model to predict properly
-            if prog == "CAI":
-                rotated_img = cv2.cvtColor(rotated_img, cv2.COLOR_BGR2RGB)
+                rotated_img = rotate_chips(border_img, rect, x_crop_limit, y_crop_limit)
+                # Convert colour to RGB for AI Model to predict properly
+                if prog == "CAI":
+                    rotated_img = cv2.cvtColor(rotated_img, cv2.COLOR_BGR2RGB)
 
-            # Reduce predicting data to quicken processing time
-            # Chips below certain threshold are considered defects
-            if chip_area < lower_def_area or upper_def_area < chip_area:
-                ng_dict[fName] = rotated_img
-            else:
-                temp_dict[fName] = rotated_img
+                # Reduce predicting data to quicken processing time
+                # Chips below certain threshold are considered defects
+                if chip_area < lower_def_area or upper_def_area < chip_area:
+                    ng_dict[fName] = rotated_img
+                else:
+                    temp_dict[fName] = rotated_img
+
+    new_start = time_print(new_start, "Chip Process: Rotate all chips")
 
     return no_of_chips, temp_dict, ng_dict
 
@@ -108,6 +122,40 @@ def mask_chips(gray, chip_type):
     return mask
 
 
+def check_single(blank, contour, rect):
+    """
+    Parameters
+    ----------
+    blank : numpy array
+        Blank Image copy for drawing contours on
+    contour : MatLike
+        Contour of single chip or multi chip
+
+    Returns
+    -------
+    rect_arr: list
+        List of Box2D structure containing center(x,y), width, height and angle of rotation
+    """
+    x_crop, y_crop = settings.IMAGESIZE
+    ((x, y), _, _) = rect
+    cv2.drawContours(blank, [contour], -1, (255, 255, 255), -1)
+    crop = blank[
+        int(y - y_crop) : int(y + y_crop),
+        int(x - x_crop) : int(x + x_crop),
+    ]
+    crop[:] = cv2.erode(crop, np.ones((9, 9), np.uint8))
+    contours, hier = cv2.findContours(blank, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    rect_arr = []
+    if len(contours) > 1:
+        for cnt in contours:
+            rect_arr.append(cv2.minAreaRect(cnt))
+    else:
+        rect_arr.append(rect)
+
+    return rect_arr
+
+
 def rotate_chips(src, rect, x_crop_limit, y_crop_limit):
     """
     Parameters
@@ -135,6 +183,7 @@ def rotate_chips(src, rect, x_crop_limit, y_crop_limit):
         int(y - y_crop_limit) : int(y + y_crop_limit),
         int(x - x_crop_limit) : int(x + x_crop_limit),
     ]
+
     img = cv2.cvtColor(crop, cv2.COLOR_BGR2RGB)
     im_pil = Image.fromarray(img)
 
