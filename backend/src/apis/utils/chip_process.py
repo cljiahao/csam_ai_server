@@ -40,7 +40,7 @@ def chips(border_img, gray, batch_data, prog, chip_type):
     no_of_chips = 0
     temp_dict, ng_dict = {}, {}
 
-    x_crop, y_crop = settings.IMAGESIZE
+    x_crop, y_crop = settings.IMAGE_SIZE
     x_crop_limit = math.ceil(x_crop * math.sqrt(2) / 10) * 10
     y_crop_limit = math.ceil(y_crop * math.sqrt(2) / 10) * 10
 
@@ -71,7 +71,7 @@ def chips(border_img, gray, batch_data, prog, chip_type):
             if lower_chip_area < chip_area < upper_chip_area:
                 no_of_chips += 1
                 batch = find_batch_no(xc, yc, batch_data)
-                padx, pady = [math.ceil(j / 10) * 10 for j in settings.IMAGESIZE]
+                padx, pady = [math.ceil(j / 10) * 10 for j in settings.IMAGE_SIZE]
                 # 0 first element of name is to indicate image not selected yet
                 # xc, yc - 20 to remove the the added borders previously
                 fName = "{}_{}_{}_{}_{}.png".format(
@@ -136,7 +136,7 @@ def check_single(blank, contour, rect):
     rect_arr: list
         List of Box2D structure containing center(x,y), width, height and angle of rotation
     """
-    x_crop, y_crop = settings.IMAGESIZE
+    x_crop, y_crop = settings.IMAGE_SIZE
     ((x, y), _, _) = rect
     cv2.drawContours(blank, [contour], -1, (255, 255, 255), -1)
     crop = blank[
@@ -174,7 +174,7 @@ def rotate_chips(src, rect, x_crop_limit, y_crop_limit):
     rot_img
         Rotated image based on reference point (src_pts and dst_pts)
     """
-    x_crop, y_crop = settings.IMAGESIZE
+    x_crop, y_crop = settings.IMAGE_SIZE
     ((x, y), (width, height), theta) = rect
     if height < width:
         theta = theta - 90

@@ -42,7 +42,7 @@ def create_border_img(file, save_dir):
     h, w, z = image.shape
     # Added border to include chips near the edge of images,
     # allowing better cropping of chips later on
-    padx, pady = [math.ceil(i / 10) * 10 for i in settings.IMAGESIZE]
+    padx, pady = [math.ceil(i / 10) * 10 for i in settings.IMAGE_SIZE]
     border_img = cv2.copyMakeBorder(image, pady, pady, padx, padx, cv2.BORDER_REPLICATE)
     img = border_img.copy()
 

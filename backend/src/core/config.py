@@ -29,7 +29,7 @@ class Settings:
     REALTIMEDB: str = os.getenv("REALTIMEDB")
     TABLEID: str = os.getenv("TABLEID")
 
-    IMAGESIZE: list = [54, 54]
+    IMAGE_SIZE: list = [54, 54]
 
 
 settings = Settings()
