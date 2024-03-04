@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { AppContext } from "../../contexts/context";
-import "./Gallery.css";
 
 import BatchZones from "./components/BatchZones";
 

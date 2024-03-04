@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { IoMenu } from "react-icons/io5";
-import "./Folders.css";
 
 import Button from "../common/Button";
 import AddRows from "./components/AddRows";
