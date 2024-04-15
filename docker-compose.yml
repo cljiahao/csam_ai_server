@@ -1,0 +1,30 @@
+version: "3.9"
+services:
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend/data:/api/data
+      - ./backend/src/core:/api/src/core
+    ports:
+      - "8001"
+    # deploy:
+    #   mode: replicated
+    #   replicas: 3
+  app:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: prod
+    ports:
+      - "3001"
+  nginx:
+    depends_on:
+      - api
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - "80:80"
