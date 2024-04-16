@@ -1,6 +1,9 @@
 import os
+from datetime import datetime as dt
+
 from apis.utils.directory import dire
-from core.read_write import write_txt
+from core.config import settings
+from core.transfer import via_http, write_csv
 from db.models.cdc_ratio import CDC_RATIO
 
 
@@ -40,4 +43,7 @@ def create_ratio(ratio, db):
     f_dir = os.path.join(dire.data_send_path, "CDC")
     if not os.path.exists(f_dir):
         os.makedirs(f_dir)
-    write_txt(os.path.join(f_dir, f"{ratio['lot']}.txt"), ratio)
+    data = f",,,{ratio['lot']},{dt.now().strftime('%d%m%y %H%M%S')}"
+    del ratio["lot"]
+    csv_path = write_csv(f_dir, settings.TABLEID_CAI, data, ratio)
+    via_http(csv_path)
