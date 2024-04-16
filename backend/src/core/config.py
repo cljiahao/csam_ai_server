@@ -8,7 +8,7 @@ env_path = Path(".") / ".env"
 load_dotenv(dotenv_path=env_path)
 
 
-class Settings:
+class settings:
     PROJECT_NAME: str = "CSAM AI SERVER"
     PROJECT_VERSION: str = "1.0.0"
 
@@ -27,11 +27,12 @@ class Settings:
     ITEM: str = os.getenv("ITEM")
 
     REALTIMEDB: str = os.getenv("REALTIMEDB")
-    TABLEID: str = os.getenv("TABLEID")
+    TABLEID_CDC: str = os.getenv("TABLEID_CDC")
+    TABLEID_CAI: str = os.getenv("TABLEID_CAI")
 
     G_TYPES: list = ["G", "Good", "g", "good"]
 
     CHIP_IMG_SIZE: list = [54, 54]
 
 
-settings = Settings()
+settings = settings()
