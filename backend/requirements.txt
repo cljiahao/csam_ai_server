@@ -1,7 +1,6 @@
 # API (HTTP)
 fastapi==0.110.1                    # API (Backend <==> Frontend)              
 uvicorn==0.29.0                     # To run FastAPI
-gunicorn==21.2.0                    # To run FastAPI
 python-multipart==0.0.9             # Form Data Usage
 requests==2.31.0                    # HTTP Request
 
