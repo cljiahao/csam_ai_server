@@ -35,6 +35,17 @@ const ImageHolder = ({ highlight }) => {
   }, [focus]);
 
   useEffect(() => {
+    const update_disp = () => {
+      const rect = containerRef.current.getBoundingClientRect();
+      setDisplay({ ...display, width: rect.width, height: rect.height });
+    };
+    window.addEventListener("resize", update_disp);
+    return () => {
+      window.removeEventListener("resize", update_disp);
+    };
+  });
+
+  useEffect(() => {
     const onMouseUp = () => {
       setMouse({ ...mouse, pan: false });
     };
