@@ -1,9 +1,8 @@
 import os
-from fastapi import HTTPException
 import requests
+from fastapi import HTTPException
 from datetime import datetime as dt
 
-from apis.utils.directory import dire
 from core.config import settings
 
 
