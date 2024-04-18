@@ -26,7 +26,7 @@ def add_local_db(c_ratio: CreateRatio, db: Session = Depends(get_db)):
         create_ratio(ratio, db)
     except:
         raise HTTPException(
-            status_code=523,
+            status_code=530,
             detail=f"Failed to save data into local db and move images",
         )
 
