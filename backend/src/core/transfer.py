@@ -30,6 +30,6 @@ def via_http(file_path):
 
     if int(resp.content) != os.stat(os.path.join(file_path)).st_size:
         raise HTTPException(
-            status_code=522,
+            status_code=540,
             detail=f"File did not send to file server.",
         )
