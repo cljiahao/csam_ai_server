@@ -23,17 +23,16 @@ const Thumbnails = ({ highlight, zone }) => {
     setFocus({ ...focus, state: true, x: x, y: y, scale: 7 });
     let target = array.chips[zone][key];
     if (target.color === "transparent") {
+      target.color = marker.color._zoom
+      target.radius = marker.radius._zoom
       setArray({
         ...array,
         chips: {
           ...array.chips,
           [zone]: {
             ...array.chips[zone],
-            [key]: {
-              ...array.chips[zone][key],
-              color: marker.color._zoom,
-              radius: marker.radius._zoom,
-            },
+            [key]: target
+            ,
           },
         },
       });
@@ -44,17 +43,15 @@ const Thumbnails = ({ highlight, zone }) => {
     setFocus({ ...focus, state: false, x: 0, y: 0, scale: 1 });
     let target = array.chips[zone][key];
     if (target.color === "chartreuse") {
+      target.color = marker.color._default
+      target.radius = marker.radius._default
       setArray({
         ...array,
         chips: {
           ...array.chips,
           [zone]: {
             ...array.chips[zone],
-            [key]: {
-              ...array.chips[zone][key],
-              color: marker.color._default,
-              radius: marker.radius._default,
-            },
+            [key]: target,
           },
         },
       });
