@@ -13,16 +13,16 @@ def get_batch(gray: cv2.typing.MatLike, batch_set: dict):
     return batch_data
 
 
-def mask_batch(gray: cv2.typing.MatLike, erode: tuple, close: tuple):
+def mask_batch(gray: cv2.typing.MatLike, erode_val: tuple, close_val: tuple):
     """Return masked image after threshold and morphological transformations"""
 
     _, ret = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY_INV)
     # Erode to prevent merging between batches
-    erode = cv2.morphologyEx(ret, cv2.MORPH_ERODE, np.ones(erode, np.uint8))
+    erode = cv2.morphologyEx(ret, cv2.MORPH_ERODE, np.ones(erode_val, np.uint8))
     # Close to merge neighbouring chips to form a huge blob mask
-    morph = cv2.morphologyEx(erode, cv2.MORPH_CLOSE, np.ones(close, np.uint8))
+    close = cv2.morphologyEx(erode, cv2.MORPH_CLOSE, np.ones(close_val, np.uint8))
 
-    return morph
+    return close
 
 
 def find_batch(mask_img: cv2.typing.MatLike):

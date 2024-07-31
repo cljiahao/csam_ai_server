@@ -67,17 +67,17 @@ def get_chips(
 
 
 def mask_chips(
-    gray: cv2.typing.MatLike, erode: tuple, close: tuple
+    gray: cv2.typing.MatLike, erode_val: tuple, close_val: tuple
 ) -> cv2.typing.MatLike:
     """Return masked image after threshold and morphological transformations"""
 
     _, ret = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY_INV)
     # Erode to remove noises surrounding chips
-    erode = cv2.morphologyEx(ret, cv2.MORPH_ERODE, np.ones(erode, np.uint8))
+    erode = cv2.morphologyEx(ret, cv2.MORPH_ERODE, np.ones(erode_val, np.uint8))
     # Close to fill up holes in chips
-    mask = cv2.morphologyEx(erode, cv2.MORPH_CLOSE, np.ones(close, np.uint8))
+    close = cv2.morphologyEx(erode, cv2.MORPH_CLOSE, np.ones(close_val, np.uint8))
 
-    return mask
+    return close
 
 
 def chunking(contours: list[cv2.typing.MatLike]) -> list[list[cv2.typing.MatLike]]:
