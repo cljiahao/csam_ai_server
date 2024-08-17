@@ -1,0 +1,18 @@
+# API (HTTP)
+fastapi==0.110.1                    # API (Backend <==> Frontend)              
+uvicorn==0.29.0                     # To run FastAPI
+python-multipart==0.0.9             # Form Data Usage
+requests==2.31.0                    # HTTP Request
+
+# Processing
+# opencv-python==4.9.0.80           # Processing Images
+opencv-python-headless==4.9.0.80    # Processing Images
+pillow ==10.3.0                     # Processing Images
+tensorflow==2.15.0                  # AI Model
+
+# Database
+SQLAlchemy==2.0.29                  # Sql Engine (ORM)
+
+# Misc
+python-dotenv==1.0.1                # Env File Reader
+pytest==7.4.2                       # For Testing
