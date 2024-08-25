@@ -1,6 +1,6 @@
 
 from apis.routes import router
-from core.config import settings
+from core.config import common_settings, api_settings
 from db.base import Base
 from db.session import engine
 
@@ -12,10 +12,9 @@ def create_tables():
     Base.metadata.create_all(bind=engine)
 
 
-
-
-def configure_cors(app):
-    origins = settings.CORS
+def configure_cors(app) -> None:
+    """Configure CORS settings for the FastAPI application."""
+    origins = api_settings.ALLOWED_CORS
 
     app.add_middleware(
         CORSMiddleware,
@@ -35,9 +34,9 @@ def include_router(app):
 
 def start_application():
     app = FastAPI(
-        title=settings.PROJECT_NAME,
-        version=settings.PROJECT_VERSION,
-        root_path=settings.FASTAPI_ROOT,
+        title=common_settings.PROJECT_NAME,
+        version=common_settings.PROJECT_VERSION,
+        root_path=api_settings.FASTAPI_ROOT,
     )
     create_tables()
     configure_cors(app)

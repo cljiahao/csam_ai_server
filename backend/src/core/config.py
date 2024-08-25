@@ -1,46 +1,57 @@
-import os
-
+from pydantic import field_validator
+from pydantic_settings import BaseSettings
 from dotenv import load_dotenv, find_dotenv
 
 load_dotenv(dotenv_path=find_dotenv())
 
 
-class Settings:
+class Settings(BaseSettings):
+    class Config:
+        env_file = ".env"
+        env_file_encoding = "utf-8"
+        case_sensitive = True
+
+
+class CommonSettings(BaseSettings):
     PROJECT_NAME: str = "CSAM AI SERVER"
-    PROJECT_VERSION: str = "2.0.0"
-    ENV_STAGE: str = os.getenv("ENV_STAGE", "stage")
-
-    FASTAPI_ROOT: str = f"{os.getenv('FASTAPI_ROOT')}"
-    # Uncomment to used with docker and nginx
-    # FASTAPI_ROOT: str = f"{os.getenv('FASTAPI_ROOT')}/"
-    CORS: list = [
-        f"http://{os.getenv('PC_NAME')}:{os.getenv('NGINX_PORT')}",
-        "http://localhost:5173",
-    ]
-
-    TEST_ITEM: str = os.getenv("TEST_ITEM")
-    PRASS_URL: str = os.getenv("PRASS_URL")
-    LOT_COL: str = os.getenv("LOT_COL")
-    ITEM_COL: str = os.getenv("ITEM_COL")
-
-    LOCAL_DB_PATH: str = os.getenv("LOCAL_DB_PATH")
-
-    REALTIMEDB: str = os.getenv("REALTIMEDB")
-    TABLEID_CDC: str = os.getenv("TABLEID_CDC")
-    TABLEID_CAI: str = os.getenv("TABLEID_CAI")
-
-    G_TYPES: list = ["G", "Good", "g", "good"]
-    CHIP_IMG_SIZE: list = [54, 54]
-
-    THRES_RANGE: dict = {
-        "low_chip_area": 0.15,
-        "upp_chip_area": 3,
-        "low_def_area": 0.75,
-        "upp_def_area": 1.5,
-    }
-
-    SETTINGS_FNAME: str = "settings.json"
-    MODEL_EXT: list = [".h5", ".txt"]
+    PROJECT_VERSION: str = "v1.0.0"
+    ENV_STAGE: str = "stage"
 
 
-settings = Settings()
+class APISettings(BaseSettings):
+    FASTAPI_ROOT: str = "/api"
+    PC_NAME: str = "localhost"
+    NGINX_PORT: int = 5173
+
+    @property
+    def ALLOWED_CORS(self) -> list[str]:
+        # Compute ALLOWED_CORS based on the current values of PC_NAME and NGINX_PORT
+        return [
+            f"http://{self.PC_NAME}:{self.NGINX_PORT}",
+            "http://localhost:5173",
+        ]
+
+    @field_validator("FASTAPI_ROOT", mode="before")
+    def remove_trailing_slash(cls, value: str) -> str:
+        # Remove any trailing slashes from the value
+        return value.rstrip("/")
+
+
+class DatabaseSettings(BaseSettings):
+    LOCAL_DB_PATH: str = ""
+    REALTIMEDB: str = ""
+    TABLEID_CDC: str = ""
+    TABLEID_CAI: str = ""
+
+
+class ServiceSettings(Settings):
+    TEST_ITEM: str = ""
+    PRASS_URL: str = ""
+    LOT_COLUMN: str = ""
+    ITEM_COLUMN: str = ""
+
+
+common_settings = CommonSettings()
+api_settings = APISettings()
+service_settings = ServiceSettings()
+database_settings = DatabaseSettings()
