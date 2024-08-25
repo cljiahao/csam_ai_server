@@ -1,11 +1,5 @@
-import os
-import sys
-
-
-sys.path.append("./")
 
 from apis.routes import router
-from core.directory import directory
 from core.config import settings
 from db.base import Base
 from db.session import engine
@@ -18,17 +12,6 @@ def create_tables():
     Base.metadata.create_all(bind=engine)
 
 
-def create_folders():
-    folders = [
-        directory.log_dir,
-        directory.json_dir,
-        directory.model_dir,
-        directory.images_dir,
-        directory.data_send_dir,
-    ]
-    for fol in folders:
-        if not os.path.exists(fol):
-            os.makedirs(fol)
 
 
 def configure_cors(app):
@@ -57,7 +40,6 @@ def start_application():
         root_path=settings.FASTAPI_ROOT,
     )
     create_tables()
-    create_folders()
     configure_cors(app)
     include_router(app)
 
