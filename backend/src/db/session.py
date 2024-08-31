@@ -3,9 +3,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from core.config import database_settings
+from core.directory import directory
 
 # Database URL configuration
-SQLALCHEMY_DATABASE_URL = f"sqlite:///{database_settings.LOCAL_DB_PATH}"
+SQLALCHEMY_DATABASE_URL = (
+    f"sqlite:///{directory.config_dir}/{database_settings.DB_NAME}"
+)
 
 # Create SQLAlchemy engine
 engine = create_engine(

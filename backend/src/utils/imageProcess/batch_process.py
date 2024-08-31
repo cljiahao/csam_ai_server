@@ -1,0 +1,64 @@
+import cv2
+import numpy as np
+
+from core.logging import logger
+
+
+def get_batch(gray: np.ndarray, batch_setting: dict) -> list[dict[str, float]]:
+    """Main function to call sub functions for retrieving batch data."""
+
+    mask_image = mask_batch(gray, batch_setting["erode"], batch_setting["close"])
+    batch_data = find_batch(mask_image)
+
+    return batch_data
+
+
+def mask_batch(gray: np.ndarray, erode_val: tuple, close_val: tuple) -> np.ndarray:
+    """Return masked image after threshold and morphological transformations."""
+
+    _, binary_image = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY_INV)
+
+    # Apply morphological operations: erode and close
+    kernel_erode = np.ones(erode_val, np.uint8)
+    kernel_close = np.ones(close_val, np.uint8)
+
+    # Erode to prevent merging between batches
+    eroded_image = cv2.morphologyEx(binary_image, cv2.MORPH_ERODE, kernel_erode)
+    # Close to merge neighbouring chips to form a huge blob mask
+    closed_image = cv2.morphologyEx(eroded_image, cv2.MORPH_CLOSE, kernel_close)
+
+    return closed_image
+
+
+def find_batch(mask_image: np.ndarray) -> list[dict[str, float]]:
+    """Return a list of batch coordinates."""
+
+    # Use to remove noises (Stray Chips / Dirt)
+    image_height, image_width = mask_image.shape[:2]
+    thres_area = image_height * image_width * 0.01
+
+    batch_data = []
+
+    contours, _ = cv2.findContours(
+        mask_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+    )
+
+    for cnt in contours:
+        (_, (width, height), _) = cv2.minAreaRect(cnt)
+        blob_area = width * height
+
+        if thres_area < blob_area:
+            x, y, w, h = cv2.boundingRect(cnt)
+            xc, yc = x + w / 2, y + h / 2
+
+            # Factor depends on the size of image (RoundUp)
+            factor = -(-image_height // 1000) * 1000
+            index = round(yc / factor, 1) * factor**2 + xc
+            batch_data.append(
+                {"index": index, "x1": x, "y1": y, "x2": x + w, "y2": y + h}
+            )
+
+    batch_data = sorted(batch_data, key=lambda x: x["index"])
+    logger.debug("Number of Batches found: %s", len(batch_data))
+
+    return batch_data

@@ -1,4 +1,4 @@
-from pydantic import field_validator
+from pydantic import ConfigDict, field_validator
 from pydantic_settings import BaseSettings
 from dotenv import load_dotenv, find_dotenv
 
@@ -6,19 +6,18 @@ load_dotenv(dotenv_path=find_dotenv())
 
 
 class Settings(BaseSettings):
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        case_sensitive = True
+    __config__ = ConfigDict(
+        env_file=".env", env_file_encoding="utf-8", case_sensitive=True
+    )
 
 
-class CommonSettings(BaseSettings):
+class CommonSettings(Settings):
     PROJECT_NAME: str = "CSAM AI SERVER"
     PROJECT_VERSION: str = "v1.0.0"
     ENV_STAGE: str = "stage"
 
 
-class APISettings(BaseSettings):
+class APISettings(Settings):
     FASTAPI_ROOT: str = "/api"
     PC_NAME: str = "localhost"
     NGINX_PORT: int = 5173
@@ -37,8 +36,8 @@ class APISettings(BaseSettings):
         return value.rstrip("/")
 
 
-class DatabaseSettings(BaseSettings):
-    LOCAL_DB_PATH: str = ""
+class DatabaseSettings(Settings):
+    DB_NAME: str = "local.db"
     REALTIMEDB: str = ""
     TABLEID_CDC: str = ""
     TABLEID_CAI: str = ""
