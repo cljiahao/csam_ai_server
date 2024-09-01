@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from apis.v1.schemas.base import CAIPage, CDCPage
 from core.directory import directory
 from core.logging import logger
-from db.CRUD.base import create_detail, get_lot_plate_detail
+from db.CRUD.csam import create_detail, get_lot_plate_detail
 from utils.debug import time_print
 from utils.imageCache.cache import get_cache_data
 from utils.imageProcess.image_process import image_process

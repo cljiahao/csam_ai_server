@@ -1,5 +1,5 @@
-from src.utils.imageProcess.chip_process import get_chips
-from src.utils.imageProcess.batch_process import get_batch
+from utils.imageProcess.chip_process import get_chips
+from utils.imageProcess.batch_process import get_batch
 
 
 def test_get_batch(sample_images, sample_batch_config):

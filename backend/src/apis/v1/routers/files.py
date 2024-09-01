@@ -9,7 +9,7 @@ from apis.v1.helpers.pages import get_page
 from apis.v1.schemas.base import Module
 from apis.v1.schemas.files import ChipData
 from core.logging import logger
-from db.CRUD.base import update_lot_plate_detail
+from db.CRUD.csam import update_lot_plate_detail
 from db.session import get_db
 from utils.imageCache.cache import set_cache_data
 from utils.osHandle.unpack import unzip_files, update_settings

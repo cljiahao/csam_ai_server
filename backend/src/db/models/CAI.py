@@ -6,7 +6,6 @@ from db.base import Base
 
 
 class CAI_DETAILS(Base):
-    __tablename__ = "cai_details"
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     date_created: Mapped[dt] = mapped_column(default=func.now())
     date_updated: Mapped[dt] = mapped_column(default=func.now(), onupdate=func.now())

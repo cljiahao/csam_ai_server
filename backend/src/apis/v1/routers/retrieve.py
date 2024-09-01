@@ -8,7 +8,7 @@ from apis.v1.helpers.HTTPExceptions import handle_exceptions
 from apis.v1.helpers.pages import get_page
 from apis.v1.schemas.base import Module
 from apis.v1.schemas.retrieve import CountResult, Item
-from db.CRUD.base import get_lot_plate_detail
+from db.CRUD.csam import get_lot_plate_detail
 from db.session import get_db
 from core.logging import logger
 from core.directory import directory

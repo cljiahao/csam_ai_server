@@ -1,64 +1,46 @@
 import os
 import pytest
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import StaticPool
 from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, Session
 
-from src.app import start_application
-from src.core.directory import directory
-from src.db.base import Base
-from src.db.session import get_db
+from app import app
+from db.base import Base
+from db.session import get_db
 
-# SQLite database URL for testing
-SQLITE_DATABASE_URL = f"sqlite:///{directory.base_dir}/tests/test_db.db"
+from core.directory import directory
 
-# Create a SQLAlchemy engine
+SQLALCHEMY_DATABASE_URL = f"sqlite:///{directory.base_dir}/tests/test_db.db"
+
 engine = create_engine(
-    SQLITE_DATABASE_URL,
-    connect_args={"check_same_thread": False},
-    poolclass=StaticPool,
+    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
 )
 
-# Create a sessionmaker to manage sessions
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+TestingSession = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-
-def mock_create_tables():
-    Base.metadata.drop_all(bind=engine)
-    Base.metadata.create_all(bind=engine)
-    print("Test")
-
-
-@pytest.fixture(autouse=True)
-def app(monkeypatch):
-    monkeypatch.setattr("src.app.create_tables", mock_create_tables)
-    _app = start_application()
-    yield _app
-
+Base.metadata.create_all(engine)  # Create the tables.
 
 @pytest.fixture(scope="session", autouse=True)
 def cleanup_database(request):
     """Cleanup the test database after tests have run."""
-    Base.metadata.drop_all(bind=engine)
 
     def remove_test_db():
         # Ensure that connections and sessions are closed
+        Base.metadata.drop_all(bind=engine)
         engine.dispose()
 
         # Remove the test database file
-        if os.path.exists(SQLITE_DATABASE_URL.replace("sqlite:///", "")):
-            os.remove(SQLITE_DATABASE_URL.replace("sqlite:///", ""))
+        if os.path.exists(SQLALCHEMY_DATABASE_URL.replace("sqlite:///", "")):
+            os.remove(SQLALCHEMY_DATABASE_URL.replace("sqlite:///", ""))
 
     request.addfinalizer(remove_test_db)
-
 
 @pytest.fixture(scope="function")
 def db_session(request):
     """Create a new database session with a rollback at the end of the test."""
     connection = engine.connect()
     transaction = connection.begin()
-    session = TestingSessionLocal(bind=connection)
+    session = TestingSession(bind=connection)
 
     def teardown():
         session.close()
@@ -70,7 +52,7 @@ def db_session(request):
 
 
 @pytest.fixture(scope="function")
-def test_client(db_session, app):
+def test_client(db_session:Session):
     """Create a test client that uses the override_get_db fixture to return a session."""
 
     def override_get_db():

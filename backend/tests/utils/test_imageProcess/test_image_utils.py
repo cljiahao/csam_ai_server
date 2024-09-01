@@ -3,7 +3,7 @@ import math
 import pytest
 import numpy as np
 
-from src.utils.imageProcess.image_utils import (
+from utils.imageProcess.image_utils import (
     chunking,
     create_border_image,
     find_batch_no,
