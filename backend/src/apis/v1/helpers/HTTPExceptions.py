@@ -4,8 +4,9 @@ from core.logging import logger
 from core.exceptions import DatabaseError, ImageProcessError, MissingSettings
 
 
-def handle_exceptions(e: Exception):
+def handle_exceptions(e: Exception) -> None:
     """Handles exceptions by raising HTTPExceptions."""
+
     if isinstance(e, (FileNotFoundError, MissingSettings, ValueError)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.args[0])
     elif isinstance(e, (DatabaseError, ImageProcessError)):

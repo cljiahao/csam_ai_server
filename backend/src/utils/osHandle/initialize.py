@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 from typing import IO
 from pathlib import Path
-from shutil import rmtree
 
 from core.exceptions import ImageProcessError
 from core.logging import logger
@@ -17,23 +16,14 @@ def initialize(
     logger.debug("Plate No: %s", plate_no)
 
     plate_path = base_path / item / lot_no / plate_no
-    temp_path = check_temp_dir(lot_no, plate_path)
+
+    # Create temp folder to store images temporary
+    temp_path = plate_path / "temp"
+    temp_path.mkdir(parents=True, exist_ok=True)
 
     image = save_original(file, plate_path)
 
     return image, plate_path, temp_path
-
-
-def check_temp_dir(lot_no: str, plate_path: Path) -> Path:
-    """Remove plate path and remake folder if testing."""
-
-    if plate_path.is_dir() and lot_no.lower().startswith("test"):
-        rmtree(plate_path)
-
-    temp_path = plate_path / "temp"
-    temp_path.mkdir(parents=True, exist_ok=True)
-
-    return temp_path
 
 
 def save_original(file: IO, plate_path: Path) -> np.ndarray:

@@ -7,7 +7,7 @@ from core.logging import logger
 from utils.fileHandle.base import read_json, write_json
 
 
-def get_settings_json(item: str):
+def get_settings_json(item: str) -> dict[str, dict[str, tuple[int, int]]]:
     """Retrieve settings for a specific item from the settings JSON file."""
 
     file_path = directory.json_dir / core_consts.SETTINGS_FILENAME
@@ -47,7 +47,12 @@ def get_settings_json(item: str):
     return sett_data
 
 
-def write_settings_json(item: str, sett_data: dict = {}):
+# TODO: Do out write_settings_json and pytests
+
+
+def write_settings_json(
+    item: str, sett_data: dict[str, dict[str, tuple[int, int]]] = {}
+) -> None:
     """Write settings data for a specific item to the settings JSON file."""
 
     file_path = directory.json_dir / core_consts.SETTINGS_FILENAME
@@ -77,7 +82,7 @@ def write_settings_json(item: str, sett_data: dict = {}):
     write_json(file_path, {"processSettings": settings_data})
 
 
-def get_colors_json(item: str = None):
+def get_colors_json(item: str = None) -> list[dict[str, str | list[dict[str, str]]]]:
     """Retrieve color data from the colors JSON file. Optionally filter by item."""
 
     file_path = directory.json_dir / core_consts.COLOR_GROUP_FILENAME
@@ -92,7 +97,9 @@ def get_colors_json(item: str = None):
     return colors_data
 
 
-def write_colors_json(fol_hex_data: list[dict], item: str = None):
+def write_colors_json(
+    fol_hex_data: list[dict[str, str | list[dict[str, str]]]], item: str = None
+) -> None:
     """Write color data to the colors JSON file. Optionally filter by item."""
 
     def check_hex(fol_hex_array):

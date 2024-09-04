@@ -44,7 +44,8 @@ class DatabaseSettings(Settings):
 
 
 class ServiceSettings(Settings):
-    TEST_ITEM: str = ""
+    TEST_LOT_NO: str = "1234567890"
+    TEST_ITEM: str = "GCM32ER71E106KA59_+B55-E01GJ"
     PRASS_URL: str = ""
     LOT_COLUMN: str = ""
     ITEM_COLUMN: str = ""

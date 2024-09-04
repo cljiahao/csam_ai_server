@@ -13,7 +13,7 @@ router = APIRouter()
     response_model=FolderColor,
     summary="Retrieve all saved folder settings.",
 )
-def get_all_folder_colors() -> dict:
+def get_all_folder_colors() -> dict[list[dict[str, str | list[dict[str, str]]]]]:
 
     try:
         colors_data = get_colors_json()
@@ -27,7 +27,7 @@ def get_all_folder_colors() -> dict:
     response_model=FolderColor,
     summary="Retrieve saved folder settings based on item.",
 )
-def get_folder_colors(item: str) -> dict:
+def get_folder_colors(item: str) -> dict[list[dict[str, str | list[dict[str, str]]]]]:
 
     try:
         colors_data = get_colors_json(item)

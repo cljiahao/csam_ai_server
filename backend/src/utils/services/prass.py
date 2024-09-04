@@ -8,7 +8,7 @@ from core.logging import logger
 def check_lot(lot_no: str) -> str | None:
     """Check if Lot Number input exists in PRASS database."""
 
-    if lot_no.lower().startswith("test"):
+    if lot_no.lower() == service_settings.TEST_LOT_NO:
         return service_settings.TEST_ITEM
 
     if not service_settings.PRASS_URL:
@@ -20,6 +20,7 @@ def check_lot(lot_no: str) -> str | None:
         response.raise_for_status()
         prass = response.json()
     except requests.RequestException as e:
+        print(f"Error fetching data from PRASS server: {e}")
         logger.error(f"Error fetching data from PRASS server: {e}")
         raise
 
@@ -34,23 +35,23 @@ def check_lot(lot_no: str) -> str | None:
     return item
 
 
-def via_http(file_path: str) -> None:
-    """To Send via HTTP."""
+# def via_http(file_path: str) -> None:
+#     """To Send via HTTP."""
 
-    file_path = Path(file_path)
-    with file_path.open("rb") as file:
-        files = {"file": file}
-        response = requests.post(database_settings.REALTIMEDB, files=files)
-        response.raise_for_status()  # Raise HTTPError for bad responses
+#     file_path = Path(file_path)
+#     with file_path.open("rb") as file:
+#         files = {"file": file}
+#         response = requests.post(database_settings.REALTIMEDB, files=files)
+#         response.raise_for_status()  # Raise HTTPError for bad responses
 
-    server_file_size = int(response.content)
-    actual_file_size = file_path.stat().st_size
+#     server_file_size = int(response.content)
+#     actual_file_size = file_path.stat().st_size
 
-    if server_file_size != actual_file_size:
-        raise ValueError(
-            "File size mismatch. File may not have been uploaded correctly."
-        )
+#     if server_file_size != actual_file_size:
+#         raise ValueError(
+#             "File size mismatch. File may not have been uploaded correctly."
+#         )
 
-    logger.info(
-        "File sent successfully. Server reported file size: %d", server_file_size
-    )
+#     logger.info(
+#         "File sent successfully. Server reported file size: %d", server_file_size
+#     )

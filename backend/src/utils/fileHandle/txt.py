@@ -1,8 +1,9 @@
 from pathlib import Path
-from utils.fileHandle.base import read_txt
+
 from core.directory import directory
 from core.exceptions import MissingSettings
 from core.logging import logger
+from utils.fileHandle.base import read_txt
 
 
 def read_model_txt(item: str):

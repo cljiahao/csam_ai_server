@@ -47,7 +47,7 @@ def run_CNN(
     pred_res = np.argmax(predictions, axis=1)
 
     # Filter out labels based on settings
-    filtered_labels = {k: v for k, v in labels.items() if k not in core_consts.G_TYPES}
+    filtered_labels = {k: v for k, v in labels.items() if v not in core_consts.G_TYPES}
 
     results = {
         k: pred_dict[k]

@@ -1,21 +1,25 @@
 import cv2
 import pytest
+import numpy as np
 from pathlib import Path
 
+# Define the path to the assets directory
 current_path = Path(__file__)
 assets_path = current_path.parent.parent.parent / "assets"
 
 
-def filtered_files():
+def filtered_files() -> list[Path]:
+    """Return a list of base test file paths."""
     return [file for file in assets_path.glob("*.*") if len(file.name.split("_")) == 2]
 
 
 @pytest.fixture(params=filtered_files())
-def sample_images(request):
+def sample_images(request: pytest.FixtureRequest) -> dict[str, str | np.ndarray]:
+    """Fixture to load sample images for testing."""
 
     file_path = request.param
-    # File_name format - {type}_{chip_count}_{defect}.png
     file_name = file_path.name
+    # File_name format - {type}_{chip_count}_{defect}.png
     border_image_path = file_path.parent / ("border_" + file_name)
     border_gray_image_path = file_path.parent / ("gray_" + file_name)
 
@@ -37,17 +41,20 @@ def sample_images(request):
 
 
 @pytest.fixture
-def sample_batch_config():
+def sample_batch_config() -> dict[str : tuple(int, int)]:
+    """Fixture to provide a sample batch configuration."""
     return {"erode": (5, 5), "close": (37, 37)}
 
 
 @pytest.fixture
-def sample_chip_config():
+def sample_chip_config() -> dict[str : tuple(int, int)]:
+    """Fixture to provide a sample chip configuration."""
     return {"erode": (5, 5), "close": (2, 2)}
 
 
 @pytest.fixture
-def sample_batch_data():
+def sample_batch_data() -> list[dict[str, float | int]]:
+    """Fixture to provide sample batch data for testing."""
     return [
         {"index": 200182.5, "x1": 139, "y1": 110, "x2": 226, "y2": 249},
         {"index": 200360.5, "x1": 308, "y1": 110, "x2": 413, "y2": 245},
@@ -68,7 +75,8 @@ def sample_batch_data():
 
 
 @pytest.fixture
-def sample_clean_contours():
+def sample_clean_contours() -> list[tuple[list, float]]:
+    """Fixture to provide sample clean contours data."""
     return [
         ([], 232.5),
         ([], 266.0),

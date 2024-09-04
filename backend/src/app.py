@@ -3,18 +3,17 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from apis.routes import router
 from core.config import common_settings, api_settings
-# from db.base import Base
-# from db.session import engine
+from db.base import Base
+from db.session import engine
 
 
-# def create_tables() -> None:
-#     """Create database tables based on the metadata."""
-#     Base.metadata.drop_all(bind=engine)
-#     Base.metadata.create_all(bind=engine)
-#     print("App")
+def create_tables() -> None:
+    """Create database tables based on the metadata."""
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
 
 
-def configure_cors(app) -> None:
+def configure_cors(app: FastAPI) -> None:
     """Configure CORS settings for the FastAPI application."""
     origins = api_settings.ALLOWED_CORS
 
@@ -27,7 +26,7 @@ def configure_cors(app) -> None:
     )
 
 
-def include_router(app) -> None:
+def include_router(app: FastAPI) -> None:
     """Include application routers."""
     app.include_router(router)
 
@@ -45,7 +44,7 @@ def start_application() -> FastAPI:
 
     configure_cors(app)
     include_router(app)
-    # create_tables()
+    create_tables()
 
     return app
 

@@ -37,19 +37,3 @@ def write_txt(file_path: str, data: str) -> None:
     """Writes a string to a text file."""
     with open(file_path, "w") as f:
         f.write(data)
-
-
-# TODO: Read csv
-def read_csv(file_path: str) -> list:
-    """Reads a text file and returns its lines as a list of strings."""
-    file_path = Path(file_path)
-    if not file_path.exists():
-        data = []
-        write_csv(file_path, data)
-
-    return data
-
-
-# TODO: Write csv
-def write_csv(file_path: str, data: str) -> None:
-    """Writes a list of dictionaries to a CSV file."""

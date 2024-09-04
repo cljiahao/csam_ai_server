@@ -1,41 +1,47 @@
 from pathlib import Path
 from shutil import copyfile, move
-from concurrent.futures import ThreadPoolExecutor
+
+# from concurrent.futures import ThreadPoolExecutor
 
 from core.directory import directory
 from utils.fileHandle.json import get_colors_json
 from utils.osHandle.write_image import update_chip_dict
 
 
-def get_cache_data(no_of_batches: int, plate_path: Path):
+def get_cache_data(no_of_batches: int, plate_path: Path) -> dict[str, list[str]]:
     """Fetches cache data by scanning plate directories and organizing files into a dictionary."""
 
     chip_dict = {str(i + 1): [] for i in range(no_of_batches)}
 
-    # Get all folders in plate_path except the 'original' folder
+    # Get all folder_paths in plate_path except the 'original' folder
     folders = [
         folder
         for folder in plate_path.iterdir()
         if folder.is_dir() and folder.name != "original"
     ]
 
-    with ThreadPoolExecutor() as executor:
-        futures = []
+    for folder in folders:
+        for file_name in folder.iterdir():
+            update_chip_dict(chip_dict, file_name.name)
 
-        for folder in folders:
-            for file_name in folder.iterdir():
-                # Submit the update_chip_dict task and collect the future
-                future = executor.submit(update_chip_dict, chip_dict, file_name.name)
-                futures.append(future)  # Accumulate the futures
+    # TODO: Performance check if threading is required
+    # with ThreadPoolExecutor() as executor:
+    #     futures = []
 
-        # Ensure that all threads complete
-        for future in futures:
-            future.result()  # Wait for all futures to complete
+    #     for folder in folders:
+    #         for file_name in folder.iterdir():
+    #             # Submit the update_chip_dict task and collect the future
+    #             future = executor.submit(update_chip_dict, chip_dict, file_name.name)
+    #             futures.append(future)  # Accumulate the futures
+
+    #     # Ensure that all threads complete
+    #     for future in futures:
+    #         future.result()  # Wait for all futures to complete
 
     return chip_dict
 
 
-def set_cache_data(item: str, relative_plate_path: str, selected: dict):
+def set_cache_data(item: str, relative_plate_path: str, selected: dict) -> bool:
     """Sets cache data by moving files into designated directories based on selection and configuration."""
 
     plate_path = directory.images_dir / relative_plate_path

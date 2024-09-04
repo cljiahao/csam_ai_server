@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from apis.v1.schemas.base import CAIPage, CDCPage
 from core.directory import directory
 from core.logging import logger
-from db.CRUD.csam import create_detail, get_lot_plate_detail
+from db.CRUD.csam import create_lot_detail, get_lot_detail
 from utils.debug import time_print
 from utils.imageCache.cache import get_cache_data
 from utils.imageProcess.image_process import image_process
@@ -18,7 +18,7 @@ from utils.prediction.tensorflow_model import predict_defects
 
 def process_n_predict(
     lot_no: str, item: str, file: IO, db: Session, page: CAIPage | CDCPage
-):
+) -> dict[str, str | dict[str, list[str]]]:
     """
     Main function to run image processing and predictions.
 
@@ -47,14 +47,14 @@ def process_n_predict(
 
     # Read from database if data exists
     plate_no = Path(file.filename).stem
-    lot_plate_detail = get_lot_plate_detail(page.model, db, lot_no, plate_no)
+    lot_detail = get_lot_detail(page.model, db, lot_no, plate_no)
 
     lap, stdout = time_print("Initialization checks", start)
     logger.info(stdout)
 
     # Check and return if cache data exists
     if list(temp_path.iterdir()) or len(list(plate_path.iterdir())) > 2:
-        chip_dict = get_cache_data(lot_plate_detail.no_of_batches, plate_path)
+        chip_dict = get_cache_data(lot_detail.no_of_batches, plate_path)
         res_dict["chips"] = chip_dict
 
         lap, stdout = time_print("Get previously cached data", start)
@@ -95,15 +95,15 @@ def process_n_predict(
         )
 
     # Save processed initial data into DB if not exists
-    if not lot_plate_detail:
-        lot_plate_dict = {
+    if not lot_detail:
+        lot_dict = {
             "lotNo": lot_no,
             "plate": plate_no,
             "item": item,
         }
 
-        lot_plate_dict.update(count_dict)
-        create_detail(page.model, db, lot_plate_dict)
+        lot_dict.update(count_dict)
+        create_lot_detail(page.model, db, lot_dict)
 
     lap, stdout = time_print("Write data into database", lap)
     logger.info(stdout)

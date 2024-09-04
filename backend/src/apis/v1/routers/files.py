@@ -9,7 +9,7 @@ from apis.v1.helpers.pages import get_page
 from apis.v1.schemas.base import Module
 from apis.v1.schemas.files import ChipData
 from core.logging import logger
-from db.CRUD.csam import update_lot_plate_detail
+from db.CRUD.csam import update_lot_detail
 from db.session import get_db
 from utils.imageCache.cache import set_cache_data
 from utils.osHandle.unpack import unzip_files, update_settings
@@ -58,9 +58,7 @@ def save_local(
     try:
         set_cache_data(item, res_dict.directory, res_dict.chips)
         no_of_real = sum(len(value) for value in res_dict.chips.values())
-        update_lot_plate_detail(
-            page.model, db, lot_no, plate, {"no_of_real": no_of_real}
-        )
+        update_lot_detail(page.model, db, lot_no, plate, no_of_real)
         return True
     except Exception as e:
         handle_exceptions(e)

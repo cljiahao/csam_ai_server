@@ -8,7 +8,7 @@ from apis.v1.helpers.HTTPExceptions import handle_exceptions
 from apis.v1.helpers.pages import get_page
 from apis.v1.schemas.base import Module
 from apis.v1.schemas.retrieve import CountResult, Item
-from db.CRUD.csam import get_lot_plate_detail
+from db.CRUD.csam import get_lot_detail
 from db.session import get_db
 from core.logging import logger
 from core.directory import directory
@@ -65,12 +65,13 @@ def get_processed_count(
     plate_no: Annotated[str, Path(description="Plate No")],
     db: Annotated[Session, Depends(get_db)],
 ):
+
     try:
         page = get_page(module)
-        lot_plate_detail = get_lot_plate_detail(page.model, db, lot_no, plate_no)
+        lot_detail = get_lot_detail(page.model, db, lot_no, plate_no)
         if module.value == module.cai:
-            return {"result": lot_plate_detail.no_of_pred}
+            return {"result": lot_detail.no_of_pred}
         elif module.value == module.cdc:
-            return {"result": lot_plate_detail.no_of_chips}
+            return {"result": lot_detail.no_of_chips}
     except Exception as e:
         handle_exceptions(e)

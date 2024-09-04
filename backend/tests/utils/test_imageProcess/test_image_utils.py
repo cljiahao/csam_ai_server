@@ -11,8 +11,8 @@ from utils.imageProcess.image_utils import (
 )
 
 
-def test_create_border_image(sample_images):
-    """Test border image creation."""
+def test_create_border_image(sample_images: dict[str, str | np.ndarray]) -> None:
+    """Test the creation of border images."""
 
     base_image = sample_images["base"]
     border_image, border_gray = create_border_image(base_image)
@@ -29,8 +29,10 @@ def test_create_border_image(sample_images):
         (15, None),  # Example test case with a different slice
     ],
 )
-def test_chunking(start, end, sample_clean_contours):
-    """Test chunking of contours."""
+def test_chunking(
+    start: int, end: int | None, sample_clean_contours: list[tuple[list, float]]
+) -> None:
+    """Test chunking of contours into approximately equal parts."""
 
     contours_subset = sample_clean_contours[start:end]
     result = chunking(contours_subset)
@@ -51,8 +53,13 @@ def test_chunking(start, end, sample_clean_contours):
         (15, None, 271.0),  # Example test case with a different slice
     ],
 )
-def test_get_median_area(start, end, expected_result, sample_clean_contours):
-    """Test median area calculation."""
+def test_get_median_area(
+    start: int,
+    end: int | None,
+    expected_result: float,
+    sample_clean_contours: list[tuple[list, float]],
+) -> None:
+    """Test calculation of the median area of contours"""
 
     contours_subset = sample_clean_contours[start:end]
     result = get_median_area(contours_subset)
@@ -68,8 +75,13 @@ def test_get_median_area(start, end, expected_result, sample_clean_contours):
         (1, 70, 0),  # Example test case stray chips
     ],
 )
-def test_find_batch_no(x_coord, y_coord, expected_result, sample_batch_data):
-    """Test batch number identification."""
+def test_find_batch_no(
+    x_coord: int,
+    y_coord: int,
+    expected_result: int,
+    sample_batch_data: list[dict[str, float | int]],
+) -> None:
+    """Test identification of batch number based on coordinates."""
 
     result = find_batch_no(x_coord, y_coord, sample_batch_data)
 
