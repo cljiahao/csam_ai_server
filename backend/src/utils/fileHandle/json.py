@@ -6,6 +6,39 @@ from core.exceptions import MissingSettings
 from core.logging import logger
 from utils.fileHandle.base import read_json, write_json
 
+SETTINGS_TYPE = ["batch", "chip"]
+SETTINGS_MODE = ["erode", "close"]
+DEFAULT_SETTINGS = {
+    "batch": {"erode": (1, 1), "close": (1, 1)},
+    "chip": {"erode": (1, 1), "close": (1, 1)},
+}
+
+
+def check_settings_format(
+    settings: dict[str, dict[str, tuple[int, int]]]
+) -> str | None:
+    """Validate the format of the settings data."""
+
+    for key in SETTINGS_TYPE:
+        if key not in settings:
+            return f"missing key: {key}."
+
+        missing_sub_keys = [k for k in SETTINGS_MODE if k not in settings[key]]
+        if missing_sub_keys:
+            return f"missing sub-keys: {', '.join(missing_sub_keys)} in key: {key}."
+
+        invalid_tuples = [
+            k
+            for k, value in settings[key].items()
+            if not isinstance(value, tuple)
+            or len(value) != 2
+            or not all(isinstance(v, int) for v in value)
+        ]
+        if invalid_tuples:
+            return f"have invalid tuples for keys: {', '.join(invalid_tuples)} in key: {key}."
+
+    return None
+
 
 def get_settings_json(item: str) -> dict[str, dict[str, tuple[int, int]]]:
     """Retrieve settings for a specific item from the settings JSON file."""
@@ -25,33 +58,27 @@ def get_settings_json(item: str) -> dict[str, dict[str, tuple[int, int]]]:
     )
 
     if not settings:
-        std_out = f"Item : {item} not found in settings file."
-        logger.error(std_out)
-        raise MissingSettings(std_out)
+        std_out = "not found in settings file."
+    else:
+        # Validate and extract settings
+        std_out = check_settings_format(settings_data, item)
 
-    # Validate and extract settings
-    sett_data = {}
-    for key in ["batch", "chip"]:
-        if key not in settings or not all(
-            k in settings[key] for k in ["erode", "close"]
-        ):
-            std_out = f"{key.capitalize()} settings under Item : {item} not found in settings file."
-            logger.error(std_out)
-            raise MissingSettings(std_out)
+    if std_out:
+        new_std_out = f"Item : {item} {std_out}"
+        logger.error(new_std_out)
+        raise MissingSettings(new_std_out)
 
-        sett_data[key] = {
+    return {
+        key: {
             "erode": settings[key]["erode"],
             "close": settings[key]["close"],
         }
-
-    return sett_data
-
-
-# TODO: Do out write_settings_json and pytests
+        for key in SETTINGS_TYPE
+    }
 
 
 def write_settings_json(
-    item: str, sett_data: dict[str, dict[str, tuple[int, int]]] = {}
+    item: str, sett_data: dict[str, dict[str, tuple[int, int]]] = DEFAULT_SETTINGS
 ) -> None:
     """Write settings data for a specific item to the settings JSON file."""
 
@@ -59,14 +86,12 @@ def write_settings_json(
     read_data = read_json(file_path)
     settings_data = read_data.get("processSettings", [])
 
-    # Validate provided settings
-    for key in ["batch", "chip"]:
-        if key not in sett_data or not all(
-            k in sett_data[key] for k in ["erode", "close"]
-        ):
-            std_out = f"{key.capitalize()} settings under Item : {item} not found."
-            logger.error(std_out)
-            raise MissingSettings(std_out)
+    # Validate and extract settings
+    std_out = check_settings_format(settings_data, item)
+    if std_out:
+        new_std_out = f"Item : {item} {std_out}"
+        logger.error(new_std_out)
+        raise MissingSettings(new_std_out)
 
     # Update or append the settings
     updated = False
