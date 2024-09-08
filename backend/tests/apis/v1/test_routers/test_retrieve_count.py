@@ -7,17 +7,20 @@ from apis.v1.schemas.base import CAIPage, CDCPage, Module
 
 
 @pytest.fixture
-def mock_exception(mock_handle_exceptions: MagicMock):
+def mock_exception(mock_func_handle_exceptions: MagicMock):
 
     def raise_http_exception(e: Exception) -> None:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Invalid module specified") from e
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="Invalid module specified",
+        ) from e
 
-    mock_exception = mock_handle_exceptions(
+    mock_handle_exceptions = mock_func_handle_exceptions(
         "apis.v1.routers.retrieve.handle_exceptions"
     )
-    mock_exception.side_effect = raise_http_exception
+    mock_handle_exceptions.side_effect = raise_http_exception
 
-    return mock_exception
+    return mock_handle_exceptions
 
 
 @pytest.fixture

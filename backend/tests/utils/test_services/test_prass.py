@@ -12,9 +12,9 @@ module_path = "utils.services.prass"
 
 
 @pytest.fixture
-def mock_logger(mock_logging: MagicMock) -> MagicMock:
+def mock_logger(mock_func_logger: MagicMock) -> MagicMock:
     """Mock logger for HTTPExceptions."""
-    return mock_logging(f"{module_path}.logger")
+    return mock_func_logger(f"{module_path}.logger")
 
 
 @pytest.fixture
@@ -32,10 +32,10 @@ def mock_env(
 
 
 @pytest.fixture
-def mock_get_service(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
+def mock_func_get_service(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     """Mock requests.get used by check_lot."""
 
-    def _mock_get_service(lot_no: str, item: str) -> MagicMock:
+    def _mock_func_get_service(lot_no: str, item: str) -> MagicMock:
         mock_response = MagicMock()
         mock_response.raise_for_status = MagicMock()
         mock_response.json.return_value = {LOT_COLUMN: lot_no, ITEM_COLUMN: item}
@@ -45,20 +45,20 @@ def mock_get_service(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
 
         return mock_request
 
-    return _mock_get_service
+    return _mock_func_get_service
 
 
-def test_check_lot_success(mock_get_service: MagicMock, mock_env: None) -> None:
+def test_check_lot_success(mock_func_get_service: MagicMock, mock_env: None) -> None:
     """Test check_lot for successful lot lookup."""
 
     lot_no = "lot_success"
     item = "item_success"
 
-    mock_request = mock_get_service(lot_no, item)
+    mock_request_get = mock_func_get_service(lot_no, item)
     result = check_lot(lot_no)
 
     assert result == item
-    mock_request.assert_called_once_with(f"{PRASS_URL}{lot_no}")
+    mock_request_get.assert_called_once_with(f"{PRASS_URL}{lot_no}")
 
 
 def test_check_lot_test_success(
@@ -83,13 +83,13 @@ def test_check_lot_url_missing(
 
 
 def test_check_lot_not_exists(
-    mock_logger: MagicMock, mock_get_service: MagicMock, mock_env: None
+    mock_logger: MagicMock, mock_func_get_service: MagicMock, mock_env: None
 ) -> None:
     """Test check_lot when lot does not exist."""
 
     lot_no = "lot_not_exists"
 
-    mock_get_service(None, None)
+    mock_func_get_service(None, None)
     with pytest.raises(ValueError) as exc_info:
         check_lot(lot_no)
 
@@ -99,18 +99,18 @@ def test_check_lot_not_exists(
 
 
 def test_check_lot_invalid(
-    mock_logger: MagicMock, mock_get_service: MagicMock, mock_env: None
+    mock_logger: MagicMock, mock_func_get_service: MagicMock, mock_env: None
 ) -> None:
     """Test check_lot with invalid request."""
 
     lot_no = "invalid_request"
 
-    mock_request = mock_get_service(None, None)
-    mock_request.side_effect = requests.RequestException("Not Found")
+    mock_request_get = mock_func_get_service(None, None)
+    mock_request_get.side_effect = requests.RequestException("Not Found")
 
     with pytest.raises(requests.RequestException) as exc_info:
         check_lot(lot_no)
 
-    mock_request.assert_called_once_with(f"{PRASS_URL}{lot_no}")
+    mock_request_get.assert_called_once_with(f"{PRASS_URL}{lot_no}")
     expected_message = f"Error fetching data from PRASS server: {exc_info.value}"
     mock_logger.error.assert_called_once_with(expected_message)

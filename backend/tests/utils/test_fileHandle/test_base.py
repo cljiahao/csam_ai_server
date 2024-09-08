@@ -1,98 +1,96 @@
 import json
 import pytest
 from pathlib import Path
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, mock_open
 
-from utils.fileHandle.base import read_json, write_json, read_txt, write_txt
-
-
-def test_read_json_exists():
-    """Test reading an existing JSON file."""
-    file_path = "test.json"
-    mock_file = MagicMock()
-    mock_file.read.return_value = json.dumps({"key": "value"})
-
-    with MagicMock() as mock_open:
-        mock_open.return_value = mock_file
-        with open(file_path, "r") as f:
-            result = read_json(file_path)
-        assert result == {"key": "value"}
-        mock_open.assert_called_once_with(file_path, "r")
+from utils.fileHandle.base import read_json, read_txt
 
 
-def test_read_json_not_exists():
-    """Test reading a non-existing JSON file."""
-    file_path = "test_nonexistent.json"
-    mock_open = MagicMock()
-
-    # Mock the `open` function to simulate file not existing
-    with MagicMock() as mock_open:
-        mock_open.side_effect = FileNotFoundError
-        with MagicMock() as mock_write:
-            write_json_func = MagicMock()
-            write_json_func.side_effect = write_json
-            with open(file_path, "r") as f:
-                result = read_json(file_path)
-                assert result == {}
-                mock_write.assert_called_once_with(file_path, {})
-                mock_open.assert_called_once_with(file_path, "r")
+MOCK_JSON_FILE_PATH = "./path/test.json"
+MOCK_TXT_FILE_PATH = "./path/test.txt"
 
 
-def test_write_json():
-    """Test writing to a JSON file."""
-    file_path = "test_write.json"
-    data = {"key": "value"}
+@pytest.fixture
+def mock_exists(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
+    """Mocks the Path.exists method."""
 
-    mock_open = MagicMock()
-    mock_open.return_value = MagicMock()
+    mock_exists = MagicMock(return_value=True)
+    monkeypatch.setattr(Path, "exists", mock_exists)
 
-    with MagicMock() as mock_open:
-        with open(file_path, "w") as f:
-            write_json(file_path, data)
-            f.write.assert_called_once_with(json.dumps(data, indent=4))
+    return mock_exists
 
 
-def test_read_txt_exists():
-    """Test reading an existing text file."""
-    file_path = "test.txt"
-    mock_file = MagicMock()
-    mock_file.readlines.return_value = ["line1\n", "line2"]
+@pytest.fixture
+def mock_func_file_open(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
+    """Fixture to mock file opening."""
 
-    with MagicMock() as mock_open:
-        mock_open.return_value = mock_file
-        with open(file_path, "r") as f:
-            result = read_txt(file_path)
-        assert result == ["line1\n", "line2"]
-        mock_open.assert_called_once_with(file_path, "r")
+    def _mock_func_file_open(read_data: str) -> MagicMock:
+        mock_file_open = mock_open(read_data=read_data)
+        monkeypatch.setattr("builtins.open", mock_file_open)
 
+        return mock_file_open
 
-def test_read_txt_not_exists():
-    """Test reading a non-existing text file."""
-    file_path = "test_nonexistent.txt"
-    mock_open = MagicMock()
-
-    # Mock the `open` function to simulate file not existing
-    with MagicMock() as mock_open:
-        mock_open.side_effect = FileNotFoundError
-        with MagicMock() as mock_write:
-            write_txt_func = MagicMock()
-            write_txt_func.side_effect = write_txt
-            with open(file_path, "r") as f:
-                result = read_txt(file_path)
-                assert result == []
-                mock_write.assert_called_once_with(file_path, [])
-                mock_open.assert_called_once_with(file_path, "r")
+    return _mock_func_file_open
 
 
-def test_write_txt():
-    """Test writing to a text file."""
-    file_path = "test_write.txt"
-    data = "line1\nline2"
+def test_read_json_exists(
+    mock_exists: MagicMock,
+    mock_func_file_open: MagicMock,
+) -> None:
+    """Test reading JSON when the file exists."""
 
-    mock_open = MagicMock()
-    mock_open.return_value = MagicMock()
+    mock_json_data = {"key": "value"}
+    mock_file_open = mock_func_file_open(json.dumps(mock_json_data))
 
-    with MagicMock() as mock_open:
-        with open(file_path, "w") as f:
-            write_txt(file_path, data)
-            f.write.assert_called_once_with(data)
+    result = read_json(MOCK_JSON_FILE_PATH)
+
+    mock_exists.assert_called_once()
+    assert result == mock_json_data
+    mock_file_open.assert_called_once_with(Path(MOCK_JSON_FILE_PATH), "r")
+
+
+def test_read_json_not_exists(
+    mock_func_write_json: MagicMock, mock_exists: MagicMock
+) -> None:
+    """Test reading JSON when the file does not exist."""
+
+    mock_exists.return_value = False
+
+    mock_write_json = mock_func_write_json("utils.fileHandle.base.write_json")
+
+    result = read_json(MOCK_JSON_FILE_PATH)
+
+    mock_exists.assert_called_once()
+    assert result == {}
+    mock_write_json.assert_called_once_with(Path(MOCK_JSON_FILE_PATH), {})
+
+
+def test_read_txt_exists(
+    mock_exists: MagicMock,
+    mock_func_file_open: MagicMock,
+) -> None:
+    """Test reading TXT when the file exists."""
+
+    mock_txt_data = ["0 G\n", "1 NG\n", "2 Others\n"]
+    mock_file_open = mock_func_file_open("".join(mock_txt_data))
+
+    result = read_txt(MOCK_TXT_FILE_PATH)
+
+    mock_exists.assert_called_once()
+    assert set(result) == set(mock_txt_data)
+    mock_file_open.assert_called_once_with(Path(MOCK_TXT_FILE_PATH), "r")
+
+
+def test_read_txt_not_exists(
+    monkeypatch: pytest.MonkeyPatch, mock_exists: MagicMock
+) -> None:
+    """Test reading TXT when the file does not exist."""
+
+    mock_exists.return_value = False
+
+    monkeypatch.setattr("utils.fileHandle.base.write_txt", MagicMock())
+
+    result = read_txt(MOCK_TXT_FILE_PATH)
+
+    mock_exists.assert_called_once()
+    assert result == []

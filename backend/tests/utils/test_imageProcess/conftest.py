@@ -41,13 +41,13 @@ def sample_images(request: pytest.FixtureRequest) -> dict[str, str | np.ndarray]
 
 
 @pytest.fixture
-def sample_batch_config() -> dict[str : tuple(int, int)]:
+def sample_batch_config() -> dict[str, tuple[int, int]]:
     """Fixture to provide a sample batch configuration."""
     return {"erode": (5, 5), "close": (37, 37)}
 
 
 @pytest.fixture
-def sample_chip_config() -> dict[str : tuple(int, int)]:
+def sample_chip_config() -> dict[str, tuple[int, int]]:
     """Fixture to provide a sample chip configuration."""
     return {"erode": (5, 5), "close": (2, 2)}
 

@@ -4,16 +4,16 @@ from fastapi.testclient import TestClient
 
 
 @pytest.fixture
-def mock_check_lot_method(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
+def mock_func_check_lot(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     """Mocks the check_lot method."""
 
-    def _mock_check_lot(item: str = "") -> MagicMock:
+    def _mock_func_check_lot(item: str = "") -> MagicMock:
         mock_check_lot = MagicMock(return_value=item)
         monkeypatch.setattr("apis.v1.routers.retrieve.check_lot", mock_check_lot)
 
         return mock_check_lot
 
-    return _mock_check_lot
+    return _mock_func_check_lot
 
 
 @pytest.fixture
@@ -32,13 +32,13 @@ def sample_lot_no_item(
 @pytest.mark.parametrize("sample_lot_no_item", [0, 1], indirect=True)
 def test_get_item_success(
     test_client: TestClient,
-    mock_check_lot_method: MagicMock,
+    mock_func_check_lot: MagicMock,
     sample_lot_no_item: tuple[str, str],
 ) -> None:
     """Tests successful retrieval of an item."""
 
     lot_no, item = sample_lot_no_item
-    mock_check_lot = mock_check_lot_method(item)
+    mock_check_lot = mock_func_check_lot(item)
 
     response = test_client.get(f"/v1/item/{lot_no}")
 
@@ -48,11 +48,11 @@ def test_get_item_success(
 
 
 def test_get_item_exception(
-    test_client: TestClient, mock_check_lot_method: MagicMock
+    test_client: TestClient, mock_func_check_lot: MagicMock
 ) -> None:
     """Tests retrieval of an item with an exception."""
 
-    mock_check_lot = mock_check_lot_method()
+    mock_check_lot = mock_func_check_lot()
     mock_check_lot.side_effect = Exception("Not Found")
 
     response = test_client.get("/v1/item/failure123")
@@ -64,11 +64,11 @@ def test_get_item_exception(
 
 
 def test_get_item_invalid(
-    test_client: TestClient, mock_check_lot_method: MagicMock
+    test_client: TestClient, mock_func_check_lot: MagicMock
 ) -> None:
     """Tests retrieval of an item with an invalid lot number."""
 
-    mock_check_lot_method()
+    mock_func_check_lot()
 
     response = test_client.get("/v1/item/invalid")
 

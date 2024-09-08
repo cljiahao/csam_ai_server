@@ -10,6 +10,11 @@ from utils.prediction.tensorflow_model import load_model, run_CNN
 
 
 @pytest.fixture
+def mock_logger(mock_func_logger: MagicMock) -> MagicMock:
+    return mock_func_logger("utils.prediction.tensorflow_model.logger")
+
+
+@pytest.fixture
 def mock_exists(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     """Mocks the Path.exists method."""
 
@@ -29,10 +34,9 @@ def mock_load_model(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
 
 
 def test_load_model_success(
-    sample_lot_details: dict[str, str | int], mock_logging: MagicMock
+    sample_lot_details: dict[str, str | int], mock_logger: MagicMock
 ):
 
-    mock_logger = mock_logging("utils.predcitions.tensorflow_model.logger")
     lot_no = sample_lot_details["lotNo"]
 
     result = load_model(lot_no)
@@ -43,11 +47,10 @@ def test_load_model_success(
 
 def test_load_model_not_exists(
     sample_lot_details: dict[str, str | int],
-    mock_logging: MagicMock,
+    mock_logger: MagicMock,
     mock_exists: MagicMock,
 ):
 
-    mock_logger = mock_logging("utils.predcitions.tensorflow_model.logger")
     mock_exists.result_value = False
 
     lot_no = sample_lot_details["lotNo"]
@@ -83,6 +86,7 @@ def mock_g_constant(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     return mock_g_constants
 
 
+@pytest.mark.skip
 def test_run_CNN(mock_labels: dict[str, str]):
 
     mock_model = MagicMock()

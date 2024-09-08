@@ -6,6 +6,7 @@ from utils.fileHandle.base import read_txt, write_txt
 
 def read_model_txt(item: str) -> dict[str, str]:
     """Read and parse a model text file for label data."""
+
     file_path = directory.model_dir / f"{item}.txt"
     read_data = read_txt(file_path)
 
@@ -28,14 +29,15 @@ def read_model_txt(item: str) -> dict[str, str]:
     return labels
 
 
-def write_model_txt(item: str, write_data: list[str]) -> None:
+def write_model_txt(item: str, write_data: list[str]) -> str:
     """Write list data to a model text file, one item per line, prefixed with an index."""
 
     file_path = directory.model_dir / f"{item}.txt"
 
     # Format the write_data into a string with index
     txt_str = "\n".join(f"{i} {data}" for i, data in enumerate(write_data))
-    print(txt_str)
 
     # Write the formatted string to the file
     write_txt(file_path, txt_str)
+
+    return txt_str

@@ -73,29 +73,16 @@ def test_client(db_session: Session) -> Generator[TestClient, None, None]:
 
 
 @pytest.fixture
-def mock_logging(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
+def mock_func_logger(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     """Dynamically mock the logger's error method for testing."""
 
-    def _mock_logging(logger_path: str) -> MagicMock:
+    def _mock_func_logger(logger_path: str) -> MagicMock:
         """Create a mock for the specified logger path."""
         mock = MagicMock()
         monkeypatch.setattr(logger_path, mock)
         return mock
 
-    return _mock_logging
-
-
-@pytest.fixture(scope="function")
-def sample_lot_details() -> dict[str, str | int]:
-    """Provide sample lot data for use in tests."""
-    return {
-        "lotNo": "1234567890",
-        "plate": "temp",
-        "item": "GCM32ER71E106KA59_+B55-E01GJ",
-        "no_of_chips": 4000,
-        "no_of_batches": 15,
-        "no_of_real": 0,
-    }
+    return _mock_func_logger
 
 
 @pytest.fixture
@@ -111,6 +98,19 @@ def mock_file_methods() -> MagicMock:
     )
 
     return mock_path, mock_file
+
+
+@pytest.fixture(scope="function")
+def sample_lot_details() -> dict[str, str | int]:
+    """Provide sample lot data for use in tests."""
+    return {
+        "lotNo": "1234567890",
+        "plate": "temp",
+        "item": "GCM32ER71E106KA59_+B55-E01GJ",
+        "no_of_chips": 4000,
+        "no_of_batches": 15,
+        "no_of_real": 0,
+    }
 
 
 @pytest.fixture

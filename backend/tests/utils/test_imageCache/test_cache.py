@@ -15,7 +15,9 @@ sample_colors = [
 
 
 @pytest.fixture
-def mock_path_methods(monkeypatch: pytest.MonkeyPatch):
+def mock_path_methods(
+    monkeypatch: pytest.MonkeyPatch,
+) -> tuple[MagicMock, MagicMock, MagicMock]:
     """Fixture to mock Path methods."""
 
     mock_iterdir = MagicMock()
@@ -30,7 +32,9 @@ def mock_path_methods(monkeypatch: pytest.MonkeyPatch):
 
 
 @pytest.fixture
-def mock_sample_files(sample_file_names: list[str]):
+def mock_sample_files(
+    sample_file_names: list[str],
+) -> tuple[list[MagicMock], dict[str, list[str]], bool]:
     """Fixture to mock Files methods"""
 
     sample_files = []
@@ -51,7 +55,7 @@ def mock_sample_files(sample_file_names: list[str]):
 
 
 @pytest.fixture
-def mock_get_colors_json(monkeypatch: pytest.MonkeyPatch):
+def mock_get_colors_json(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     """Fixture to mock the get_colors_json function."""
 
     mock_colors = MagicMock(return_value=sample_colors)
@@ -65,7 +69,7 @@ def test_get_cache_data(
     mock_file_methods: tuple[MagicMock, MagicMock],
     mock_path_methods: tuple[MagicMock, MagicMock, MagicMock],
     mock_sample_files: tuple[list[MagicMock], dict[str, list[str]], bool],
-):
+) -> None:
     """Test the get_cache_data function."""
 
     mock_path, _ = mock_file_methods
@@ -93,7 +97,7 @@ def test_set_cache_data(
     mock_path_methods: tuple[MagicMock, MagicMock, MagicMock],
     mock_sample_files: tuple[list[MagicMock], dict[str, list[str]], bool],
     mock_get_colors_json: MagicMock,
-):
+) -> None:
     """Test the set_cache_data function."""
     mock_iterdir, _, mock_move = mock_path_methods
     mock_files, mock_selected, _ = mock_sample_files

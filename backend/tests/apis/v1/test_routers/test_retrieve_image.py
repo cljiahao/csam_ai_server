@@ -40,12 +40,12 @@ def test_get_image_success(
 
 
 def test_get_image_not_exists(
-    test_client: TestClient, mock_logging: MagicMock, mock_exists: MagicMock
+    test_client: TestClient, mock_func_logger: MagicMock, mock_exists: MagicMock
 ) -> None:
     """Tests retrieval of a non-existent image."""
 
     mock_exists.return_value = False
-    mock_logger = mock_logging("apis.v1.routers.retrieve.logger")
+    mock_logger = mock_func_logger("apis.v1.routers.retrieve.logger")
 
     src = "not_exists"
     response = test_client.get(f"/v1/image/{src}")

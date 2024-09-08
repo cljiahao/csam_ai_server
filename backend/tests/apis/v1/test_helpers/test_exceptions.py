@@ -42,10 +42,10 @@ def test_handle_image_process_error_exception() -> None:
     assert exc_info.value.detail == "Image process error"
 
 
-def test_handle_unexpected_exception(mock_logging: MagicMock) -> None:
+def test_handle_unexpected_exception(mock_func_logger: MagicMock) -> None:
     """Test that unexpected exceptions are handled as a 400 HTTPException and logged."""
 
-    mock_logger = mock_logging("apis.v1.helpers.HTTPExceptions.logger")
+    mock_logger = mock_func_logger("apis.v1.helpers.HTTPExceptions.logger")
 
     with pytest.raises(HTTPException) as exc_info:
         handle_exceptions(Exception("Unexpected error"))

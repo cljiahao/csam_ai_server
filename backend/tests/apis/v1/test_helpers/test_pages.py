@@ -13,10 +13,10 @@ def test_get_page(module_value: Module, expected_model: type) -> None:
     assert get_page(module_value) is expected_model
 
 
-def test_get_page_invalid_module(mock_logging: MagicMock) -> None:
+def test_get_page_invalid_module(mock_func_logger: MagicMock) -> None:
     """Ensure ValueError is raised for invalid module values and logged."""
 
-    mock_logger = mock_logging("apis.v1.helpers.pages.logger")
+    mock_logger = mock_func_logger("apis.v1.helpers.pages.logger")
 
     mock_module = MagicMock()
     mock_module.value = "invalid"

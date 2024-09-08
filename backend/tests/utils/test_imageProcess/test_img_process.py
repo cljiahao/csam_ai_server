@@ -6,7 +6,7 @@ from utils.imageProcess.batch_process import get_batch
 
 def test_get_batch(
     sample_images: dict[str, str | np.ndarray],
-    sample_batch_config: dict[str : tuple(int, int)],
+    sample_batch_config: dict[str, tuple[int, int]],
 ) -> None:
     """Test the retrieval of batch data from grayscale image."""
 
@@ -22,7 +22,7 @@ def test_get_batch(
 def test_get_chips(
     sample_images: dict[str, str | np.ndarray],
     sample_batch_data: list[dict[str, float | int]],
-    sample_chip_config: dict[str : tuple(int, int)],
+    sample_chip_config: dict[str, tuple[int, int]],
 ) -> None:
     """Test the retrieval of chips from images."""
 
