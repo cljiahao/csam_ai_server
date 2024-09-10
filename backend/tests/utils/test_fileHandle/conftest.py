@@ -35,14 +35,14 @@ def mock_func_settings_json_dependencies(
     """Provide a fixture to mock settings JSON dependencies."""
 
     def _mock_func_settings_json_dependencies(
-        read_data: dict,
+        read_data: dict = None,
     ) -> tuple[MagicMock, MagicMock, MagicMock]:
         mock_item = sample_lot_details["item"]
-        mock_read_data = mock_func_read_json(
+        mock_read_json = mock_func_read_json(
             "utils.fileHandle.json.read_json", read_data
         )
-        mock_write_data = mock_func_write_json("utils.fileHandle.json.write_json")
+        mock_write_json = mock_func_write_json("utils.fileHandle.json.write_json")
 
-        return mock_item, mock_read_data, mock_write_data
+        return mock_item, mock_read_json, mock_write_json
 
     return _mock_func_settings_json_dependencies

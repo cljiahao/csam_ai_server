@@ -1,5 +1,6 @@
 import requests
-from pathlib import Path
+
+# from pathlib import Path
 
 from core.config import service_settings, database_settings
 from core.logging import logger

@@ -9,4 +9,4 @@ DEFAULT_SETTINGS = {
     "chip": {"erode": [1, 1], "close": [1, 1]},
 }
 # TODO: add correct colors
-DEFAULT_COLORS = {"NG": "#", "Others": "#"}
+DEFAULT_COLORS = {"NG": "#ffff00", "Others": "#00ffff"}

@@ -16,6 +16,6 @@ class APITag(str, Enum):
 
 router = APIRouter()
 
-router.include_router(defects.router, tags=[APITag.DEFECTS], prefix="/fol_color")
+router.include_router(defects.router, tags=[APITag.DEFECTS], prefix="/colors")
 router.include_router(files.router, tags=[APITag.FILES], prefix="/upload")
 router.include_router(retrieve.router, tags=[APITag.RETRIEVE])

@@ -1,7 +1,3 @@
-import pytest
-from unittest.mock import MagicMock
-
-from core.exceptions import MissingSettings
 from utils.fileHandle.json import validate_colors_hex
 
 
@@ -11,18 +7,19 @@ def test_validate_colors_hex_valid():
         {"category": "NG", "hex": "#FFFFFF"},
         {"category": "NG", "hex": "#000000"},
     ]
-    assert validate_colors_hex(sample_colors) is None
+    result = validate_colors_hex(sample_colors)
+    assert result == sample_colors
 
 
-def test_validate_colors_hex_invalid(mock_logger: MagicMock):
+def test_validate_colors_hex_invalid():
     """Test validate_colors_hex with valid settings."""
     sample_colors = [
         {"category": "NG", "hex": "invalid"},
         {"category": "Others", "hex": "#000000"},
     ]
-    with pytest.raises(MissingSettings) as exc_info:
-        validate_colors_hex(sample_colors)
-
-    expected_message = "Invalid HEX Code format received."
-    assert str(exc_info.value) == expected_message
-    mock_logger.error.assert_called_once_with(expected_message)
+    expected_results = [
+        {"category": "NG", "hex": "#ffff00"},
+        {"category": "Others", "hex": "#000000"},
+    ]
+    result = validate_colors_hex(sample_colors)
+    assert result == expected_results

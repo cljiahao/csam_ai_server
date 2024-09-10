@@ -134,3 +134,28 @@ def sample_file_names() -> list[str]:
         "0_12_598_855_2297.png",
         "0_15_366_3090_2419.png",
     ]
+
+
+@pytest.fixture
+def sample_color_group(
+    sample_lot_details: dict[str, str | int]
+) -> dict[str, list[dict[str, str]]]:
+    """Sample color group fixture."""
+    return {
+        "colorGroup": [
+            {
+                "item": sample_lot_details["item"],
+                "colors": [
+                    {"category": "NG", "hex": "#FFFFFF"},
+                    {"category": "Others", "hex": "#000000"},
+                ],
+            },
+            {
+                "item": "test_item",
+                "colors": [
+                    {"category": "NG", "hex": "#FFFFFF"},
+                    {"category": "Others", "hex": "#000000"},
+                ],
+            },
+        ]
+    }

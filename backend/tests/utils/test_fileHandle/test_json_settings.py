@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 
 from core.exceptions import MissingSettings
 from utils.fileHandle.json import (
-    COLORS_JSON_PATH,
+    SETTINGS_JSON_PATH,
     get_settings_json,
     write_settings_json,
 )
@@ -11,7 +11,7 @@ from utils.fileHandle.json import (
 
 @pytest.fixture
 def sample_settings_group(sample_lot_details: dict[str, str | int]) -> dict[str, dict]:
-    """Provide sample settings read data for testing."""
+    """Sample settings group fixture."""
     return {
         "settingsGroup": [
             {
@@ -51,13 +51,13 @@ def test_get_settings_json_success(
     """Test successful retrieval of settings JSON data."""
 
     mock_validate_settings_format = mock_func_validate_settings_format("")
-    mock_item, mock_read_data, _ = mock_func_settings_json_dependencies(
+    mock_item, mock_read_json, _ = mock_func_settings_json_dependencies(
         sample_settings_group
     )
 
     result = get_settings_json(mock_item)
 
-    mock_read_data.assert_called_once()
+    mock_read_json.assert_called_once()
     mock_validate_settings_format.assert_called_once()
     assert result == sample_settings_group["settingsGroup"][0]["settings"]
 
@@ -68,14 +68,14 @@ def test_get_settings_json_not_exists(
 ) -> None:
     """Test retrieval of settings JSON data when item does not exist."""
 
-    mock_item, mock_read_data, _ = mock_func_settings_json_dependencies(
+    mock_item, mock_read_json, _ = mock_func_settings_json_dependencies(
         {"settingsGroup": []}
     )
 
     with pytest.raises(MissingSettings) as exc_info:
         get_settings_json(mock_item)
 
-    mock_read_data.assert_called_once()
+    mock_read_json.assert_called_once()
     expected_message = f"Item : {mock_item} not found in settings file."
     assert str(exc_info.value) == expected_message
     mock_logger.error.assert_called_once_with(expected_message)
@@ -91,14 +91,14 @@ def test_get_settings_json_invalid(
 
     std_out = "has invalid values."
     mock_validate_settings_format = mock_func_validate_settings_format(std_out)
-    mock_item, mock_read_data, _ = mock_func_settings_json_dependencies(
+    mock_item, mock_read_json, _ = mock_func_settings_json_dependencies(
         sample_settings_group
     )
 
     with pytest.raises(MissingSettings) as exc_info:
         get_settings_json(mock_item)
 
-    mock_read_data.assert_called_once()
+    mock_read_json.assert_called_once()
     mock_validate_settings_format.assert_called_once()
     expected_message = f"Item : {mock_item} {std_out}"
     assert str(exc_info.value) == expected_message
@@ -115,7 +115,7 @@ def test_write_settings_json_success(
     """Test successful writing of settings JSON data with or without additional data."""
 
     mock_validate_settings_format = mock_func_validate_settings_format("")
-    mock_item, mock_read_data, mock_write_json = mock_func_settings_json_dependencies(
+    mock_item, mock_read_json, mock_write_json = mock_func_settings_json_dependencies(
         {"settingsGroup": []}
     )
 
@@ -126,9 +126,9 @@ def test_write_settings_json_success(
     else:
         write_settings_json(mock_item, sample_settings)
 
-    mock_read_data.assert_called_once()
+    mock_read_json.assert_called_once()
     mock_validate_settings_format.assert_called_once()
-    mock_write_json.assert_called_once_with(COLORS_JSON_PATH, sample_settings_group)
+    mock_write_json.assert_called_once_with(SETTINGS_JSON_PATH, sample_settings_group)
 
 
 def test_write_settings_json_success_updated(
@@ -139,7 +139,7 @@ def test_write_settings_json_success_updated(
     """Test successful writing of updated settings JSON data."""
 
     mock_validate_settings_format = mock_func_validate_settings_format("")
-    mock_item, mock_read_data, mock_write_json = mock_func_settings_json_dependencies(
+    mock_item, mock_read_json, mock_write_json = mock_func_settings_json_dependencies(
         sample_settings_group
     )
 
@@ -148,9 +148,9 @@ def test_write_settings_json_success_updated(
 
     write_settings_json(mock_item, sample_settings)
 
-    mock_read_data.assert_called_once()
+    mock_read_json.assert_called_once()
     mock_validate_settings_format.assert_called_once()
-    mock_write_json.assert_called_once_with(COLORS_JSON_PATH, sample_settings_group)
+    mock_write_json.assert_called_once_with(SETTINGS_JSON_PATH, sample_settings_group)
 
 
 def test_write_settings_json_invalid(
@@ -163,14 +163,14 @@ def test_write_settings_json_invalid(
 
     std_out = "has invalid values."
     mock_validate_settings_format = mock_func_validate_settings_format(std_out)
-    mock_item, mock_read_data, _ = mock_func_settings_json_dependencies(
+    mock_item, mock_read_json, _ = mock_func_settings_json_dependencies(
         sample_settings_group
     )
 
     with pytest.raises(MissingSettings) as exc_info:
         write_settings_json(mock_item)
 
-    mock_read_data.assert_called_once()
+    mock_read_json.assert_called_once()
     mock_validate_settings_format.assert_called_once()
     expected_message = f"Item : {mock_item} {std_out}"
     assert str(exc_info.value) == expected_message

@@ -9,7 +9,6 @@ from db.session import engine
 
 def create_tables() -> None:
     """Create database tables based on the metadata."""
-    Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
 
 

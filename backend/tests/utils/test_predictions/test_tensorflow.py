@@ -37,11 +37,11 @@ def test_load_model_success(
     sample_lot_details: dict[str, str | int], mock_logger: MagicMock
 ):
 
-    lot_no = sample_lot_details["lotNo"]
+    item = sample_lot_details["item"]
 
-    result = load_model(lot_no)
+    result = load_model(item)
 
-    model_path = directory.model_dir / f"{lot_no}.h5"
+    model_path = directory.model_dir / f"{item}.h5"
     mock_logger.info.assert_called_once_with(f"Model loaded from {model_path}")
 
 
@@ -51,14 +51,14 @@ def test_load_model_not_exists(
     mock_exists: MagicMock,
 ):
 
-    mock_exists.result_value = False
+    mock_exists.return_value = False
 
-    lot_no = sample_lot_details["lotNo"]
+    item = sample_lot_details["item"]
 
     with pytest.raises(FileNotFoundError) as exc_info:
-        load_model(lot_no)
+        load_model(item)
 
-    model_f_name = f"{lot_no}.h5"
+    model_f_name = f"{item}.h5"
     expected_message = f"Model File: {model_f_name} not found in model folder"
     assert str(exc_info.value) == expected_message
     mock_logger.error.assert_called_once_with(expected_message)

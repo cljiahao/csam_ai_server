@@ -7,7 +7,7 @@ from core.logging import logger
 from utils.fileHandle.base import read_json, write_json
 
 
-COLORS_JSON_PATH = directory.json_dir / core_consts.SETTINGS_FILENAME
+SETTINGS_JSON_PATH = directory.json_dir / core_consts.SETTINGS_FILENAME
 COLORS_JSON_PATH = directory.json_dir / core_consts.COLOR_GROUP_FILENAME
 
 
@@ -48,10 +48,10 @@ def validate_settings_format(
     return None
 
 
-def read_settings_json() -> dict[str, dict[str, tuple[int, int]]] | None:
+def read_settings_json() -> list[dict[str, str | dict[str, tuple[int, int]]]] | list:
     """Retrieve the settings for a specific item from the settings JSON file."""
 
-    read_data = read_json(COLORS_JSON_PATH)
+    read_data = read_json(SETTINGS_JSON_PATH)
     return read_data.get("settingsGroup", [])
 
 
@@ -102,16 +102,19 @@ def write_settings_json(
     if not updated:
         settings_group.append({"item": item, "settings": settings_data})
 
-    write_json(COLORS_JSON_PATH, {"settingsGroup": settings_group})
+    write_json(SETTINGS_JSON_PATH, {"settingsGroup": settings_group})
 
 
 # Colors Json
-def validate_colors_hex(fol_hex_array: list[dict[str, str]]) -> None:
+def validate_colors_hex(colors: list[dict[str, str]]) -> None:
     """Validate that the provided list contains valid HEX color codes."""
     hex_pattern = re.compile(r"^#(?:[0-9a-fA-F]{3}){1,2}$")
-    for fol_hex in fol_hex_array:
-        if not hex_pattern.match(fol_hex.get("hex", "")):
-            log_and_raise("Invalid HEX Code format received.")
+    for category_hex in colors:
+        if not hex_pattern.match(category_hex.get("hex", "")):
+            category_hex["hex"] = "#ffff00"
+            logger.info("Invalid HEX Code format received.")
+
+    return colors
 
 
 def read_colors_json() -> list[dict[str, str | list[dict[str, str]]]]:
@@ -120,8 +123,8 @@ def read_colors_json() -> list[dict[str, str | list[dict[str, str]]]]:
     return read_data.get("colorGroup", [])
 
 
-def get_colors_json(item: str) -> list[dict[str, str | list[dict[str, str]]]]:
-    """Retrieve color data from the colors JSON file. Optionally filter by item."""
+def get_colors_json(item: str) -> list[dict[str, str]]:
+    """Retrieve and validate color data for a given item."""
 
     color_group = read_colors_json()
 
@@ -134,56 +137,56 @@ def get_colors_json(item: str) -> list[dict[str, str | list[dict[str, str]]]]:
         logger.info(f"Item : {item} not found in colors file.")
         colors = core_consts.DEFAULT_COLORS
     else:
-        validate_colors_hex(colors)
+        # Validate colors data
+        colors = validate_colors_hex(colors)
 
     return colors
 
 
 def write_colors_json(
-    fol_hex_data: list[dict[str, str | list[dict[str, str]]]], item: str
+    item: str, colors_data: list[dict[str, list[dict[str, str]]]]
 ) -> None:
-    """Write color data to the colors JSON file. Optionally filter by item."""
+    """Write color data for a given item to the colors JSON file."""
 
     color_group = read_colors_json()
 
-    validate_colors_hex(fol_hex_data)
+    colors = validate_colors_hex(colors_data)
 
     updated = False
     for item_data in color_group:
         if item_data["item"] == item:
-            item_data["colors"] = fol_hex_data
+            item_data["colors"] = colors
+            updated = True
             break
 
     if not updated:
-        color_group.append({"item": item, "colors": fol_hex_data})
+        color_group.append({"item": item, "colors": colors})
 
     write_json(COLORS_JSON_PATH, {"colorGroup": color_group})
 
 
 def get_all_colors_json() -> list[dict[str, str | list[dict[str, str]]]]:
-    """Retrieve color data from the colors JSON file. Optionally filter by item."""
+    """Retrieve and validate all color data from the colors JSON file."""
 
     color_group = read_colors_json()
+    color_group = [item_data for item_data in color_group if "item" in item_data]
 
-    # TODO: add the missing colors or revert to proper hex?
-    # Validate colors data
+    # Validate all colors data
     for item_data in color_group:
-        validate_colors_hex(item_data.get("colors", []))
-        if "item" not in item_data:
-            log_and_raise("Item type missing in colors json file.")
+        item_data = validate_colors_hex(item_data.get("colors", []))
 
     return color_group
 
 
 def write_all_colors_json(
-    fol_hex_data: list[dict[str, str | list[dict[str, str]]]]
+    colors_group_data: list[dict[str, str | list[dict[str, str]]]]
 ) -> None:
-    """Write color data to the colors JSON file. Optionally filter by item."""
+    """Write and validate all color data to the colors JSON file."""
 
     # Validate each item in the list
-    for item_data in fol_hex_data:
-        validate_colors_hex(item_data.get("colors", []))
+    for item_data in colors_group_data:
         if "item" not in item_data:
             log_and_raise("Item type missing in colors json file.")
+        item_data = validate_colors_hex(item_data.get("colors", []))
 
-    write_json(COLORS_JSON_PATH, {"colorGroup": fol_hex_data})
+    write_json(COLORS_JSON_PATH, {"colorGroup": colors_group_data})

@@ -25,15 +25,15 @@ router = APIRouter()
     operation_id="UploadFile",
 )
 def process_image(
-    module: Module,
+    module: Annotated[Module, Path(description="Module type", enum=Module)],
     lot_no: Annotated[str, Path(description="Lot Number", pattern="[a-zA-Z0-9]{10}")],
     item: Annotated[str, Path(description="Item Type")],
     file: Annotated[UploadFile, File(description="Upload image file ('.jpg','.png')")],
     db: Annotated[Session, Depends(get_db)],
 ) -> ChipData:
 
-    page = get_page(module)
     try:
+        page = get_page(module)
         res_dict = process_n_predict(lot_no, item, file, db, page)
         return res_dict
     except Exception as e:
@@ -46,7 +46,7 @@ def process_image(
     operation_id="SaveLocal",
 )
 def save_local(
-    module: Module,
+    module: Annotated[Module, Path(description="Module type", enum=Module)],
     lot_no: Annotated[str, Path(description="Lot Number", pattern="[a-zA-Z0-9]{10}")],
     plate: Annotated[str, Path(description="Plate")],
     item: Annotated[str, Path(description="Item Type")],
@@ -54,8 +54,8 @@ def save_local(
     db: Session = Depends(get_db),
 ) -> bool:
 
-    page = get_page(module)
     try:
+        page = get_page(module)
         set_cache_data(item, res_dict.directory, res_dict.chips)
         no_of_real = sum(len(value) for value in res_dict.chips.values())
         update_lot_detail(page.model, db, lot_no, plate, no_of_real)

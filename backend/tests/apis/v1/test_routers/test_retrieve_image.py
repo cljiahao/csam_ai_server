@@ -1,69 +1,74 @@
 import pytest
-from pathlib import Path
 from unittest.mock import MagicMock
 from fastapi.testclient import TestClient
 
 
 @pytest.fixture
-def mock_exists(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
-    """Mocks the Path.exists method."""
+def mock_func_check_lot(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
+    """Fixture that mocks the check_lot method."""
 
-    mock_exists = MagicMock(return_value=True)
-    monkeypatch.setattr(Path, "exists", mock_exists)
+    def _mock_func_check_lot(item: str = "") -> MagicMock:
+        mock_check_lot = MagicMock(return_value=item)
+        monkeypatch.setattr("apis.v1.routers.retrieve.check_lot", mock_check_lot)
+        return mock_check_lot
 
-    return mock_exists
+    return _mock_func_check_lot
 
 
 @pytest.fixture
-def mock_file_response_method(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
-    """Mocks the FileResponse method."""
+def sample_lot_no_item(
+    request: pytest.FixtureRequest, sample_lot_details: dict[str, str | int]
+) -> tuple[str, str]:
+    """Fixture that returns a tuple of (lotNo, item) based on the request parameter."""
 
-    mock_file_response = MagicMock()
-    monkeypatch.setattr("apis.v1.routers.retrieve.FileResponse", mock_file_response)
+    lot_no_item_pairs = [
+        (sample_lot_details["lotNo"], sample_lot_details["item"]),
+        (sample_lot_details["lotNo"], ""),
+    ]
+    return lot_no_item_pairs[request.param]
 
-    return mock_file_response
 
-
-def test_get_image_success(
+@pytest.mark.parametrize("sample_lot_no_item", [0, 1], indirect=True)
+def test_get_item_success(
     test_client: TestClient,
-    mock_exists: MagicMock,
-    mock_file_response_method: MagicMock,
+    mock_func_check_lot: MagicMock,
+    sample_lot_no_item: tuple[str, str],
 ) -> None:
-    """Tests successful retrieval of an image."""
+    """Test successful retrieval of an item."""
 
-    src = "success"
-    response = test_client.get(f"/v1/image/{src}")
+    lot_no, item = sample_lot_no_item
+    mock_check_lot = mock_func_check_lot(item)
 
+    response = test_client.get(f"/v1/item/{lot_no}")
+
+    mock_check_lot.assert_called_once_with(lot_no)
     assert response.status_code == 200
-    mock_exists.assert_called_once()
-    mock_file_response_method.assert_called_once()
+    assert response.json() == {"item": item}
 
 
-def test_get_image_not_exists(
-    test_client: TestClient, mock_func_logger: MagicMock, mock_exists: MagicMock
+def test_get_item_exception(
+    test_client: TestClient, mock_func_check_lot: MagicMock
 ) -> None:
-    """Tests retrieval of a non-existent image."""
+    """Test retrieval of an item when an exception is raised."""
 
-    mock_exists.return_value = False
-    mock_logger = mock_func_logger("apis.v1.routers.retrieve.logger")
+    lot_no = "failure123"
+    mock_check_lot = mock_func_check_lot()
+    mock_check_lot.side_effect = Exception("Not Found")
 
-    src = "not_exists"
-    response = test_client.get(f"/v1/image/{src}")
+    response = test_client.get(f"/v1/item/{lot_no}")
 
-    assert response.status_code == 404
-    mock_logger.error.assert_called_once_with(f"Image file not found: {src}")
-
-
-def test_get_image_exception(
-    test_client: TestClient,
-    mock_exists: MagicMock,
-    mock_file_response_method: MagicMock,
-) -> None:
-    """Tests retrieval of an image with an exception."""
-
-    mock_file_response_method.side_effect = Exception("Unexpected error")
-
-    response = test_client.get("/v1/image/exception")
-
+    mock_check_lot.assert_called_once_with(lot_no)
     assert response.status_code == 400
-    mock_exists.assert_called_once()
+    assert response.json() == {
+        "detail": "Bad Request: The request was invalid or cannot be served."
+    }
+
+
+def test_get_item_invalid(test_client: TestClient) -> None:
+    """Test retrieval of an item with an invalid lot number."""
+
+    lot_no = "invalid"
+
+    response = test_client.get(f"/v1/item/{lot_no}")
+
+    assert response.status_code == 422

@@ -38,7 +38,11 @@ def get_item(
 )
 def get_image(
     src: Annotated[
-        str, Path(description="Path to the image file relative to the image directory")
+        str,
+        Path(
+            description="Path to the image file relative to the image directory",
+            pattern=".png|.jpg$",
+        ),
     ]
 ):
     try:
@@ -60,7 +64,7 @@ def get_image(
     summary="Return count stored in database.",
 )
 def get_processed_count(
-    module: Module,
+    module: Annotated[Module, Path(description="Module type", enum=Module)],
     lot_no: Annotated[str, Path(description="Lot Number", pattern="[a-zA-Z0-9]{10}")],
     plate_no: Annotated[str, Path(description="Plate No")],
     db: Annotated[Session, Depends(get_db)],
