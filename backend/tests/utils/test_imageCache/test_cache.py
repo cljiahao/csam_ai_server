@@ -34,7 +34,7 @@ def mock_path_methods(
 @pytest.fixture
 def mock_sample_files(
     sample_file_names: list[str],
-) -> tuple[list[MagicMock], dict[str, list[str]], bool]:
+) -> tuple[list[MagicMock], dict[str, list[str]], bool, list[str]]:
     """Fixture to mock Files methods"""
 
     sample_files = []
@@ -48,10 +48,12 @@ def mock_sample_files(
         "NG": sample_file_names[:2],
         "Others": sample_file_names[2:5],
     }
+    sample_to_move_back = MagicMock()
+    sample_to_move_back.name = sample_file_names[-1]
 
     stray_exists = any(file.name.split("_")[1] == "0" for file in sample_files)
 
-    return sample_files, sample_selected, stray_exists
+    return sample_files, sample_selected, stray_exists, [sample_to_move_back]
 
 
 @pytest.fixture
@@ -65,7 +67,7 @@ def mock_get_colors_json(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
 
 
 def test_get_cache_data(
-    sample_lot_details: dict[str, str | int],
+    sample_chips_batch_details: dict[str, str],
     mock_file_methods: tuple[MagicMock, MagicMock],
     mock_path_methods: tuple[MagicMock, MagicMock, MagicMock],
     mock_sample_files: tuple[list[MagicMock], dict[str, list[str]], bool],
@@ -74,33 +76,35 @@ def test_get_cache_data(
 
     mock_path, _ = mock_file_methods
     mock_iterdir, _, _ = mock_path_methods
-    mock_files, _, stray_exists = mock_sample_files
+    mock_files, _, stray_exists, _ = mock_sample_files
 
     mock_folder = MagicMock()
     mock_folder.iterdir.return_value = mock_files
     mock_iterdir.return_value = [mock_folder]
 
-    result_chip_dict = get_cache_data(sample_lot_details["no_of_batches"], mock_path)
+    result_chip_dict = get_cache_data(
+        sample_chips_batch_details["no_of_batches"], mock_path
+    )
 
     expected_no_of_batches = (
-        sample_lot_details["no_of_batches"] + 1
+        sample_chips_batch_details["no_of_batches"] + 1
         if stray_exists
-        else sample_lot_details["no_of_batches"]
+        else sample_chips_batch_details["no_of_batches"]
     )
 
     assert len(result_chip_dict) == expected_no_of_batches
     assert len(sum(result_chip_dict.values(), [])) == len(mock_files)
 
 
-def test_set_cache_data(
-    sample_lot_details: dict[str, str | int],
+def test_set_cache_data_new_move(
+    sample_lot_details: dict[str, str],
     mock_path_methods: tuple[MagicMock, MagicMock, MagicMock],
     mock_sample_files: tuple[list[MagicMock], dict[str, list[str]], bool],
     mock_get_colors_json: MagicMock,
 ) -> None:
     """Test the set_cache_data function."""
     mock_iterdir, _, mock_move = mock_path_methods
-    mock_files, mock_selected, _ = mock_sample_files
+    mock_files, mock_selected, _, _ = mock_sample_files
 
     mock_folder = MagicMock()
     mock_folder.iterdir.return_value = mock_files
@@ -114,4 +118,30 @@ def test_set_cache_data(
     assert mock_move.call_count == sum(len(value) for value in mock_selected.values())
 
 
-# TODO: Test set_cache_data when some files move back to temp
+def test_set_cache_data_move_back(
+    sample_lot_details: dict[str, str],
+    mock_path_methods: tuple[MagicMock, MagicMock, MagicMock],
+    mock_sample_files: tuple[list[MagicMock], dict[str, list[str]], bool],
+    mock_get_colors_json: MagicMock,
+) -> None:
+    """Test the set_cache_data function."""
+    mock_iterdir, _, mock_move = mock_path_methods
+    mock_files, mock_selected, _, mock_to_move_back = mock_sample_files
+
+    mock_folder_temp = MagicMock()
+    mock_folder_temp.iterdir.return_value = list(
+        set(mock_files) - set(mock_to_move_back)
+    )
+    mock_folder_temp.name = "temp"
+    mock_folder_ng = MagicMock()
+    mock_folder_ng.iterdir.return_value = mock_to_move_back
+    mock_folder_ng.name = "ng"
+    mock_iterdir.return_value = [mock_folder_temp, mock_folder_ng]
+
+    result = set_cache_data(sample_lot_details["item"], "relative/path", mock_selected)
+
+    assert result is True
+    mock_get_colors_json.assert_called_once_with(sample_lot_details["item"])
+    assert mock_move.call_count == sum(
+        len(value) for value in mock_selected.values()
+    ) + len(mock_to_move_back)

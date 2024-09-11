@@ -101,12 +101,19 @@ def mock_file_methods() -> MagicMock:
 
 
 @pytest.fixture(scope="function")
-def sample_lot_details() -> dict[str, str | int]:
+def sample_lot_details() -> dict[str, str]:
     """Provide sample lot data for use in tests."""
     return {
         "lotNo": "1234567890",
-        "plate": "temp",
+        "plate": "test_image",
         "item": "GCM32ER71E106KA59_+B55-E01GJ",
+    }
+
+
+@pytest.fixture(scope="function")
+def sample_chips_batch_details() -> dict[str, int]:
+    """Provide sample chips and batch for use in tests."""
+    return {
         "no_of_chips": 4000,
         "no_of_batches": 15,
         "no_of_real": 0,
@@ -138,7 +145,7 @@ def sample_file_names() -> list[str]:
 
 @pytest.fixture
 def sample_color_group(
-    sample_lot_details: dict[str, str | int]
+    sample_lot_details: dict[str, str]
 ) -> dict[str, list[dict[str, str]]]:
     """Sample color group fixture."""
     return {

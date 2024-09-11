@@ -40,7 +40,7 @@ def mock_update_lot_detail(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
 def test_save_local_success(
     test_client: TestClient,
     mock_module: str,
-    sample_lot_details: dict[str, str | int],
+    sample_lot_details: dict[str, str],
     sample_res_dict: dict[str, str | dict[str, list[str]]],
     mock_set_cache_data: MagicMock,
     mock_update_lot_detail: MagicMock,
@@ -76,7 +76,7 @@ def mock_function(
 @pytest.mark.parametrize("mock_function", [0, 1], indirect=True)
 def test_save_local_exception(
     test_client: TestClient,
-    sample_lot_details: dict[str, str | int],
+    sample_lot_details: dict[str, str],
     sample_res_dict: dict[str, str | dict[str, list[str]]],
     mock_function: MagicMock,
 ) -> None:
@@ -102,7 +102,7 @@ def test_save_local_exception(
 
 @pytest.fixture
 def sample_invalid_args(
-    request: pytest.FixtureRequest, sample_lot_details: dict[str, str | int]
+    request: pytest.FixtureRequest, sample_lot_details: dict[str, str]
 ) -> tuple[str, str, str, str]:
     """Provides sample arguments for invalid count retrieval scenarios."""
     lot_no = sample_lot_details["lotNo"]

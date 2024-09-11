@@ -71,8 +71,8 @@ def process_n_predict(
 
     if page.ai:
         # Load Model based on item name and run prediction
-        res = predict_defects(item, temp_dict)
-        ng_dict.update(res)
+        pred_dict = predict_defects(item, temp_dict)
+        ng_dict.update(pred_dict)
 
         lap, stdout = time_print("Prediction of defects", start)
         logger.info(stdout)

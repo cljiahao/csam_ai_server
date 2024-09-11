@@ -23,7 +23,7 @@ def mock_func_read_txt(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
 
 
 def test_read_model_txt_exists_success(
-    sample_lot_details: dict[str, str | int], mock_func_read_txt: MagicMock
+    sample_lot_details: dict[str, str], mock_func_read_txt: MagicMock
 ) -> None:
     """Test reading a valid model TXT file."""
 
@@ -37,7 +37,7 @@ def test_read_model_txt_exists_success(
 
 
 def test_read_model_txt_exists_invalid(
-    sample_lot_details: dict[str, str | int],
+    sample_lot_details: dict[str, str],
     mock_logger: MagicMock,
     mock_func_read_txt: MagicMock,
 ) -> None:
@@ -57,7 +57,7 @@ def test_read_model_txt_exists_invalid(
 
 
 def test_read_model_txt_not_exists(
-    sample_lot_details: dict[str, str | int],
+    sample_lot_details: dict[str, str],
     mock_logger: MagicMock,
     mock_func_read_txt: MagicMock,
 ) -> None:

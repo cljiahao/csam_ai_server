@@ -21,7 +21,7 @@ def mock_write_colors_json(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
 
 def test_get_colors_json_success(
     test_client: TestClient,
-    sample_lot_details: dict[str, str | int],
+    sample_lot_details: dict[str, str],
     sample_color_group: dict[str, list[dict[str, str]]],
     mock_get_colors_json: MagicMock,
 ) -> None:
@@ -40,7 +40,7 @@ def test_get_colors_json_success(
 
 def test_get_colors_json_exception(
     test_client: TestClient,
-    sample_lot_details: dict[str, str | int],
+    sample_lot_details: dict[str, str],
     mock_get_colors_json: MagicMock,
 ) -> None:
     """Test retrieval of colors when an exception occurs."""
@@ -59,7 +59,7 @@ def test_get_colors_json_exception(
 
 def test_write_colors_json_success(
     test_client: TestClient,
-    sample_lot_details: dict[str, str | int],
+    sample_lot_details: dict[str, str],
     sample_color_group: dict[str, list[dict[str, str]]],
     mock_write_colors_json: MagicMock,
 ) -> None:
@@ -77,7 +77,7 @@ def test_write_colors_json_success(
 
 def test_write_colors_json_exception(
     test_client: TestClient,
-    sample_lot_details: dict[str, str | int],
+    sample_lot_details: dict[str, str],
     sample_color_group: dict[str, list[dict[str, str]]],
     mock_write_colors_json: MagicMock,
 ) -> None:
@@ -99,7 +99,7 @@ def test_write_colors_json_exception(
 
 
 def test_write_colors_json_invalid(
-    test_client: TestClient, sample_lot_details: dict[str, str | int]
+    test_client: TestClient, sample_lot_details: dict[str, str]
 ) -> None:
     """Test writing colors with invalid data."""
     item = sample_lot_details["item"]

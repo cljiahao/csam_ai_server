@@ -34,19 +34,24 @@ def mock_load_model(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
 
 
 def test_load_model_success(
-    sample_lot_details: dict[str, str | int], mock_logger: MagicMock
+    sample_lot_details: dict[str, str],
+    mock_exists: MagicMock,
+    mock_load_model: MagicMock,
+    mock_logger: MagicMock,
 ):
 
     item = sample_lot_details["item"]
 
     result = load_model(item)
 
+    mock_exists.assert_called_once()
     model_path = directory.model_dir / f"{item}.h5"
+    mock_load_model.assert_called_once_with(model_path)
     mock_logger.info.assert_called_once_with(f"Model loaded from {model_path}")
 
 
 def test_load_model_not_exists(
-    sample_lot_details: dict[str, str | int],
+    sample_lot_details: dict[str, str],
     mock_logger: MagicMock,
     mock_exists: MagicMock,
 ):
@@ -86,7 +91,7 @@ def mock_g_constant(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     return mock_g_constants
 
 
-@pytest.mark.skip
+@pytest.mark.skip("Need to create samples for how prediction looks like.")
 def test_run_CNN(mock_labels: dict[str, str]):
 
     mock_model = MagicMock()

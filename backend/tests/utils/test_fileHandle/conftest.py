@@ -28,7 +28,7 @@ def mock_func_write_json(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
 
 @pytest.fixture
 def mock_func_settings_json_dependencies(
-    sample_lot_details: dict[str, str | int],
+    sample_lot_details: dict[str, str],
     mock_func_read_json: MagicMock,
     mock_func_write_json: MagicMock,
 ) -> callable:

@@ -17,7 +17,7 @@ def mock_func_check_lot(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
 
 @pytest.fixture
 def sample_lot_no_item(
-    request: pytest.FixtureRequest, sample_lot_details: dict[str, str | int]
+    request: pytest.FixtureRequest, sample_lot_details: dict[str, str]
 ) -> tuple[str, str]:
     """Fixture that returns a tuple of (lotNo, item) based on the request parameter."""
 

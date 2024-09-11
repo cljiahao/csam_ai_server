@@ -29,7 +29,7 @@ def mock_process_n_predict(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
 def test_process_image_success(
     test_client: TestClient,
     mock_module: str,
-    sample_lot_details: dict[str, str | int],
+    sample_lot_details: dict[str, str],
     sample_res_dict: dict[str, str | dict[str, list[str]]],
     mock_file_methods: tuple[MagicMock, MagicMock],
     mock_process_n_predict: MagicMock,
@@ -55,7 +55,7 @@ def test_process_image_success(
 
 def test_get_processed_count_exception(
     test_client: TestClient,
-    sample_lot_details: dict[str, str | int],
+    sample_lot_details: dict[str, str],
     mock_file_methods: tuple[MagicMock, MagicMock],
     mock_process_n_predict: MagicMock,
 ) -> None:
@@ -82,7 +82,7 @@ def test_get_processed_count_exception(
 
 @pytest.fixture
 def sample_invalid_args(
-    request: pytest.FixtureRequest, sample_lot_details: dict[str, str | int]
+    request: pytest.FixtureRequest, sample_lot_details: dict[str, str]
 ) -> tuple[str, str, str, dict[str, tuple]]:
     """Provides sample arguments for invalid image processing."""
     lot_no = sample_lot_details["lotNo"]

@@ -10,7 +10,7 @@ from utils.fileHandle.json import (
 
 
 @pytest.fixture
-def sample_settings_group(sample_lot_details: dict[str, str | int]) -> dict[str, dict]:
+def sample_settings_group(sample_lot_details: dict[str, str]) -> dict[str, dict]:
     """Sample settings group fixture."""
     return {
         "settingsGroup": [

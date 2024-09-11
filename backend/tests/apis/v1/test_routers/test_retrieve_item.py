@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 
 @pytest.fixture
 def sample_lot_no_item(
-    request: pytest.FixtureRequest, sample_lot_details: dict[str, str | int]
+    request: pytest.FixtureRequest, sample_lot_details: dict[str, str]
 ) -> tuple[str, str]:
     """Fixture providing sample (lotNo, item) tuples based on request parameter."""
     lot_no_item_pairs = [

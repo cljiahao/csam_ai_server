@@ -19,7 +19,7 @@ def mock_logger(mock_func_logger: MagicMock) -> MagicMock:
 
 @pytest.fixture
 def mock_env(
-    monkeypatch: pytest.MonkeyPatch, sample_lot_details: dict[str, str | int]
+    monkeypatch: pytest.MonkeyPatch, sample_lot_details: dict[str, str]
 ) -> None:
     """Setup environment variables for the PRASS service."""
 
@@ -62,7 +62,7 @@ def test_check_lot_success(mock_func_get_service: MagicMock, mock_env: None) -> 
 
 
 def test_check_lot_test_success(
-    sample_lot_details: dict[str, str | int], mock_env: None
+    sample_lot_details: dict[str, str], mock_env: None
 ) -> None:
     """Test check_lot using test lot number."""
 

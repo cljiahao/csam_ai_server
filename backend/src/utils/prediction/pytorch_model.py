@@ -39,29 +39,29 @@ def load_model(item: str) -> nn.Module:
 
 
 def run_cnn(
-    model: nn.Module, labels: dict[str, str], pred_dict: dict[str, np.ndarray]
+    model: nn.Module, labels: dict[str, str], temp_dict: dict[str, np.ndarray]
 ) -> dict[str, np.ndarray]:
     """Run model to retrieve predictions."""
 
     model.eval()  # Ensure the model is in evaluation mode
 
     # Convert predictions to tensor
-    pred_arr = np.array(list(pred_dict.values()))
-    pred_tensor = torch.tensor(pred_arr, dtype=torch.float32)
+    temp_images = np.array(list(temp_dict.values()))
+    temp_tensors = torch.tensor(temp_images, dtype=torch.float32)
 
     # Run the model to get predictions
     with torch.no_grad():  # Disable gradient calculation
-        predictions = model(pred_tensor).numpy()
+        prediction_results = model(temp_tensors).numpy()
 
-    pred_res = np.argmax(predictions, axis=1)
+    predictions = np.argmax(prediction_results, axis=1)
 
     # Filter out labels based on settings
     filtered_labels = {k: v for k, v in labels.items() if v not in core_consts.G_TYPES}
 
     results = {
-        k: pred_dict[k]
-        for i, k in enumerate(pred_dict.keys())
-        if pred_res[i] in filtered_labels
+        k: temp_dict[k]
+        for i, k in enumerate(temp_dict.keys())
+        if predictions[i] in filtered_labels
     }
 
     return results

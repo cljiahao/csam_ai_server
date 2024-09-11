@@ -1,6 +1,5 @@
 import cv2
 import pytest
-from pathlib import Path
 from unittest.mock import MagicMock
 
 from utils.osHandle.write_image import (
@@ -30,9 +29,6 @@ def test_write_image(
     mock_imwrite.assert_called_once_with(
         str(mock_path / mock_file.filename), mock_image
     )
-
-
-# TODO: Make it robust by looping and processing the paramterize into fixture
 
 
 @pytest.mark.parametrize(

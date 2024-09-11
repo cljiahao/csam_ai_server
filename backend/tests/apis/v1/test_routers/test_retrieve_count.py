@@ -26,7 +26,7 @@ def test_get_processed_count_success(
     test_client: TestClient,
     mock_module: str,
     expected_result: dict[str, int],
-    sample_lot_details: dict[str, str | int],
+    sample_lot_details: dict[str, str],
     mock_get_lot_detail: MagicMock,
 ) -> None:
     """Tests successful retrieval of processed count."""
@@ -43,7 +43,7 @@ def test_get_processed_count_success(
 
 def test_get_processed_count_exception(
     test_client: TestClient,
-    sample_lot_details: dict[str, str | int],
+    sample_lot_details: dict[str, str],
     mock_get_lot_detail: MagicMock,
 ) -> None:
     """Tests exception handling during processed count retrieval."""
@@ -64,7 +64,7 @@ def test_get_processed_count_exception(
 
 @pytest.fixture
 def sample_invalid_args(
-    request: pytest.FixtureRequest, sample_lot_details: dict[str, str | int]
+    request: pytest.FixtureRequest, sample_lot_details: dict[str, str]
 ) -> tuple[str, str, str, str]:
     """Provides sample arguments for invalid count retrieval scenarios."""
     lot_no = sample_lot_details["lotNo"]
