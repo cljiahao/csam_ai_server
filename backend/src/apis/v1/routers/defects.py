@@ -36,7 +36,7 @@ def get_all_folder_colors() -> ColorGroup:
 def set_all_folder_colors(color_group: ColorGroup) -> bool:
 
     try:
-        write_all_colors_json(color_group.colorGroup)
+        write_all_colors_json(color_group.model_dump()["colorGroup"])
         return True
     except Exception as e:
         handle_exceptions(e)
@@ -65,7 +65,8 @@ def set_folder_colors(
 ) -> bool:
 
     try:
-        write_colors_json(item, colors.colors)
+        colors_data = [element.model_dump() for element in colors.colors]
+        write_colors_json(item, colors_data)
         return True
     except Exception as e:
         handle_exceptions(e)

@@ -25,7 +25,8 @@ router = APIRouter()
     operation_id="UploadFile",
 )
 def process_image(
-    module: Annotated[Module, Path(description="Module type", enum=Module)],
+    # module: Annotated[Module, Path(description="Module type", enum=Module)],
+    module: Module,
     lot_no: Annotated[str, Path(description="Lot Number", pattern="[a-zA-Z0-9]{10}")],
     item: Annotated[str, Path(description="Item Type")],
     file: Annotated[UploadFile, File(description="Upload image file ('.jpg','.png')")],
@@ -46,7 +47,8 @@ def process_image(
     operation_id="SaveLocal",
 )
 def save_local(
-    module: Annotated[Module, Path(description="Module type", enum=Module)],
+    # module: Annotated[Module, Path(description="Module type", enum=Module)],
+    module: Module,
     lot_no: Annotated[str, Path(description="Lot Number", pattern="[a-zA-Z0-9]{10}")],
     plate: Annotated[str, Path(description="Plate")],
     item: Annotated[str, Path(description="Item Type")],

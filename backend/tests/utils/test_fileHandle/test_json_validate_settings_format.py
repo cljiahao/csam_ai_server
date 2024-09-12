@@ -6,8 +6,8 @@ from utils.fileHandle.json import (
 def test_check_settings_format_valid():
     """Test check_settings_format with valid settings."""
     sample_settings = {
-        "batch": {"erode": (1, 1), "close": (1, 1)},
-        "chip": {"erode": (1, 1), "close": (1, 1)},
+        "batch": {"erode": [1, 1], "close": [1, 1]},
+        "chip": {"erode": [1, 1], "close": [1, 1]},
     }
     assert validate_settings_format(sample_settings) is None
 
@@ -15,7 +15,7 @@ def test_check_settings_format_valid():
 def test_check_settings_format_missing_key():
     """Test check_settings_format with missing key."""
 
-    sample_settings = {"batch": {"erode": (1, 1), "close": (1, 1)}}
+    sample_settings = {"batch": {"erode": [1, 1], "close": [1, 1]}}
 
     assert validate_settings_format(sample_settings) == "missing key: chip."
 
@@ -23,8 +23,8 @@ def test_check_settings_format_missing_key():
 def test_check_settings_format_missing_sub_key():
     """Test check_settings_format with missing sub key."""
     sample_settings = {
-        "batch": {"erode": (1, 1)},
-        "chip": {"erode": (1, 1), "close": (1, 1)},
+        "batch": {"erode": [1, 1]},
+        "chip": {"erode": [1, 1], "close": [1, 1]},
     }
     assert (
         validate_settings_format(sample_settings)
@@ -32,13 +32,13 @@ def test_check_settings_format_missing_sub_key():
     )
 
 
-def test_check_settings_format_invalid_tuple():
-    """Test check_settings_format with invalid tuple format."""
+def test_check_settings_format_invalid_list():
+    """Test check_settings_format with invalid list format."""
     sample_settings = {
-        "batch": {"erode": (1, 1), "close": (1, "invalid")},
-        "chip": {"erode": (1, 1), "close": (1, 1)},
+        "batch": {"erode": [1, 1], "close": (1, "invalid")},
+        "chip": {"erode": [1, 1], "close": [1, 1]},
     }
     assert (
         validate_settings_format(sample_settings)
-        == "have invalid tuples for keys: close in key: batch."
+        == "have invalid lists for keys: close in key: batch."
     )

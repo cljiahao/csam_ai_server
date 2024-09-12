@@ -1,5 +1,6 @@
 import re
 
+from apis.v1.schemas.defects import CategoryHex
 import core.constants as core_consts
 from core.directory import directory
 from core.exceptions import MissingSettings
@@ -19,7 +20,7 @@ def log_and_raise(error_message: str) -> None:
 
 # Settings Json
 def validate_settings_format(
-    settings: dict[str, dict[str, tuple[int, int]]]
+    settings: dict[str, dict[str, list[int, int]]]
 ) -> str | None:
     """Validate the format of the settings data."""
 
@@ -33,29 +34,29 @@ def validate_settings_format(
         if missing_sub_keys:
             return f"missing sub-keys: {', '.join(missing_sub_keys)} in key: {key}."
 
-        invalid_tuples = [
+        invalid_lists = [
             k
             for k, value in settings[key].items()
             if not (
-                isinstance(value, tuple)
+                isinstance(value, list)
                 and len(value) == 2
                 and all(isinstance(v, int) for v in value)
             )
         ]
-        if invalid_tuples:
-            return f"have invalid tuples for keys: {', '.join(invalid_tuples)} in key: {key}."
+        if invalid_lists:
+            return f"have invalid lists for keys: {', '.join(invalid_lists)} in key: {key}."
 
     return None
 
 
-def read_settings_json() -> list[dict[str, str | dict[str, tuple[int, int]]]] | list:
+def read_settings_json() -> list[dict[str, str | dict[str, list[int, int]]]] | list:
     """Retrieve the settings for a specific item from the settings JSON file."""
 
     read_data = read_json(SETTINGS_JSON_PATH)
     return read_data.get("settingsGroup", [])
 
 
-def get_settings_json(item: str) -> dict[str, dict[str, tuple[int, int]]]:
+def get_settings_json(item: str) -> dict[str, dict[str, list[int, int]]]:
     """Retrieve and validate settings for a specific item from the settings JSON file."""
 
     settings_group = read_settings_json()
@@ -81,7 +82,7 @@ def get_settings_json(item: str) -> dict[str, dict[str, tuple[int, int]]]:
 
 def write_settings_json(
     item: str,
-    settings_data: dict[str, dict[str, tuple[int, int]]] = core_consts.DEFAULT_SETTINGS,
+    settings_data: dict[str, dict[str, list[int, int]]] = core_consts.DEFAULT_SETTINGS,
 ) -> None:
     """Write settings data for a specific item to the settings JSON file."""
 
@@ -143,9 +144,7 @@ def get_colors_json(item: str) -> list[dict[str, str]]:
     return colors
 
 
-def write_colors_json(
-    item: str, colors_data: list[dict[str, list[dict[str, str]]]]
-) -> None:
+def write_colors_json(item: str, colors_data: CategoryHex) -> None:
     """Write color data for a given item to the colors JSON file."""
 
     color_group = read_colors_json()

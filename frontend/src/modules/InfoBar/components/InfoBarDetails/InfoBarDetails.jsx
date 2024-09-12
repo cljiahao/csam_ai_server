@@ -11,7 +11,7 @@ const InfoBarDetails = ({ mode }) => {
   const detailsInfo = {
     lotNo: infoDetails.lotNo || "N/A",
     plate: infoDetails.plate || "N/A",
-    no_of_pieces: data.result || "0",
+    no_of_pieces: data?.result || "0",
   };
 
   const renderDetail = (label, value) => (
