@@ -5,6 +5,11 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ModelsTable from "@/modules/ModelsTable/ModelsTable";
 
+
+// TODO: Use TabsTrigger to trigger between settings and folderhex
+// TODO: Settings page for folder hex add and delete
+// TODO: Able to upload settings file and delete too.
+
 const Settings = () => {
   const infoDetails = {
     item: "GCM32ER71E106KA59_+B55-E01GJ",

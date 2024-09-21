@@ -18,7 +18,13 @@ def create_border_image(image: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         math.ceil(x * math.sqrt(2) / 10) * 10 for x in core_consts.CHIP_CROP_SIZE
     ]
     border_image = cv2.copyMakeBorder(
-        image, pady, pady, padx, padx, cv2.BORDER_REPLICATE
+        image,
+        pady,
+        pady,
+        padx,
+        padx,
+        cv2.BORDER_CONSTANT,
+        value=imageProcess_constants.COLOR_BACKGROUND,
     )
 
     img = border_image.copy()

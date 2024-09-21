@@ -5,7 +5,7 @@ from fastapi.testclient import TestClient
 from apis.v1.schemas.base import Module
 
 
-# TODO: Remove mock_get_lot_detail and replace with mock inserting into DB
+# TODO: Remove mock_get_lot_detail and replace with actual mock inserting into DB
 @pytest.fixture
 def mock_get_lot_detail(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     """Mocks the get_lot_detail function."""

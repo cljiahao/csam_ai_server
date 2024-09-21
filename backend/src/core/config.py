@@ -53,5 +53,5 @@ class ServiceSettings(Settings):
 
 common_settings = CommonSettings()
 api_settings = APISettings()
-service_settings = ServiceSettings()
 database_settings = DatabaseSettings()
+service_settings = ServiceSettings()

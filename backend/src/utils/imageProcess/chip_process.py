@@ -16,6 +16,10 @@ from utils.imageProcess.image_utils import (
 )
 
 
+# TODO: Add new algo of cropping based on average chip length
+# TODO: Improve algorithm processing speed
+
+
 def get_chips(
     border_image: np.ndarray,
     border_gray: np.ndarray,

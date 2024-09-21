@@ -25,7 +25,7 @@ def mock_set_cache_data(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     return mock
 
 
-# TODO: Remove mock_update_lot_detail and replace with mock inserting into DB
+# TODO: Remove mock_update_lot_detail and replace with actual mock inserting into DB
 
 
 @pytest.fixture

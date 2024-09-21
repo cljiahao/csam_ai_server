@@ -6,4 +6,5 @@ THRESH_RANGE: dict[str, float] = {
     "upp_def_area": 1.5,
 }
 BG_THRESHOLD: int = 130
+COLOR_BACKGROUND: tuple[int, int, int] = (192, 192, 192)
 COLOR_WHITE: tuple[int, int, int] = (255, 255, 255)
