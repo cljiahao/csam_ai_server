@@ -9,9 +9,6 @@ const useImageDetailsContext = () => useContext(ImageDetailsContext);
 const CanvasContext = createContext();
 const useCanvasContext = () => useContext(CanvasContext);
 
-const FolderHexContext = createContext();
-const useFolderHexContext = () => useContext(FolderHexContext);
-
 export {
   DisplayContext,
   useDisplayContext,
@@ -19,6 +16,4 @@ export {
   useImageDetailsContext,
   CanvasContext,
   useCanvasContext,
-  FolderHexContext,
-  useFolderHexContext,
 };

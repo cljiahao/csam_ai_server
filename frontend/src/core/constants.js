@@ -1,7 +1,6 @@
 import { FaHome } from "react-icons/fa";
 import { MdOutlineMoveToInbox } from "react-icons/md";
 import { LiaNetworkWiredSolid } from "react-icons/lia";
-import { IoMdSettings } from "react-icons/io";
 
 // Information for different sections or pages with descriptions
 const home_info = [
@@ -19,12 +18,12 @@ const home_info = [
       "Webpage to assist production in predicting NG chip images for final judgement.",
     icon: LiaNetworkWiredSolid,
   },
-  {
-    name: "config",
-    title: "Settings",
-    description: "Settings page for adjusting configurations.",
-    icon: IoMdSettings,
-  },
+  // {
+  //   name: "config",
+  //   title: "Settings",
+  //   description: "Settings page for adjusting configurations.",
+  //   icon: IoMdSettings,
+  // },
 ];
 
 // Navigation links with URLs and icons
@@ -32,7 +31,7 @@ const nav_info = [
   { name: "home", url: "/", icon: FaHome },
   { name: "CDC", url: "/CDC", icon: MdOutlineMoveToInbox },
   { name: "CAI", url: "/CAI", icon: LiaNetworkWiredSolid },
-  { name: "config", url: "/config", icon: IoMdSettings },
+  // { name: "config", url: "/config", icon: IoMdSettings },
 ];
 
 // Hover button configurations with icons

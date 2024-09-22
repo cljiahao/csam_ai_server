@@ -5,7 +5,6 @@ import { coordsExtract } from "@/lib/chipInfoExtract";
 export function useMarkCanvas() {
   const [imageSize, setImageSize] = useState([]);
   const [marks, setMarks] = useState([]);
-  const [markers, setMarkers] = useState({ ...MARKERS });
 
   const coordNormalize = useCallback(
     ({ xycoords, file_name }) => {
@@ -28,26 +27,12 @@ export function useMarkCanvas() {
   }, []);
 
   const updateMarks = useCallback(
-    (colorSet, chip_details) => {
-      const updatedMarkers = {
-        ...MARKERS,
-        marks: [
-          ...MARKERS.marks,
-          ...colorSet.colors.map(({ category, hex }, index) => ({
-            id: MARKERS.marks.length + index,
-            name: category,
-            color: hex,
-            radius: 1,
-          })),
-        ],
-      };
-      setMarkers(updatedMarkers);
-
+    (chip_details) => {
       const updatedMarks = Object.entries(chip_details).flatMap(
         ([batch, file_names]) =>
           file_names.map((file_name) => {
             const [norm_x, norm_y] = coordNormalize({ file_name });
-            const default_circle = updatedMarkers.marks.find(
+            const default_circle = MARKERS.marks.find(
               ({ id }) => id == file_name[0],
             );
             return {
@@ -68,21 +53,20 @@ export function useMarkCanvas() {
     (e) => {
       const file_name = e.currentTarget.id;
       const toUpdate = marks.find(({ id }) => id === file_name);
-      const updateCircle = markers.marks.find(
-        ({ id }) => id === (toUpdate.circle.id + 1) % markers.marks.length,
+      const updateCircle = MARKERS.marks.find(
+        ({ id }) => id === (toUpdate.circle.id + 1) % MARKERS.marks.length,
       );
       const update_marks = marks.map((mark) =>
         mark.id === file_name ? { ...mark, circle: updateCircle } : mark,
       );
       setMarks([...update_marks]);
     },
-    [markers.marks, marks],
+    [marks],
   );
 
   return {
     marks,
     setMarks,
-    markers,
     coordNormalize,
     updateImageSize,
     updateMarks,

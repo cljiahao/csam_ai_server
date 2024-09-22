@@ -1,7 +1,6 @@
 import { useCallback, useEffect } from "react";
 import {
   useCanvasContext,
-  useFolderHexContext,
   useImageDetailsContext,
 } from "@/contexts/csamContext";
 import { useFetch } from "@/hooks/useFetch";
@@ -10,19 +9,15 @@ import { useInfoBarContext } from "@/modules/InfoBar/contexts/infoBarContext";
 
 const useLoadImage = () => {
   const { data, error, isLoading, fetchData } = useFetch();
-  const { folderHex } = useFolderHexContext();
   const { updateMarks, updateImageSize } = useCanvasContext();
   const { updateImageDetails } = useImageDetailsContext();
-  const { infoDetails, updateInfoDetails } = useInfoBarContext();
+  const { updateInfoDetails } = useInfoBarContext();
 
   useEffect(() => {
     if (data) {
       updateImageDetails(data);
       if (!isLoading) {
-        const colorSet = folderHex?.find(
-          ({ item }) => item === infoDetails.item,
-        );
-        updateMarks(colorSet, data.chips);
+        updateMarks(data.chips);
       }
     }
   }, [data, isLoading, updateImageDetails]); // eslint-disable-line react-hooks/exhaustive-deps
