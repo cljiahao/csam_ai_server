@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { Button } from "../ui/button";
+import { Button } from "./ui/button";
 
 const HoverButton = forwardRef(
   ({ children, className, TriggerIcon, ...props }, ref) => {

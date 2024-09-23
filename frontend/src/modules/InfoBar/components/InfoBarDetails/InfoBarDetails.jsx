@@ -1,5 +1,5 @@
 import { Label } from "@/components/ui/label";
-import { useCanvasContext } from "@/contexts/csamContext";
+import { useCanvasContext } from "@/contexts/context";
 import useInfoCount from "./hooks/useInfoCount";
 import { useInfoBarContext } from "../../contexts/infoBarContext";
 

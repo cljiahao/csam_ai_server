@@ -3,8 +3,8 @@ import {
   useCanvasContext,
   useDisplayContext,
   useImageDetailsContext,
-} from "@/contexts/csamContext";
-import { usePanZoom } from "./hooks/usePanZoom";
+} from "@/contexts/context";
+import { usePanZoom } from "../hooks/usePanZoom";
 
 const CanvasOnImage = () => {
   const { imageDetails } = useImageDetailsContext();
@@ -18,6 +18,8 @@ const CanvasOnImage = () => {
     }
     return "";
   }, [imageDetails.image]);
+
+  // TODO: Remove panning to a higher order in the component or convert to global component
 
   return (
     // TODO: Add animation ease-out

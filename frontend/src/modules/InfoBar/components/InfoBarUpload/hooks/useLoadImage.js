@@ -1,8 +1,5 @@
 import { useCallback, useEffect } from "react";
-import {
-  useCanvasContext,
-  useImageDetailsContext,
-} from "@/contexts/csamContext";
+import { useCanvasContext, useImageDetailsContext } from "@/contexts/context";
 import { useFetch } from "@/hooks/useFetch";
 import { uploadImage } from "@/services/api_files";
 import { useInfoBarContext } from "@/modules/InfoBar/contexts/infoBarContext";

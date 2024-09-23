@@ -1,4 +1,4 @@
-import HoverButton from "@/components/HoverButton/HoverButton";
+import HoverButton from "@/components/HoverButton";
 import { useInfoBarContext } from "@/modules/InfoBar/contexts/infoBarContext";
 
 const ImageFormButton = ({ form }) => {

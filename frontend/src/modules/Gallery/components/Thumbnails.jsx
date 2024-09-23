@@ -4,9 +4,8 @@ import {
   useCanvasContext,
   useDisplayContext,
   useImageDetailsContext,
-} from "@/contexts/csamContext";
-import { useFocus, useMarker } from "./hooks";
-import { memo } from "react";
+} from "@/contexts/context";
+import { useFocus, useMarker } from "../hooks";
 
 const Thumbnails = ({ mode, thumbs_array }) => {
   const { resetZoom } = useDisplayContext();
@@ -80,4 +79,4 @@ const Thumbnails = ({ mode, thumbs_array }) => {
   );
 };
 
-export default memo(Thumbnails);
+export default Thumbnails;

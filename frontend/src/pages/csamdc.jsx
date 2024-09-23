@@ -1,6 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { Toaster } from "@/components/ui/toaster";
-import { AppProvider } from "@/contexts/csamProvider";
+import { AppProvider } from "@/contexts/provider";
 import { Gallery, ImageHolder, InfoBar } from "@/modules";
 
 const mode = "CDC";

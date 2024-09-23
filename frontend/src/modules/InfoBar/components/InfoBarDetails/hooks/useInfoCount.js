@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useFetch } from "@/hooks/useFetch";
 import { getProcessedCount } from "@/services/api_retrieve";
 import { useInfoBarContext } from "@/modules/InfoBar/contexts/infoBarContext";
-import { useImageDetailsContext } from "@/contexts/csamContext";
+import { useImageDetailsContext } from "@/contexts/context";
 
 const useInfoCount = ({ mode }) => {
   const { data, error, isLoading, fetchData } = useFetch();

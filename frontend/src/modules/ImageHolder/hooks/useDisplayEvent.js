@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useDisplayContext } from "@/contexts/csamContext";
+import { useDisplayContext } from "@/contexts/context";
 
 const useDisplayEvent = () => {
   const { display, setDisplay, getRefRect, resetZoom } = useDisplayContext();

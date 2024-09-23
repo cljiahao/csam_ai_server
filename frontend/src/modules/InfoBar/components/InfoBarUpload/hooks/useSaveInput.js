@@ -1,7 +1,4 @@
-import {
-  useCanvasContext,
-  useImageDetailsContext,
-} from "@/contexts/csamContext";
+import { useCanvasContext, useImageDetailsContext } from "@/contexts/context";
 import { useFetch } from "@/hooks/useFetch";
 import { useInfoBarContext } from "@/modules/InfoBar/contexts/infoBarContext";
 import { saveFinalJudgement } from "@/services/api_files";

@@ -1,8 +1,9 @@
+import { HelmetProvider } from "react-helmet-async";
 import {
   CanvasContext,
   DisplayContext,
   ImageDetailsContext,
-} from "@/contexts/csamContext";
+} from "@/contexts/context";
 import { useDisplay } from "@/hooks/useDisplay";
 import { useMarkCanvas } from "@/hooks/useMarkCanvas";
 import { useImageDetails } from "@/hooks/useImageDetails";
@@ -13,12 +14,14 @@ export const AppProvider = ({ children }) => {
   const stateMarkCanvas = useMarkCanvas();
 
   return (
-    <DisplayContext.Provider value={statePanZoom}>
-      <ImageDetailsContext.Provider value={stateImageDetails}>
+    <HelmetProvider>
+      <DisplayContext.Provider value={statePanZoom}>
         <CanvasContext.Provider value={stateMarkCanvas}>
-          {children}
+          <ImageDetailsContext.Provider value={stateImageDetails}>
+            {children}
+          </ImageDetailsContext.Provider>
         </CanvasContext.Provider>
-      </ImageDetailsContext.Provider>
-    </DisplayContext.Provider>
+      </DisplayContext.Provider>
+    </HelmetProvider>
   );
 };

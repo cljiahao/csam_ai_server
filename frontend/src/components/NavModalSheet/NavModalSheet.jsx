@@ -1,6 +1,7 @@
 import { IconContext } from "react-icons";
 import { IoMenu } from "react-icons/io5";
 
+import { navigation_info } from "@/core/navigation";
 import {
   Sheet,
   SheetContent,
@@ -10,7 +11,6 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
-import { nav_info } from "@/core/constants";
 import NavMenu from "./components/NavMenu";
 import { useOpenChange } from "./hooks/useOpenChange";
 
@@ -29,7 +29,7 @@ const NavModalSheet = ({ children, bool_function }) => {
               <SheetDescription />
             </SheetTitle>
           </SheetHeader>
-          <NavMenu nav_info={nav_info} />
+          <NavMenu nav_info={navigation_info} />
           <Separator className="my-2" />
           {children}
         </SheetContent>

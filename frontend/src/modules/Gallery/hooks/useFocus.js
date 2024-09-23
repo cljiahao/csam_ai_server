@@ -1,5 +1,5 @@
 import { ZOOM_SCALE } from "@/core/config";
-import { useDisplayContext } from "@/contexts/csamContext";
+import { useDisplayContext } from "@/contexts/context";
 
 export function useFocus() {
   const { display, setDisplay } = useDisplayContext();

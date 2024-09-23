@@ -1,6 +1,6 @@
 import { InfoBarProvider } from "./contexts/InfoBarProvider";
 import InfoBarDetails from "./components/InfoBarDetails/InfoBarDetails";
-import ImageForm from "./components/ImageForm/ImageForm";
+import InfoBarUpload from "./components/InfoBarUpload/ImageForm";
 import InfoBarSheet from "./components/InfoBarSheet/InfoBarSheet";
 
 const InfoBar = ({ mode }) => {
@@ -9,7 +9,7 @@ const InfoBar = ({ mode }) => {
       <div className="flex-between h-20 w-full flex-shrink-0 gap-3 px-3">
         <InfoBarSheet />
         <InfoBarDetails mode={mode} />
-        <ImageForm mode={mode} />
+        <InfoBarUpload mode={mode} />
       </div>
     </InfoBarProvider>
   );

@@ -1,16 +1,31 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import Home from "./pages/home";
-import CsamDC from "./pages/csamdc";
-import CsamAI from "./pages/csamai";
+import { CsamAI, CsamDC, Home } from "./pages";
+import { navigation_info } from "./core/navigation";
+import SeoHead from "./components/SeoHead";
+
+const element_info = {
+  home: <Home />,
+  cdc: <CsamDC />,
+  cai: <CsamAI />,
+};
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/CDC" element={<CsamDC />} />
-        <Route path="/CAI" element={<CsamAI />} />
+        {navigation_info.map((info) => (
+          <Route
+            key={info.name}
+            path={info.url}
+            element={
+              <>
+                <SeoHead title={info.title} />
+                {element_info[info.name]}
+              </>
+            }
+          />
+        ))}
       </Routes>
     </Router>
   );

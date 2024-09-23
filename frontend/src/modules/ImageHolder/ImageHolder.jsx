@@ -1,12 +1,9 @@
-import {
-  useDisplayContext,
-  useImageDetailsContext,
-} from "@/contexts/csamContext";
-import CanvasOnImage from "./components/CanvasOnImage/CanvasOnImage";
+import { useDisplayContext, useImageDetailsContext } from "@/contexts/context";
+import Error from "@/components/Error";
+import Loading from "@/components/Loading";
+import Placeholder from "@/components/Placeholder";
+import CanvasOnImage from "./components/CanvasOnImage";
 import useDisplayEvent from "./hooks/useDisplayEvent";
-import Placeholder from "./components/Placeholder";
-import Error from "@/components/Error/Error";
-import Loading from "@/components/Loading/Loading";
 
 const ImageHolder = () => {
   const { ref } = useDisplayContext();
@@ -24,11 +21,7 @@ const ImageHolder = () => {
 
   return (
     <div className="hw-full flex overflow-hidden" ref={ref}>
-      {imageDetails.image ? (
-        <CanvasOnImage />
-      ) : (
-        <Placeholder>{imageDetails.detail}</Placeholder>
-      )}
+      {imageDetails.image ? <CanvasOnImage /> : <Placeholder />}
     </div>
   );
 };

@@ -1,20 +1,20 @@
 import { useCallback, useRef, useState } from "react";
 
-import { hover_button_info } from "@/core/constants";
-import { useImageDetailsContext } from "@/contexts/csamContext";
-import { useInfoBarContext } from "../../contexts/infoBarContext";
+import { useImageDetailsContext } from "@/contexts/context";
+import { navigation_info } from "@/core/navigation";
 import { Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import DialogPopUp from "@/components/DialogPopUp/DialogPopUp";
-import HoverButton from "@/components/HoverButton/HoverButton";
+import HoverButton from "@/components/HoverButton";
+import { useInfoBarContext } from "../../contexts/infoBarContext";
 import ImageFormButton from "./components/ImageFormButton/ImageFormButton";
 import ImageFormCard from "./components/ImageFormCard";
 import useImageForm from "./hooks/useImageForm";
 import useLoadImage from "./hooks/useLoadImage";
 import useSaveInput from "./hooks/useSaveInput";
 
-const ImageForm = ({ mode }) => {
+const InfoBarUpload = ({ mode }) => {
   const { updateImageDetails } = useImageDetailsContext();
   const { infoDetails, updateInfoDetails } = useInfoBarContext();
   const [form_info, form] = useImageForm();
@@ -67,8 +67,7 @@ const ImageForm = ({ mode }) => {
       <HoverButton
         className="h-14 w-14 text-3xl"
         TriggerIcon={
-          hover_button_info.find((item) => item.name === mode.toUpperCase())
-            ?.icon
+          navigation_info.find((item) => item.name === mode.toUpperCase())?.icon
         }
       >
         <div className="flex flex-col text-sm">
@@ -119,4 +118,4 @@ const ImageForm = ({ mode }) => {
   );
 };
 
-export default ImageForm;
+export default InfoBarUpload;
