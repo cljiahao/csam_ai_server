@@ -22,13 +22,13 @@ const useSaveInput = () => {
     return { chips: chips, directory: imageDetails.directory };
   }
 
-  function saveUserInput({ mode }) {
+  function saveUserInput(page) {
     if (marks.length) {
       const chipsDetails = createChipsDetails();
       fetchData(
         saveFinalJudgement(
           chipsDetails,
-          mode,
+          page,
           infoDetails.lotNo,
           infoDetails.plate,
           infoDetails.item,

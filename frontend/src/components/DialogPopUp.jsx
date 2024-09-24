@@ -7,14 +7,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-const DialogPopUp = ({ trigger, title, descr, children, ...props }) => {
+const DialogPopUp = ({ trigger, title, description, children, ...props }) => {
   return (
     <Dialog {...props}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>{descr}</DialogDescription>
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
         {children}
       </DialogContent>

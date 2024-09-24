@@ -7,6 +7,8 @@ import { useFetch } from "@/hooks/useFetch";
 import { getItemType } from "@/services/api_retrieve";
 import { useInfoBarContext } from "@/modules/InfoBar/contexts/infoBarContext";
 
+//TODO: Convert ItemType to combobox for typing and selection
+
 const useImageForm = () => {
   const { data, error, fetchData } = useFetch();
   const { infoDetails, updateInfoDetails } = useInfoBarContext();
@@ -31,11 +33,11 @@ const useImageForm = () => {
       label: "Item Type",
       placeholder: "GCM32ER71E106KA57",
       defaultValues: "",
-      schema: infoDetails.item
-        ? z.string().optional()
-        : z.string().min(1, {
+      schema: infoDetails.lotNo
+        ? z.string().min(1, {
             message: "Please key in Item Type.",
-          }),
+          })
+        : z.string().optional(),
       value: infoDetails.item || "",
     },
   };
@@ -61,17 +63,16 @@ const useImageForm = () => {
   // Update form value when infoDetails changes
   // Must place below form to work
   useEffect(() => {
-    if (infoDetails.item) {
-      form.setValue("item", infoDetails.item);
-    }
+    form.setValue("item", infoDetails.item);
     form.trigger("item");
   }, [infoDetails.item, form]);
 
   // Handle onBlur event for lot number input
   function handleItemDisabled(e) {
     const value = e.currentTarget.value;
-    if (/^[a-zA-Z0-9]{10}$/.test(value) && infoDetails.lotNo !== value)
+    if (/^[a-zA-Z0-9]{10}$/.test(value)) {
       fetchData(() => getItemType(value), true);
+    }
   }
 
   return [formInfo, form];

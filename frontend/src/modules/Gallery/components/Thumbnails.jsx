@@ -1,4 +1,4 @@
-import { API_URL } from "@/core/config";
+import { API_URL, MARKERS } from "@/core/config";
 import { Button } from "@/components/ui/button";
 import {
   useCanvasContext,
@@ -7,11 +7,10 @@ import {
 } from "@/contexts/context";
 import { useFocus, useMarker } from "../hooks";
 
-const Thumbnails = ({ mode, thumbs_array }) => {
+const Thumbnails = ({ page, thumbs_array }) => {
   const { resetZoom } = useDisplayContext();
+  const { marks, coordNormalize, updateMarkSelected } = useCanvasContext();
   const { imageDetails } = useImageDetailsContext();
-  const { marks, markers, coordNormalize, updateMarkSelected } =
-    useCanvasContext();
   const [focusOnElement] = useFocus();
   const [updateMarkViewing, resetMarkViewing] = useMarker();
 
@@ -20,7 +19,7 @@ const Thumbnails = ({ mode, thumbs_array }) => {
     const { id: file_name } = e.currentTarget;
     return marks.some(
       ({ id, circle }) =>
-        id === file_name && circle?.id === markers.marks.length - 1,
+        id === file_name && circle?.id === MARKERS.marks.length - 1,
     );
   }
 
@@ -46,7 +45,7 @@ const Thumbnails = ({ mode, thumbs_array }) => {
   // Handler for thumbnail click
   function onThumbnailClick(e) {
     updateMarkSelected(e);
-    mode.toUpperCase() === "CDC" && isChangingToDefault(e)
+    page.toUpperCase() === "CDC" && isChangingToDefault(e)
       ? unFocus()
       : onFocus(e);
   }
@@ -57,7 +56,7 @@ const Thumbnails = ({ mode, thumbs_array }) => {
         const folder =
           file_name[0] === "0"
             ? "temp"
-            : markers.marks.find(({ id }) => id == file_name[0]).name;
+            : MARKERS.marks.find(({ id }) => id == file_name[0]).name;
         return (
           <Button
             key={file_name}

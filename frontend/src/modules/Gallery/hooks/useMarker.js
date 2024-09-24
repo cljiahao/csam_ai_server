@@ -1,7 +1,8 @@
+import { MARKERS } from "@/core/config";
 import { useCanvasContext } from "@/contexts/context";
 
 export function useMarker() {
-  const { marks, setMarks, markers } = useCanvasContext();
+  const { marks, setMarks } = useCanvasContext();
 
   function updateMarkViewing(e) {
     const { id: fileName } = e.currentTarget;
@@ -13,14 +14,14 @@ export function useMarker() {
       const fileToZoom = marks.find(({ id }) => id === fileName);
       setMarks((prevMark) => [
         ...prevMark,
-        { ...fileToZoom, id: zoomedMarkId, circle: markers.zoom },
+        { ...fileToZoom, id: zoomedMarkId, circle: MARKERS.zoom },
       ]);
     }
   }
 
   function resetMarkViewing() {
     setMarks((prevMarks) =>
-      prevMarks.filter(({ circle }) => circle !== markers.zoom),
+      prevMarks.filter(({ circle }) => circle !== MARKERS.zoom),
     );
   }
 

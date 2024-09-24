@@ -9,10 +9,9 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 
-// TODO: Update the navigation menu link css (width) to dynamically
-//       change based on the number of nav_info elements
-
 const NavMenu = ({ nav_info }) => {
+  const nav_len = nav_info.length;
+  const width = nav_len === 3 ? "px-7" : nav_len === 4 ? "px-4" : "";
   return (
     <IconContext.Provider value={{ size: "3em" }}>
       <div className="flex-center h-14 w-full">
@@ -22,7 +21,7 @@ const NavMenu = ({ nav_info }) => {
               <NavigationMenuItem key={nav.name}>
                 <Link
                   to={nav.url}
-                  className={`${navigationMenuTriggerStyle()} h-full`}
+                  className={`${navigationMenuTriggerStyle()} h-full ${width}`}
                 >
                   <nav.icon />
                 </Link>

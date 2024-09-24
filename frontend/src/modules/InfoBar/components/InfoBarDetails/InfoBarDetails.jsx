@@ -3,10 +3,10 @@ import { useCanvasContext } from "@/contexts/context";
 import useInfoCount from "./hooks/useInfoCount";
 import { useInfoBarContext } from "../../contexts/infoBarContext";
 
-const InfoBarDetails = ({ mode }) => {
+const InfoBarDetails = ({ page }) => {
   const { marks } = useCanvasContext();
   const { infoDetails } = useInfoBarContext();
-  const { data } = useInfoCount({ mode });
+  const { data } = useInfoCount(page);
 
   const detailsInfo = {
     lotNo: infoDetails.lotNo || "N/A",
@@ -22,7 +22,7 @@ const InfoBarDetails = ({ mode }) => {
   );
 
   const renderRealData = () => {
-    const isCDC = mode.toUpperCase() === "CDC";
+    const isCDC = page.toUpperCase() === "CDC";
     return (
       <div className="flex-center flex-col gap-2">
         <Label className="font-semibold">

@@ -4,22 +4,22 @@ import { getProcessedCount } from "@/services/api_retrieve";
 import { useInfoBarContext } from "@/modules/InfoBar/contexts/infoBarContext";
 import { useImageDetailsContext } from "@/contexts/context";
 
-const useInfoCount = ({ mode }) => {
+const useInfoCount = (page) => {
   const { data, error, isLoading, fetchData } = useFetch();
-  const { infoDetails } = useInfoBarContext();
   const { imageDetails } = useImageDetailsContext();
+  const { infoDetails } = useInfoBarContext();
 
   useEffect(() => {
     const fetchProcessedCount = () => {
-      if (imageDetails.chips) {
+      if (imageDetails.chips && infoDetails.item) {
         fetchData(
-          () => getProcessedCount(mode, infoDetails.lotNo, infoDetails.plate),
+          () => getProcessedCount(page, infoDetails.lotNo, infoDetails.plate),
           true,
         );
       }
     };
     fetchProcessedCount();
-  }, [mode, infoDetails, imageDetails.chips, fetchData]);
+  }, [infoDetails, imageDetails.chips, page, fetchData]);
 
   return { data, error, isLoading };
 };

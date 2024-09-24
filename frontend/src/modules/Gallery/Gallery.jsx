@@ -1,30 +1,33 @@
+import { MARKERS } from "@/core/config";
 import { useCanvasContext, useImageDetailsContext } from "@/contexts/context";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-
 import Thumbnails from "./components/Thumbnails";
 
-const Gallery = ({ mode }) => {
+const Gallery = ({ page }) => {
   const { imageDetails } = useImageDetailsContext();
-  const { marks, markers } = useCanvasContext();
+  const { marks } = useCanvasContext();
 
   // Return null if directory is not available
   if (!imageDetails.directory) return null;
 
-  const imageInfo = marks?.reduce((acc, { batch, id, circle }) => {
-    if (markers.zoom !== circle) {
-      if (!acc[batch]) {
-        acc[batch] = [];
-      }
-      if (
-        markers.marks.find(({ id: markerId }) => markerId === 0) === circle &&
-        mode.toUpperCase() === "CDC"
-      )
-        return acc;
-      acc[batch].push(id);
+  const imageInfo = marks.reduce((acc, { batch, id, circle }) => {
+    if (MARKERS.zoom === circle) return acc;
+
+    if (!acc[batch]) {
+      acc[batch] = [];
     }
+
+    const isMarkerZero = MARKERS.marks.some(
+      ({ id: markerId }) => markerId === 0,
+    );
+    const isCDCPage = page.toUpperCase() === "CDC";
+
+    if (isMarkerZero && isCDCPage) return acc;
+
+    acc[batch].push(id);
     return acc;
-  });
+  }, {});
 
   return (
     <div className="no-scrollbar hw-full flex flex-grow flex-col gap-3 overflow-y-scroll p-3">
@@ -33,7 +36,7 @@ const Gallery = ({ mode }) => {
           <div key={batch} className="flex flex-col gap-2">
             <Label className="text-xl font-semibold">Batch: {batch}</Label>
             <Separator className="h-[0.15em] rounded-xl" />
-            <Thumbnails mode={mode} thumbs_array={imageInfo[batch]} />
+            <Thumbnails page={page} thumbs_array={imageInfo[batch]} />
           </div>
         ))}
     </div>

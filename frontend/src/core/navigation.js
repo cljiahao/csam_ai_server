@@ -5,7 +5,7 @@ import { LiaNetworkWiredSolid } from "react-icons/lia";
 // Information for different sections or pages with descriptions
 const navigation_info = [
   {
-    name: "home",
+    name: "Home",
     url: "/",
     title: "Home Page",
     description:
@@ -13,7 +13,7 @@ const navigation_info = [
     icon: FaHome,
   },
   {
-    name: "cdc",
+    name: "CDC",
     url: "/CDC",
     title: "CSAM Defects Collections",
     description:
@@ -21,7 +21,7 @@ const navigation_info = [
     icon: MdOutlineMoveToInbox,
   },
   {
-    name: "cai",
+    name: "CAI",
     url: "/CAI",
     title: "CSAM AI",
     description:

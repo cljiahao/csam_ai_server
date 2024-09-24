@@ -1,13 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import { CsamAI, CsamDC, Home } from "./pages";
-import { navigation_info } from "./core/navigation";
-import SeoHead from "./components/SeoHead";
+import SeoHead from "@/components/SeoHead";
+import { CsamAI, CsamDC, Home } from "@/pages";
+import { navigation_info } from "@/core/navigation";
 
 const element_info = {
-  home: <Home />,
-  cdc: <CsamDC />,
-  cai: <CsamAI />,
+  Home: <Home />,
+  CDC: <CsamDC />,
+  CAI: <CsamAI />,
 };
 
 function App() {

@@ -2,36 +2,20 @@ import { useCallback, useRef, useState } from "react";
 
 import { useImageDetailsContext } from "@/contexts/context";
 import { navigation_info } from "@/core/navigation";
-import { Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
-import DialogPopUp from "@/components/DialogPopUp/DialogPopUp";
+import DialogPopUp from "@/components/DialogPopUp";
 import HoverButton from "@/components/HoverButton";
 import { useInfoBarContext } from "../../contexts/infoBarContext";
-import ImageFormButton from "./components/ImageFormButton/ImageFormButton";
-import ImageFormCard from "./components/ImageFormCard";
-import useImageForm from "./hooks/useImageForm";
 import useLoadImage from "./hooks/useLoadImage";
-import useSaveInput from "./hooks/useSaveInput";
+import ImageForm from "./components/ImageForm";
 
-const InfoBarUpload = ({ mode }) => {
+const InfoBarUpload = ({ page }) => {
   const { updateImageDetails } = useImageDetailsContext();
-  const { infoDetails, updateInfoDetails } = useInfoBarContext();
-  const [form_info, form] = useImageForm();
+  const { infoDetails } = useInfoBarContext();
   const getProcessedImage = useLoadImage();
-  const saveUserInput = useSaveInput();
   const fileInputRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
-
-  // Submit form data and trigger file input
-  const onSubmit = useCallback(
-    (onSubmitData) => {
-      saveUserInput({ mode });
-      updateInfoDetails(onSubmitData);
-      fileInputRef.current?.click();
-    },
-    [mode, saveUserInput, updateInfoDetails],
-  );
 
   // Handle file input change
   const onFileChange = useCallback(
@@ -43,7 +27,12 @@ const InfoBarUpload = ({ mode }) => {
       if (file) {
         toast({
           title: "You submitted the following values:",
-          description: infoDetails.item,
+          description: (
+            <pre className="mt-2 flex w-[340px] flex-col rounded-md bg-slate-950 p-4">
+              <kbd className="text-white">File Name: {file.name}</kbd>
+              <kbd className="text-white">Item: {infoDetails.item}</kbd>
+            </pre>
+          ),
           duration: 2000,
         });
         // Reset and update imageDetails with new file
@@ -55,10 +44,10 @@ const InfoBarUpload = ({ mode }) => {
           isLoading: true,
         });
         // Send uploaded file to process
-        getProcessedImage(mode, file, infoDetails);
+        getProcessedImage(page, file, infoDetails);
       }
     },
-    [infoDetails, updateImageDetails, mode, getProcessedImage],
+    [infoDetails, updateImageDetails, getProcessedImage, page],
   );
 
   // Dialog configuration
@@ -67,16 +56,16 @@ const InfoBarUpload = ({ mode }) => {
       <HoverButton
         className="h-14 w-14 text-3xl"
         TriggerIcon={
-          navigation_info.find((item) => item.name === mode.toUpperCase())?.icon
+          navigation_info.find((item) => item.name === page.toUpperCase())?.icon
         }
       >
         <div className="flex flex-col text-sm">
-          <span>{mode}</span>
+          <span>{page}</span>
           <span>Upload</span>
         </div>
       </HoverButton>
     ),
-    title: "AI Predict Defects",
+    title: page === "CDC" ? "Defects Collections" : "AI Predict Defects",
     description: "Upload image to start processing.",
   };
 
@@ -84,29 +73,11 @@ const InfoBarUpload = ({ mode }) => {
     <DialogPopUp
       trigger={dialog_info.trigger}
       title={dialog_info.title}
-      descr={dialog_info.description}
+      description={dialog_info.description}
       open={isOpen}
       onOpenChange={setIsOpen}
     >
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          {Object.keys(form_info).map((key) => {
-            const { label, value, placeholder, onBlur } = form_info[key];
-            return (
-              <ImageFormCard
-                key={key}
-                form={form}
-                name={key}
-                label={label}
-                value={value}
-                placeholder={placeholder}
-                onBlur={onBlur}
-              />
-            );
-          })}
-          <ImageFormButton form={form} />
-        </form>
-      </Form>
+      <ImageForm page={page} fileInputRef={fileInputRef} />
       <Input
         className="hidden"
         type="file"

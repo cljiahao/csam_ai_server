@@ -7,9 +7,9 @@ import {
 import { usePanZoom } from "../hooks/usePanZoom";
 
 const CanvasOnImage = () => {
-  const { imageDetails } = useImageDetailsContext();
   const { display, resetZoom } = useDisplayContext();
   const { marks, updateMarkSelected } = useCanvasContext();
+  const { imageDetails } = useImageDetailsContext();
   const [onWheel, onPanning] = usePanZoom();
 
   const imageObj = useMemo(() => {
@@ -19,7 +19,6 @@ const CanvasOnImage = () => {
     return "";
   }, [imageDetails.image]);
 
-  // TODO: Remove panning to a higher order in the component or convert to global component
 
   return (
     // TODO: Add animation ease-out

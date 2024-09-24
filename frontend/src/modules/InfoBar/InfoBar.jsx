@@ -1,15 +1,13 @@
 import { InfoBarProvider } from "./contexts/InfoBarProvider";
-import InfoBarDetails from "./components/InfoBarDetails/InfoBarDetails";
-import InfoBarUpload from "./components/InfoBarUpload/ImageForm";
-import InfoBarSheet from "./components/InfoBarSheet/InfoBarSheet";
+import { InfoBarDetails, InfoBarSheet, InfoBarUpload } from "./components";
 
-const InfoBar = ({ mode }) => {
+const InfoBar = ({ page }) => {
   return (
     <InfoBarProvider>
       <div className="flex-between h-20 w-full flex-shrink-0 gap-3 px-3">
         <InfoBarSheet />
-        <InfoBarDetails mode={mode} />
-        <InfoBarUpload mode={mode} />
+        <InfoBarDetails page={page} />
+        <InfoBarUpload page={page} />
       </div>
     </InfoBarProvider>
   );

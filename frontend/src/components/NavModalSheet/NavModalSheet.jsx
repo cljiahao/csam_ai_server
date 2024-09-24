@@ -12,14 +12,11 @@ import {
 } from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import NavMenu from "./components/NavMenu";
-import { useOpenChange } from "./hooks/useOpenChange";
 
-const NavModalSheet = ({ children, bool_function }) => {
-  const [isOpen, onOpenChange] = useOpenChange(bool_function);
-
+const NavModalSheet = ({ children, ...props }) => {
   return (
     <IconContext.Provider value={{ size: "2.5em" }}>
-      <Sheet isOpen={isOpen} onOpenChange={onOpenChange} className>
+      <Sheet {...props}>
         <SheetTrigger>
           <IoMenu />
         </SheetTrigger>

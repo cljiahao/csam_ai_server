@@ -10,8 +10,8 @@ import { useImageDetails } from "@/hooks/useImageDetails";
 
 export const AppProvider = ({ children }) => {
   const statePanZoom = useDisplay();
-  const stateImageDetails = useImageDetails();
   const stateMarkCanvas = useMarkCanvas();
+  const stateImageDetails = useImageDetails();
 
   return (
     <HelmetProvider>

@@ -26,28 +26,25 @@ export function useMarkCanvas() {
     image.src = imageUrl;
   }, []);
 
-  const updateMarks = useCallback(
-    (chip_details) => {
-      const updatedMarks = Object.entries(chip_details).flatMap(
-        ([batch, file_names]) =>
-          file_names.map((file_name) => {
-            const [norm_x, norm_y] = coordNormalize({ file_name });
-            const default_circle = MARKERS.marks.find(
-              ({ id }) => id == file_name[0],
-            );
-            return {
-              id: file_name,
-              batch,
-              norm_x,
-              norm_y,
-              circle: default_circle,
-            };
-          }),
-      );
-      setMarks(updatedMarks);
-    },
-    [coordNormalize],
-  );
+  const updateMarks = (chip_details) => {
+    const updatedMarks = Object.entries(chip_details).flatMap(
+      ([batch, file_names]) =>
+        file_names.map((file_name) => {
+          const [norm_x, norm_y] = coordNormalize({ file_name });
+          const default_circle = MARKERS.marks.find(
+            ({ id }) => id == file_name[0],
+          );
+          return {
+            id: file_name,
+            batch: batch,
+            norm_x: norm_x,
+            norm_y: norm_y,
+            circle: default_circle,
+          };
+        }),
+    );
+    setMarks(updatedMarks);
+  };
 
   const updateMarkSelected = useCallback(
     (e) => {

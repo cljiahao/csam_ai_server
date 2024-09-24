@@ -1,9 +1,9 @@
+import { AppProvider } from "@/contexts/provider";
 import { Separator } from "@/components/ui/separator";
 import { Toaster } from "@/components/ui/toaster";
-import { AppProvider } from "@/contexts/provider";
 import { Gallery, ImageHolder, InfoBar } from "@/modules";
 
-const mode = "CDC";
+const page = "CDC";
 
 const CsamDC = () => {
   return (
@@ -13,9 +13,9 @@ const CsamDC = () => {
           <ImageHolder />
         </section>
         <aside className="flex h-full w-3/5 flex-col border-l-2 border-slate-400">
-          <InfoBar mode={mode} />
+          <InfoBar page={page} />
           <Separator className="h-[0.15em] bg-slate-400" />
-          <Gallery mode={mode} />
+          <Gallery page={page} />
         </aside>
       </main>
       <Toaster />
