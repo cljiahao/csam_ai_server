@@ -25,7 +25,6 @@ router = APIRouter()
     operation_id="UploadFile",
 )
 def process_image(
-    # module: Annotated[Module, Path(description="Module type", enum=Module)],
     module: Module,
     lot_no: Annotated[str, Path(description="Lot Number", pattern="[a-zA-Z0-9]{10}")],
     item: Annotated[str, Path(description="Item Type")],
@@ -47,7 +46,6 @@ def process_image(
     operation_id="SaveLocal",
 )
 def save_local(
-    # module: Annotated[Module, Path(description="Module type", enum=Module)],
     module: Module,
     lot_no: Annotated[str, Path(description="Lot Number", pattern="[a-zA-Z0-9]{10}")],
     plate: Annotated[str, Path(description="Plate")],
@@ -64,9 +62,6 @@ def save_local(
         return True
     except Exception as e:
         handle_exceptions(e)
-
-
-# TODO: Change the settings.json update to match the latest json format
 
 
 @router.post(

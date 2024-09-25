@@ -12,6 +12,9 @@ from core.directory import directory
 from core.logging import logger
 
 
+# TODO: Update the zipping and uploading settings, please do pytest for this.
+
+
 def unzip_files(file: BinaryIO):
     """Unzip files and store them into settings and model folders."""
 

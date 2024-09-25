@@ -64,7 +64,6 @@ def get_image(
     summary="Return count stored in database.",
 )
 def get_processed_count(
-    # module: Annotated[Module, Path(description="Module type", enum=Module)],
     module: Module,
     lot_no: Annotated[str, Path(description="Lot Number", pattern="[a-zA-Z0-9]{10}")],
     plate_no: Annotated[str, Path(description="Plate No")],
