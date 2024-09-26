@@ -1,4 +1,4 @@
-ARG PYTHON=python:3.10.14-slim
+ARG PYTHON=python:3.11.10-slim
 
 FROM $PYTHON AS prod
 WORKDIR /api

@@ -6,13 +6,13 @@ from zipfile import ZipFile
 from shutil import copyfileobj
 
 import core.constants as core_consts
-import utils.osHandle.constants as osHandle_constants
 from core.exceptions import MissingSettings
 from core.directory import directory
 from core.logging import logger
+from utils.fileHandle.json import validate_settings_format
 
 
-# TODO: Update the zipping and uploading settings, please do pytest for this.
+MODELS_EXT: list[str] = [".h5", ".txt"]
 
 
 def unzip_files(file: BinaryIO):
@@ -52,10 +52,9 @@ def zip_file_exists(name_list: list[str]):
                 holder[f_name] = []
             holder[f_name].append(ext)
 
+        # Models .h5 and .txt file only
         for extensions in holder.values():
-            if len(extensions) != 2 and sorted(extensions) != sorted(
-                osHandle_constants.MODELS_EXT
-            ):
+            if len(extensions) != 2 and sorted(extensions) != sorted(MODELS_EXT):
                 std_out = f"Some files in zip file does not match requirement."
                 logger.error(std_out)
                 raise ValueError(std_out)
@@ -84,15 +83,14 @@ def update_settings(file: BinaryIO, file_name: str):
 def check_settings_format(file: BinaryIO):
     """Check if uploaded new settings file matches current configuration."""
 
-    data = json.load(file)
+    read_data = json.load(file)
+    settings_group = read_data.get("settingsGroup", [])
 
-    required_keys = {"erode", "close"}
-    required_sections = {"batch", "chip"}
+    for item_settings in settings_group:
+        item = item_settings["item"]
+        settings = item_settings["settings"]
 
-    for key, value in data.items():
-        if not required_sections.issubset(value.keys()) or not all(
-            required_keys.issubset(v.keys()) for v in value.values()
-        ):
-            std_out = f"{key} in Settings file missing some key configuration."
-            logger.error(std_out)
-            raise MissingSettings(std_out)
+        std_out = validate_settings_format(settings)
+        if std_out:
+            logger.error(f"Item : {item} {std_out}")
+            raise MissingSettings(f"Item : {item} {std_out}")
