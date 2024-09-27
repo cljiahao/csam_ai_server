@@ -38,9 +38,9 @@ def mock_logger(mock_func_logger: MagicMock) -> MagicMock:
 @pytest.fixture
 def mock_iterdir(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     """Mocks the iterdir function of Path for temp and plate paths."""
-    mock_iterdir = MagicMock()
-    monkeypatch.setattr(Path, "iterdir", mock_iterdir)
-    return mock_iterdir
+    mock = MagicMock()
+    monkeypatch.setattr(Path, "iterdir", mock)
+    return mock
 
 
 @pytest.fixture

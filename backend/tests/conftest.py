@@ -144,6 +144,24 @@ def sample_file_names() -> list[str]:
 
 
 @pytest.fixture
+def sample_settings_group(
+    sample_lot_details: dict[str, str]
+) -> dict[str, list[dict[str, str | dict[str, dict[str, list[int]]]]]]:
+    """Sample settings group fixture."""
+    return {
+        "settingsGroup": [
+            {
+                "item": sample_lot_details["item"],
+                "settings": {
+                    "batch": {"erode": [1, 1], "close": [1, 1]},
+                    "chip": {"erode": [1, 1], "close": [1, 1]},
+                },
+            },
+        ]
+    }
+
+
+@pytest.fixture
 def sample_color_group(
     sample_lot_details: dict[str, str]
 ) -> dict[str, list[dict[str, str]]]:

@@ -21,8 +21,9 @@ def check_lot(lot_no: str) -> str | None:
         response.raise_for_status()
         prass = response.json()
     except requests.RequestException as e:
-        print(f"Error fetching data from PRASS server: {e}")
-        logger.error(f"Error fetching data from PRASS server: {e}")
+        std_out = f"Error fetching data from PRASS server: {e}"
+        print(std_out)
+        logger.error(std_out)
         raise
 
     if not prass[service_settings.LOT_COLUMN]:

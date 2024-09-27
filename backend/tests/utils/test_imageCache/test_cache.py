@@ -60,10 +60,9 @@ def mock_sample_files(
 def mock_get_colors_json(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     """Fixture to mock the get_colors_json function."""
 
-    mock_colors = MagicMock(return_value=sample_colors)
-    monkeypatch.setattr("utils.imageCache.cache.get_colors_json", mock_colors)
-
-    return mock_colors
+    mock = MagicMock(return_value=sample_colors)
+    monkeypatch.setattr("utils.imageCache.cache.get_colors_json", mock)
+    return mock
 
 
 def test_get_cache_data(

@@ -34,10 +34,9 @@ def mock_path_methods(
 def mock_save_original(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     """Fixture to mock save_original function."""
 
-    mock_save = MagicMock(return_value=MOCK_DECODED_IMAGE)
-    monkeypatch.setattr("utils.osHandle.initialize.save_original", mock_save)
-
-    return mock_save
+    mock = MagicMock(return_value=MOCK_DECODED_IMAGE)
+    monkeypatch.setattr("utils.osHandle.initialize.save_original", mock)
+    return mock
 
 
 def test_initialize_success(

@@ -64,7 +64,7 @@ def update_model(zipf: ZipFile, file_name: str):
     """Update model folder with new uploaded models."""
 
     zipf.extract(file_name, directory.model_dir)
-    logger.info("Extracted %s", file_name)
+    logger.info(f"Extracted {file_name}")
 
 
 def update_settings(file: BinaryIO, file_name: str):
@@ -77,7 +77,7 @@ def update_settings(file: BinaryIO, file_name: str):
     with open(file_path, "wb+") as f:
         copyfileobj(file, f)
 
-    logger.info("Extracted %s", file_name)
+    logger.info(f"Extracted {file_name}")
 
 
 def check_settings_format(file: BinaryIO):

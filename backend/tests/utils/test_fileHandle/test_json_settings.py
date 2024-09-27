@@ -10,22 +10,6 @@ from utils.fileHandle.json import (
 
 
 @pytest.fixture
-def sample_settings_group(sample_lot_details: dict[str, str]) -> dict[str, dict]:
-    """Sample settings group fixture."""
-    return {
-        "settingsGroup": [
-            {
-                "item": sample_lot_details["item"],
-                "settings": {
-                    "batch": {"erode": [1, 1], "close": [1, 1]},
-                    "chip": {"erode": [1, 1], "close": [1, 1]},
-                },
-            },
-        ]
-    }
-
-
-@pytest.fixture
 def mock_logger(mock_func_logger: MagicMock) -> MagicMock:
     """Provide a mock logger for testing."""
     return mock_func_logger("utils.fileHandle.json.logger")

@@ -18,19 +18,17 @@ def mock_logger(mock_func_logger: MagicMock) -> MagicMock:
 def mock_exists(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     """Mocks the Path.exists method."""
 
-    mock_exists = MagicMock(return_value=True)
-    monkeypatch.setattr(Path, "exists", mock_exists)
-
-    return mock_exists
+    mock = MagicMock(return_value=True)
+    monkeypatch.setattr(Path, "exists", mock)
+    return mock
 
 
 @pytest.fixture
 def mock_load_model(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
 
-    mock_load_model = MagicMock()
-    monkeypatch.setattr(models, "load_model", mock_load_model)
-
-    return mock_load_model
+    mock = MagicMock()
+    monkeypatch.setattr(models, "load_model", mock)
+    return mock
 
 
 def test_load_model_success(
@@ -84,11 +82,10 @@ def mock_np_modules(monkeypatch: pytest.MonkeyPatch) -> tuple[MagicMock, MagicMo
 @pytest.fixture
 def mock_g_constant(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
 
-    mock_g_constants = MagicMock()
-    mock_g_constants.G_TYPES = ["G"]
-    monkeypatch.setattr("core.constants", mock_g_constants)
-
-    return mock_g_constants
+    mock = MagicMock()
+    mock.G_TYPES = ["G"]
+    monkeypatch.setattr("core.constants", mock)
+    return mock
 
 
 @pytest.mark.skip("Need to create samples for how prediction looks like.")

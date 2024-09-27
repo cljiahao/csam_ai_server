@@ -35,7 +35,6 @@ def test_process_image_success(
     mock_process_n_predict: MagicMock,
 ) -> None:
     """Tests image processing success scenarios."""
-
     mock_lot_no = sample_lot_details["lotNo"]
     mock_item = sample_lot_details["item"]
 
@@ -53,7 +52,7 @@ def test_process_image_success(
     assert response.json() == sample_res_dict
 
 
-def test_get_processed_count_exception(
+def test_process_image_exception(
     test_client: TestClient,
     sample_lot_details: dict[str, str],
     mock_file_methods: tuple[MagicMock, MagicMock],

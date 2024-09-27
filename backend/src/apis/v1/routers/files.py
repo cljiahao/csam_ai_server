@@ -73,7 +73,7 @@ def upload_settings(
     file: UploadFile = File(description="Upload settings.json file."),
 ) -> bool:
 
-    logger.info("%s uploaded", file.filename)
+    logger.info(f"{file.filename} uploaded")
     try:
         update_settings(file.file, file.filename)
         return True
@@ -92,7 +92,7 @@ def upload_zip(
     ),
 ) -> bool:
 
-    logger.info("%s uploaded", file.filename)
+    logger.info(f"{file.filename} uploaded")
     try:
         unzip_files(file.file)
         return True

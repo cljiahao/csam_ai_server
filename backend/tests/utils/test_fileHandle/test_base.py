@@ -14,10 +14,9 @@ MOCK_TXT_FILE_PATH = "./path/test.txt"
 def mock_exists(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     """Mocks the Path.exists method."""
 
-    mock_exists = MagicMock(return_value=True)
-    monkeypatch.setattr(Path, "exists", mock_exists)
-
-    return mock_exists
+    mock = MagicMock(return_value=True)
+    monkeypatch.setattr(Path, "exists", mock)
+    return mock
 
 
 @pytest.fixture
@@ -25,10 +24,9 @@ def mock_func_file_open(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     """Fixture to mock file opening."""
 
     def _mock_func_file_open(read_data: str) -> MagicMock:
-        mock_file_open = mock_open(read_data=read_data)
-        monkeypatch.setattr("builtins.open", mock_file_open)
-
-        return mock_file_open
+        mock = mock_open(read_data=read_data)
+        monkeypatch.setattr("builtins.open", mock)
+        return mock
 
     return _mock_func_file_open
 

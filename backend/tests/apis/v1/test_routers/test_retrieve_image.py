@@ -8,9 +8,9 @@ def mock_func_check_lot(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     """Fixture that mocks the check_lot method."""
 
     def _mock_func_check_lot(item: str = "") -> MagicMock:
-        mock_check_lot = MagicMock(return_value=item)
-        monkeypatch.setattr("apis.v1.routers.retrieve.check_lot", mock_check_lot)
-        return mock_check_lot
+        mock = MagicMock(return_value=item)
+        monkeypatch.setattr("apis.v1.routers.retrieve.check_lot", mock)
+        return mock
 
     return _mock_func_check_lot
 

@@ -15,9 +15,9 @@ def mock_func_read_txt(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     """Fixture to mock the read_txt function."""
 
     def _mock_func_read_txt(value: list[str]) -> MagicMock:
-        mock_read_txt = MagicMock(return_value=value)
-        monkeypatch.setattr("utils.fileHandle.txt.read_txt", mock_read_txt)
-        return mock_read_txt
+        mock = MagicMock(return_value=value)
+        monkeypatch.setattr("utils.fileHandle.txt.read_txt", mock)
+        return mock
 
     return _mock_func_read_txt
 
