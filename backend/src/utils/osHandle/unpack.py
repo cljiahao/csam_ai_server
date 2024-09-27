@@ -85,7 +85,8 @@ def check_settings_format(file: BinaryIO, file_name: str) -> None:
 
     if file_name != core_consts.SETTINGS_FILENAME:
         log_and_raise(
-            FileNotFoundError, f"{core_consts.SETTINGS_FILENAME} not found in Zip File."
+            FileNotFoundError,
+            f"{file_name} must be named {core_consts.SETTINGS_FILENAME}.",
         )
 
     read_data = json.load(file)

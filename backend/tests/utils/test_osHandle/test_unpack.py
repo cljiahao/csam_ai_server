@@ -77,7 +77,7 @@ def test_zip_file_exists_wrong_model_files(
     with pytest.raises(ValueError) as exc_info:
         zip_file_exists(sample_name_list)
 
-    expected_message = "Some files in zip file do not match requirement."
+    expected_message = "Some files in the zip file do not match requirements."
     assert str(exc_info.value) == expected_message
     mock_logger.error.assert_called_once_with(expected_message)
 
@@ -96,6 +96,20 @@ def test_check_settings_format_success(
 
 
 def test_check_settings_format_invalid_file_name(
+    mock_logger: MagicMock,
+) -> None:
+    """Test check_settings_format with invalid file_name."""
+
+    file_name = "test.json"
+    with pytest.raises(FileNotFoundError) as exc_info:
+        check_settings_format(MagicMock(), file_name)
+
+    expected_message = f"{file_name} must be named {core_consts.SETTINGS_FILENAME}."
+    assert str(exc_info.value) == expected_message
+    mock_logger.error.assert_called_once_with(expected_message)
+
+
+def test_check_settings_format_invalid_settings(
     sample_lot_details: dict[str, str],
     mock_logger: MagicMock,
     mock_json_load: MagicMock,
@@ -106,29 +120,10 @@ def test_check_settings_format_invalid_file_name(
     mock_validate_settings_format = mock_func_validate_settings_format(std_out)
 
     with pytest.raises(MissingSettings) as exc_info:
-        check_settings_format(MagicMock(), "test.json")
-
-    mock_json_load.assert_called_once()
-    mock_validate_settings_format.assert_called_once()
-    expected_message = f"Item : {sample_lot_details['item']} {std_out}"
-    assert str(exc_info.value) == expected_message
-    mock_logger.error.assert_called_once_with(expected_message)
-
-
-def test_check_settings_format_invalid_settings(
-    mock_logger: MagicMock,
-    mock_json_load: MagicMock,
-    mock_func_validate_settings_format: MagicMock,
-) -> None:
-    """Test check_settings_format with invalid settings."""
-    std_out = "invalid"
-    mock_validate_settings_format = mock_func_validate_settings_format(std_out)
-
-    with pytest.raises(FileNotFoundError) as exc_info:
         check_settings_format(MagicMock(), core_consts.SETTINGS_FILENAME)
 
     mock_json_load.assert_called_once()
     mock_validate_settings_format.assert_called_once()
-    expected_message = f"{core_consts.SETTINGS_FILENAME} not found in Zip File."
+    expected_message = f"Item : {sample_lot_details['item']} {std_out}"
     assert str(exc_info.value) == expected_message
     mock_logger.error.assert_called_once_with(expected_message)
