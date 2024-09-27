@@ -1,7 +1,7 @@
 from utils.fileHandle.json import validate_colors_hex
 
 
-def test_validate_colors_hex_valid():
+def test_validate_colors_hex_valid() -> None:
     """Test validate_colors_hex with valid settings."""
     sample_colors = [
         {"category": "NG", "hex": "#FFFFFF"},
@@ -11,7 +11,7 @@ def test_validate_colors_hex_valid():
     assert result == sample_colors
 
 
-def test_validate_colors_hex_invalid():
+def test_validate_colors_hex_invalid() -> None:
     """Test validate_colors_hex with valid settings."""
     sample_colors = [
         {"category": "NG", "hex": "invalid"},

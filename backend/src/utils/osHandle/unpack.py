@@ -1,7 +1,7 @@
 import io
 import json
 from pathlib import Path
-from typing import BinaryIO
+from typing import BinaryIO, List
 from zipfile import ZipFile
 from shutil import copyfileobj
 
@@ -12,65 +12,65 @@ from core.logging import logger
 from utils.fileHandle.json import validate_settings_format
 
 
-MODELS_EXT: list[str] = [".h5", ".txt"]
+MODELS_EXT: List[str] = [".h5", ".txt"]
 
 
-def unzip_files(file: BinaryIO):
+def log_and_raise(exception_class, message: str) -> None:
+    """Log an error message and raise an exception."""
+    logger.error(message)
+    raise exception_class(message)
+
+
+def unzip_files(file: BinaryIO) -> None:
     """Unzip files and store them into settings and model folders."""
-
     with ZipFile(io.BytesIO(file.read()), "r") as zipf:
-        # Get a list of filenames in zip file
         name_list = zipf.namelist()
-        # Check for correct files in zip
-        zip_file_exists(name_list)
+        model_list = zip_file_exists(name_list)
 
-        for file_name in name_list:
-            if file_name == core_consts.SETTINGS_FILENAME:
-                with zipf.open(file_name) as settings_file:
-                    update_settings(settings_file, file_name)
-            else:
-                update_model(zipf, file_name)
+        with zipf.open(core_consts.SETTINGS_FILENAME) as settings_file:
+            update_settings(settings_file)
+
+        for file_name in model_list:
+            update_model(zipf, file_name)
 
 
-def zip_file_exists(name_list: list[str]):
-    """Check if file is correct format in zip file."""
-
+def zip_file_exists(name_list: List[str]) -> None:
+    """Check if the required files are present in the zip file."""
     if core_consts.SETTINGS_FILENAME not in name_list:
-        std_out = f"{core_consts.SETTINGS_FILENAME} not found in Zip File."
-        logger.error(std_out)
-        raise FileNotFoundError(std_out)
+        log_and_raise(
+            FileNotFoundError, f"{core_consts.SETTINGS_FILENAME} not found in Zip File."
+        )
 
     model_list = [
         fname for fname in name_list if fname != core_consts.SETTINGS_FILENAME
     ]
-
     if model_list:
         holder = {}
         for file_name in model_list:
             f_name, ext = Path(file_name).stem, Path(file_name).suffix
-            if f_name not in holder:
-                holder[f_name] = []
-            holder[f_name].append(ext)
+            holder.setdefault(f_name, []).append(ext)
 
-        # Models .h5 and .txt file only
         for extensions in holder.values():
-            if len(extensions) != 2 and sorted(extensions) != sorted(MODELS_EXT):
-                std_out = f"Some files in zip file does not match requirement."
-                logger.error(std_out)
-                raise ValueError(std_out)
+            if len(extensions) != 2 or sorted(extensions) != sorted(MODELS_EXT):
+                log_and_raise(
+                    ValueError, "Some files in the zip file do not match requirements."
+                )
+
+    return model_list
 
 
-def update_model(zipf: ZipFile, file_name: str):
+def update_model(zipf: ZipFile, file_name: str) -> None:
     """Update model folder with new uploaded models."""
-
     zipf.extract(file_name, directory.model_dir)
     logger.info(f"Extracted {file_name}")
 
 
-def update_settings(file: BinaryIO, file_name: str):
+def update_settings(
+    file: BinaryIO, file_name: str = core_consts.SETTINGS_FILENAME
+) -> None:
     """Update settings file with new uploaded file."""
 
-    check_settings_format(file)
+    check_settings_format(file, file_name)
     file.seek(0)
 
     file_path = directory.json_dir / file_name
@@ -80,8 +80,13 @@ def update_settings(file: BinaryIO, file_name: str):
     logger.info(f"Extracted {file_name}")
 
 
-def check_settings_format(file: BinaryIO):
-    """Check if uploaded new settings file matches current configuration."""
+def check_settings_format(file: BinaryIO, file_name: str) -> None:
+    """Check if the uploaded settings file matches current configuration."""
+
+    if file_name != core_consts.SETTINGS_FILENAME:
+        log_and_raise(
+            FileNotFoundError, f"{core_consts.SETTINGS_FILENAME} not found in Zip File."
+        )
 
     read_data = json.load(file)
     settings_group = read_data.get("settingsGroup", [])
@@ -92,5 +97,4 @@ def check_settings_format(file: BinaryIO):
 
         std_out = validate_settings_format(settings)
         if std_out:
-            logger.error(f"Item : {item} {std_out}")
-            raise MissingSettings(f"Item : {item} {std_out}")
+            log_and_raise(MissingSettings, f"Item : {item} {std_out}")

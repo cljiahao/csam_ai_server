@@ -52,7 +52,12 @@ def start_application() -> FastAPI:
 app = start_application()
 
 
-@app.get("/")
+@app.get(
+    "/",
+    tags=["Home"],
+    summary="Home Route",
+    description="A simple home route returning a welcome message.",
+)
 def home() -> dict[str, str]:
     """Simple home route."""
     return {"msg": "Hello Fast_API 🚀"}

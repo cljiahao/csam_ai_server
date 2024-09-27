@@ -3,7 +3,7 @@ from utils.fileHandle.json import (
 )
 
 
-def test_check_settings_format_valid():
+def test_check_settings_format_valid() -> None:
     """Test check_settings_format with valid settings."""
     sample_settings = {
         "batch": {"erode": [1, 1], "close": [1, 1]},
@@ -20,7 +20,7 @@ def test_check_settings_format_missing_key():
     assert validate_settings_format(sample_settings) == "missing key: chip."
 
 
-def test_check_settings_format_missing_sub_key():
+def test_check_settings_format_missing_sub_key() -> None:
     """Test check_settings_format with missing sub key."""
     sample_settings = {
         "batch": {"erode": [1, 1]},

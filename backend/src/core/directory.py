@@ -2,7 +2,10 @@ from pathlib import Path
 
 
 class Directory:
-    def __init__(self):
+    """Handles directory paths and folder creation for the application."""
+
+    def __init__(self) -> None:
+        """Initialize directory paths."""
         self.base_dir = Path(__file__).resolve().parent.parent.parent
 
         # Log folder
@@ -19,6 +22,7 @@ class Directory:
         self.data_send_dir = self.data_dir / "datasend"
 
     def create_folders(self) -> None:
+        """Create necessary folders for logging, configuration, and data."""
         folders = [
             self.log_dir,
             self.json_dir,
@@ -26,12 +30,13 @@ class Directory:
             self.images_dir,
             self.data_send_dir,
         ]
-        for fol in folders:
+        for folder in folders:
             try:
-                fol.mkdir(parents=True, exist_ok=True)
+                folder.mkdir(parents=True, exist_ok=True)
             except Exception as e:
-                print(f"Failed to create directory {fol}: {e}")
+                print(f"Failed to create directory {folder}: {e}")
 
 
+# Instantiate Directory and create folders
 directory = Directory()
 directory.create_folders()

@@ -63,7 +63,7 @@ def process_n_predict(
         logger.info(stdout)
         return res_dict
 
-    # Process image to return indiivdual chip images
+    # Process image to return individual chip images
     count_dict, temp_dict, ng_dict = image_process(image, item, page.ai)
 
     lap, stdout = time_print("Processing image", start)
@@ -91,7 +91,7 @@ def process_n_predict(
     if page.ai:
         # Count number of predictions by AI model
         count_dict["no_of_pred"] = sum(
-            [len(chip_dict[x]) for x in chip_dict if isinstance(chip_dict[x], list)]
+            len(chip_dict[x]) for x in chip_dict if isinstance(chip_dict[x], list)
         )
 
     # Save processed initial data into DB if not exists

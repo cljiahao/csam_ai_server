@@ -20,7 +20,7 @@ def get_lot_detail(
         lot_detail = db.execute(statement).scalars().first()
         return lot_detail
     except Exception as e:
-        std_out = f"Error fetching details for {lot_no} : {plate_no} from database."
+        std_out = f"Error fetching details for {lot_no} : {plate_no} from the database."
         logger.error(std_out, exc_info=True)
         raise DatabaseError(std_out) from e
 
@@ -36,7 +36,7 @@ def create_lot_detail(
         db.refresh(detail_data)  # Refresh to ensure the object is up-to-date
         return detail_data
     except Exception as e:
-        std_out = f"Error creating details for {detail_data.lotNo} : {detail_data.plate} in database."
+        std_out = f"Error creating details for {detail_data.lotNo} : {detail_data.plate} in the database."
         logger.error(std_out, exc_info=True)
         db.rollback()
         raise DatabaseError(std_out) from e
@@ -57,7 +57,7 @@ def update_lot_detail(
         db.commit()
         return lot_detail
     except Exception as e:
-        std_out = f"Error updating details for {lot_no} : {plate_no} in database."
+        std_out = f"Error updating details for {lot_no} : {plate_no} in the database."
         logger.error(std_out, exc_info=True)
         db.rollback()
         raise DatabaseError(std_out) from e
