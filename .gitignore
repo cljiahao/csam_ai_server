@@ -22,6 +22,8 @@ cover/
 ## Frontend (React.js)
 node_modules/
 build/
+dist
+.vit
 .pnpm
 .npm
 .next

@@ -7,7 +7,7 @@ from fastapi.testclient import TestClient
 def mock_get_all_colors_json(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     """Fixture to mock the get_all_colors_json function."""
     mock = MagicMock()
-    monkeypatch.setattr("apis.v1.routers.defects.get_all_colors_json", mock)
+    monkeypatch.setattr("apis.v2.routers.defects.get_all_colors_json", mock)
     return mock
 
 
@@ -15,7 +15,7 @@ def mock_get_all_colors_json(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
 def mock_write_all_colors_json(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     """Fixture to mock the write_all_colors_json function."""
     mock = MagicMock()
-    monkeypatch.setattr("apis.v1.routers.defects.write_all_colors_json", mock)
+    monkeypatch.setattr("apis.v2.routers.defects.write_all_colors_json", mock)
     return mock
 
 
@@ -27,7 +27,7 @@ def test_get_all_colors_json_success(
     """Test successful retrieval of all colors."""
     mock_get_all_colors_json.return_value = sample_color_group["colorGroup"]
 
-    response = test_client.get("/v1/colors")
+    response = test_client.get("/v2/colors")
 
     mock_get_all_colors_json.assert_called_once()
     assert response.status_code == 200
@@ -40,7 +40,7 @@ def test_get_all_colors_json_exception(
     """Test retrieval of all colors when an exception occurs."""
     mock_get_all_colors_json.side_effect = Exception("Unexpected Error")
 
-    response = test_client.get("/v1/colors")
+    response = test_client.get("/v2/colors")
 
     mock_get_all_colors_json.assert_called_once()
     assert response.status_code == 400
@@ -55,7 +55,7 @@ def test_write_all_colors_json_success(
     mock_write_all_colors_json: MagicMock,
 ) -> None:
     """Test successful writing of all colors."""
-    response = test_client.post("/v1/colors", json=sample_color_group)
+    response = test_client.post("/v2/colors", json=sample_color_group)
 
     mock_write_all_colors_json.assert_called_once()
     assert response.status_code == 200
@@ -69,7 +69,7 @@ def test_write_all_colors_json_exception(
     """Test writing of all colors when an exception occurs."""
     mock_write_all_colors_json.side_effect = Exception("Unexpected Error")
 
-    response = test_client.post("/v1/colors", json=sample_color_group)
+    response = test_client.post("/v2/colors", json=sample_color_group)
 
     mock_write_all_colors_json.assert_called_once()
     assert response.status_code == 400
@@ -80,6 +80,6 @@ def test_write_all_colors_json_exception(
 
 def test_write_all_colors_json_invalid(test_client: TestClient) -> None:
     """Test writing of colors with invalid data."""
-    response = test_client.post("/v1/colors", json={})
+    response = test_client.post("/v2/colors", json={})
 
     assert response.status_code == 422

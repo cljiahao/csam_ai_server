@@ -9,7 +9,7 @@ def mock_func_check_lot(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
 
     def _mock_func_check_lot(item: str = "") -> MagicMock:
         mock = MagicMock(return_value=item)
-        monkeypatch.setattr("apis.v1.routers.retrieve.check_lot", mock)
+        monkeypatch.setattr("apis.v2.routers.retrieve.check_lot", mock)
         return mock
 
     return _mock_func_check_lot
@@ -39,7 +39,7 @@ def test_get_item_success(
     lot_no, item = sample_lot_no_item
     mock_check_lot = mock_func_check_lot(item)
 
-    response = test_client.get(f"/v1/item/{lot_no}")
+    response = test_client.get(f"/v2/item/{lot_no}")
 
     mock_check_lot.assert_called_once_with(lot_no)
     assert response.status_code == 200
@@ -55,7 +55,7 @@ def test_get_item_exception(
     mock_check_lot = mock_func_check_lot()
     mock_check_lot.side_effect = Exception("Not Found")
 
-    response = test_client.get(f"/v1/item/{lot_no}")
+    response = test_client.get(f"/v2/item/{lot_no}")
 
     mock_check_lot.assert_called_once_with(lot_no)
     assert response.status_code == 400
@@ -69,6 +69,6 @@ def test_get_item_invalid(test_client: TestClient) -> None:
 
     lot_no = "invalid"
 
-    response = test_client.get(f"/v1/item/{lot_no}")
+    response = test_client.get(f"/v2/item/{lot_no}")
 
     assert response.status_code == 422

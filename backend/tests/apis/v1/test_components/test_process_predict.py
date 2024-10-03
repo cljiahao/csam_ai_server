@@ -4,8 +4,8 @@ from pathlib import Path
 from sqlalchemy.orm import Session
 from unittest.mock import MagicMock
 
-from apis.v1.components.process_predict import process_n_predict
-from apis.v1.schemas.base import CAIPage, CDCPage
+from apis.v2.components.process_predict import process_n_predict
+from apis.v2.schemas.base import CAIPage, CDCPage
 from core.directory import directory
 
 
@@ -32,7 +32,7 @@ def sample_process_dicts(
 @pytest.fixture
 def mock_logger(mock_func_logger: MagicMock) -> MagicMock:
     """Mocks the logger for process prediction."""
-    return mock_func_logger("apis.v1.components.process_predict.logger")
+    return mock_func_logger("apis.v2.components.process_predict.logger")
 
 
 @pytest.fixture
@@ -49,7 +49,7 @@ def mock_process_predict_funcs(
 ) -> tuple[MagicMock, MagicMock, MagicMock, MagicMock, MagicMock, MagicMock]:
     """Mocks functions involved in process and prediction workflow."""
 
-    import_path = "apis.v1.components.process_predict."
+    import_path = "apis.v2.components.process_predict."
 
     mock_initialize = MagicMock()
     mock_get_lot_detail = MagicMock()

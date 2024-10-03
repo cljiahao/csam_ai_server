@@ -1,6 +1,7 @@
 # API (HTTP)
 fastapi==0.110.1                    # API (Backend <==> Frontend)              
 uvicorn==0.29.0                     # To run FastAPI
+pydantic_settings==2.4.0            # Defining type-checked “settings” objects
 python-multipart==0.0.9             # Form Data Usage
 requests==2.31.0                    # HTTP Request
 

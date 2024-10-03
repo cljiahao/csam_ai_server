@@ -16,7 +16,7 @@ const Home = () => {
     <IconContext.Provider value={{ size: "6em" }}>
       <div className="flex-between h-screen gap-8 bg-amber-100 px-10 py-5">
         {navigation_info
-          .filter((info) => info.name !== "home")
+          .filter((info) => info.name.toLowerCase() !== "home")
           .map((info) => (
             <Link key={info.name} to={info.url} className="hw-full">
               <Card className="flex-center hw-full hover:scale-105">

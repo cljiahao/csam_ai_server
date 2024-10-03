@@ -1,6 +1,6 @@
 import re
 
-from apis.v1.schemas.defects import CategoryHex
+from apis.v2.schemas.defects import CategoryHex
 import core.constants as core_consts
 from core.directory import directory
 from core.exceptions import MissingSettings

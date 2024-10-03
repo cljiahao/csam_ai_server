@@ -1,9 +1,9 @@
 from enum import Enum
 from fastapi import APIRouter
 
-from apis.v1.routers import defects
-from apis.v1.routers import files
-from apis.v1.routers import retrieve
+from apis.v2.routers import defects
+from apis.v2.routers import files
+from apis.v2.routers import retrieve
 
 
 class APITag(str, Enum):

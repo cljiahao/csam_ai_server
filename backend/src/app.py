@@ -38,7 +38,7 @@ def start_application() -> FastAPI:
     app = FastAPI(
         title=common_settings.PROJECT_NAME,
         version=common_settings.PROJECT_VERSION,
-        root_path=api_settings.FASTAPI_ROOT,
+        root_path="/api",
     )
 
     configure_cors(app)

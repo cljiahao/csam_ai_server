@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import MagicMock
 from fastapi.testclient import TestClient
 
-from apis.v1.schemas.base import Module
+from apis.v2.schemas.base import Module
 
 
 @pytest.fixture
@@ -21,7 +21,7 @@ def sample_res_dict() -> dict[str, str | dict[str, list[str]]]:
 def mock_process_n_predict(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     """Mocks the process_n_predict function."""
     mock = MagicMock()
-    monkeypatch.setattr("apis.v1.routers.files.process_n_predict", mock)
+    monkeypatch.setattr("apis.v2.routers.files.process_n_predict", mock)
     return mock
 
 
@@ -44,7 +44,7 @@ def test_process_image_success(
     mock_process_n_predict.return_value = sample_res_dict
 
     response = test_client.post(
-        f"/v1/upload/image/{mock_module}/{mock_lot_no}/{mock_item}", files=file_data
+        f"/v2/upload/image/{mock_module}/{mock_lot_no}/{mock_item}", files=file_data
     )
 
     mock_process_n_predict.assert_called_once()
@@ -69,7 +69,7 @@ def test_process_image_exception(
     file_data = {"file": (mock_file.filename, mock_file.file.read(), "image/png")}
 
     response = test_client.post(
-        f"/v1/upload/image/{mock_module}/{mock_lot_no}/{mock_item}", files=file_data
+        f"/v2/upload/image/{mock_module}/{mock_lot_no}/{mock_item}", files=file_data
     )
 
     mock_process_n_predict.assert_called_once()
@@ -114,7 +114,7 @@ def test_process_image_invalid(
         )
 
     response = test_client.post(
-        f"/v1/upload/image/{mock_module}/{mock_lot_no}/{mock_item}",
+        f"/v2/upload/image/{mock_module}/{mock_lot_no}/{mock_item}",
         files=mock_file_data,
     )
 

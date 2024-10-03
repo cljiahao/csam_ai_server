@@ -4,10 +4,10 @@ from fastapi import Depends, Path
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 
-from apis.v1.helpers.HTTPExceptions import handle_exceptions
-from apis.v1.helpers.pages import get_page
-from apis.v1.schemas.base import Module
-from apis.v1.schemas.retrieve import CountResult, Item
+from apis.v2.helpers.HTTPExceptions import handle_exceptions
+from apis.v2.helpers.pages import get_page
+from apis.v2.schemas.base import Module
+from apis.v2.schemas.retrieve import CountResult, Item
 from db.CRUD.csam import get_lot_detail
 from db.session import get_db
 from core.logging import logger

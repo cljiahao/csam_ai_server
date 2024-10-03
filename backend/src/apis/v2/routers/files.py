@@ -3,11 +3,11 @@ from sqlalchemy.orm import Session
 from fastapi import File, Depends, Path
 from fastapi import APIRouter, UploadFile
 
-from apis.v1.components.process_predict import process_n_predict
-from apis.v1.helpers.HTTPExceptions import handle_exceptions
-from apis.v1.helpers.pages import get_page
-from apis.v1.schemas.base import Module
-from apis.v1.schemas.files import ChipData
+from apis.v2.components.process_predict import process_n_predict
+from apis.v2.helpers.HTTPExceptions import handle_exceptions
+from apis.v2.helpers.pages import get_page
+from apis.v2.schemas.base import Module
+from apis.v2.schemas.files import ChipData
 from core.logging import logger
 from db.CRUD.csam import update_lot_detail
 from db.session import get_db

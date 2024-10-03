@@ -2,8 +2,8 @@ from typing import Annotated
 from fastapi import Path
 from fastapi import APIRouter
 
-from apis.v1.helpers.HTTPExceptions import handle_exceptions
-from apis.v1.schemas.defects import ColorGroup, Colors
+from apis.v2.helpers.HTTPExceptions import handle_exceptions
+from apis.v2.schemas.defects import ColorGroup, Colors
 from utils.fileHandle.json import (
     get_all_colors_json,
     get_colors_json,

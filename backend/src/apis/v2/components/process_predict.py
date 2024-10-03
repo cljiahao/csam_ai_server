@@ -4,7 +4,7 @@ from pathlib import Path
 from sqlalchemy.orm import Session
 
 
-from apis.v1.schemas.base import CAIPage, CDCPage
+from apis.v2.schemas.base import CAIPage, CDCPage
 from core.directory import directory
 from core.logging import logger
 from db.CRUD.csam import create_lot_detail, get_lot_detail

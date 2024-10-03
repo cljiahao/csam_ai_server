@@ -17,16 +17,15 @@ class CommonSettings(Settings):
     """Common settings for the application."""
 
     PROJECT_NAME: str = "CSAM AI SERVER"
-    PROJECT_VERSION: str = "v1.0.0"
+    PROJECT_VERSION: str = "v2.0.0"
     ENV_STAGE: str = "stage"
 
 
 class APISettings(Settings):
     """API-specific settings."""
 
-    FASTAPI_ROOT: str = "/api"
     PC_NAME: str = "localhost"
-    NGINX_PORT: int = 5173
+    NGINX_PORT: int = 8080
     API_PORT: int = 8000
 
     @property
@@ -36,11 +35,6 @@ class APISettings(Settings):
             f"http://{self.PC_NAME}:{self.NGINX_PORT}",
             "http://localhost:5173",
         ]
-
-    @field_validator("FASTAPI_ROOT", mode="before")
-    def remove_trailing_slash(cls, value: str) -> str:
-        """Remove any trailing slashes from FASTAPI_ROOT."""
-        return value.rstrip("/")
 
 
 class DatabaseSettings(Settings):

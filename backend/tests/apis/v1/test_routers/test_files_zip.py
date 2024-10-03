@@ -6,14 +6,14 @@ from fastapi.testclient import TestClient
 @pytest.fixture
 def mock_logger(mock_func_logger: MagicMock) -> MagicMock:
     """Mock logger for testing."""
-    return mock_func_logger("apis.v1.routers.files.logger")
+    return mock_func_logger("apis.v2.routers.files.logger")
 
 
 @pytest.fixture
 def mock_unzip_files(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     """Mocks the unzip_files function."""
     mock = MagicMock()
-    monkeypatch.setattr("apis.v1.routers.files.unzip_files", mock)
+    monkeypatch.setattr("apis.v2.routers.files.unzip_files", mock)
     return mock
 
 
@@ -33,7 +33,7 @@ def test_upload_zip_success(
         )
     }
 
-    response = test_client.post(f"/v1/upload/zip", files=file_data)
+    response = test_client.post(f"/v2/upload/zip", files=file_data)
 
     mock_logger.info.assert_called_once_with(f"{mock_file.filename} uploaded")
     mock_unzip_files.assert_called_once()
@@ -58,7 +58,7 @@ def test_upload_zip_exception(
         )
     }
 
-    response = test_client.post(f"/v1/upload/zip", files=file_data)
+    response = test_client.post(f"/v2/upload/zip", files=file_data)
 
     mock_logger.info.assert_called_once_with(f"{mock_file.filename} uploaded")
     mock_unzip_files.assert_called_once()
@@ -73,7 +73,7 @@ def test_upload_zip_invalid(
     mock_unzip_files: MagicMock,
 ) -> None:
 
-    response = test_client.post(f"/v1/upload/zip", files={})
+    response = test_client.post(f"/v2/upload/zip", files={})
 
     assert response.status_code == 422
     mock_unzip_files.assert_not_called()

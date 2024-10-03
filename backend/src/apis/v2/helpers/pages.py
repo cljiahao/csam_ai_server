@@ -1,4 +1,4 @@
-from apis.v1.schemas.base import CAIPage, CDCPage, Module
+from apis.v2.schemas.base import CAIPage, CDCPage, Module
 from core.logging import logger
 
 

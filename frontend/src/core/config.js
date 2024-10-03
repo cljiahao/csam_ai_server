@@ -1,6 +1,7 @@
 import { env } from "../env";
 
-const API_URL = env.VITE_API_URL || "http://localhost:8000/api/v1";
+const API_URL = env.VITE_API_URL || "http://localhost:8000/api/v2";
+console.log(import.meta.env);
 
 const MARKERS = {
   marks: [

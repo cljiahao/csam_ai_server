@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import MagicMock
 from fastapi import HTTPException, status
 
-from apis.v1.helpers.HTTPExceptions import handle_exceptions
+from apis.v2.helpers.HTTPExceptions import handle_exceptions
 from core.exceptions import DatabaseError, ImageProcessError, MissingSettings
 
 
@@ -45,7 +45,7 @@ def test_handle_image_process_error_exception() -> None:
 def test_handle_unexpected_exception(mock_func_logger: MagicMock) -> None:
     """Test that unexpected exceptions are handled as a 400 HTTPException and logged."""
 
-    mock_logger = mock_func_logger("apis.v1.helpers.HTTPExceptions.logger")
+    mock_logger = mock_func_logger("apis.v2.helpers.HTTPExceptions.logger")
 
     with pytest.raises(HTTPException) as exc_info:
         handle_exceptions(Exception("Unexpected error"))

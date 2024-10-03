@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import MagicMock
 from fastapi.testclient import TestClient
 
-from apis.v1.schemas.base import Module
+from apis.v2.schemas.base import Module
 
 
 @pytest.fixture
@@ -21,7 +21,7 @@ def sample_res_dict() -> dict[str, str | dict[str, list[str]]]:
 def mock_set_cache_data(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     """Mocks the set_cache_data function."""
     mock = MagicMock()
-    monkeypatch.setattr("apis.v1.routers.files.set_cache_data", mock)
+    monkeypatch.setattr("apis.v2.routers.files.set_cache_data", mock)
     return mock
 
 
@@ -32,7 +32,7 @@ def mock_set_cache_data(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
 def mock_update_lot_detail(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     """Mocks the update_lot_detail function."""
     mock = MagicMock()
-    monkeypatch.setattr("apis.v1.routers.files.update_lot_detail", mock)
+    monkeypatch.setattr("apis.v2.routers.files.update_lot_detail", mock)
     return mock
 
 
@@ -51,7 +51,7 @@ def test_save_local_success(
     mock_item = sample_lot_details["item"]
 
     response = test_client.post(
-        f"/v1/upload/save/{mock_module}/{mock_lot_no}/{mock_plate}/{mock_item}",
+        f"/v2/upload/save/{mock_module}/{mock_lot_no}/{mock_plate}/{mock_item}",
         json=sample_res_dict,
     )
 
@@ -89,7 +89,7 @@ def test_save_local_exception(
     mock_function.side_effect = Exception("Unexpected Error.")
 
     response = test_client.post(
-        f"/v1/upload/save/{mock_module}/{mock_lot_no}/{mock_plate}/{mock_item}",
+        f"/v2/upload/save/{mock_module}/{mock_lot_no}/{mock_plate}/{mock_item}",
         json=sample_res_dict,
     )
 
@@ -126,7 +126,7 @@ def test_save_local_invalid(
     mock_module, mock_lot_no, mock_plate, mock_item = sample_invalid_args
 
     response = test_client.post(
-        f"/v1/upload/save/{mock_module}/{mock_lot_no}/{mock_plate}/{mock_item}",
+        f"/v2/upload/save/{mock_module}/{mock_lot_no}/{mock_plate}/{mock_item}",
         json=sample_res_dict,
     )
 

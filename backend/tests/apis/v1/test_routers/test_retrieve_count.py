@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import MagicMock
 from fastapi.testclient import TestClient
 
-from apis.v1.schemas.base import Module
+from apis.v2.schemas.base import Module
 
 
 # TODO: Remove mock_get_lot_detail and replace with actual mock inserting into DB
@@ -11,7 +11,7 @@ def mock_get_lot_detail(monkeypatch: pytest.MonkeyPatch) -> MagicMock:
     """Mocks the get_lot_detail function."""
     mock_lot_detail = MagicMock(no_of_pred=100, no_of_chips=50)
     mock_get_lot_detail = MagicMock(return_value=mock_lot_detail)
-    monkeypatch.setattr("apis.v1.routers.retrieve.get_lot_detail", mock_get_lot_detail)
+    monkeypatch.setattr("apis.v2.routers.retrieve.get_lot_detail", mock_get_lot_detail)
     return mock_get_lot_detail
 
 
@@ -34,7 +34,7 @@ def test_get_processed_count_success(
     mock_lot_no = sample_lot_details["lotNo"]
     mock_plate = sample_lot_details["plate"]
 
-    response = test_client.get(f"/v1/count/{mock_module}/{mock_lot_no}/{mock_plate}")
+    response = test_client.get(f"/v2/count/{mock_module}/{mock_lot_no}/{mock_plate}")
 
     mock_get_lot_detail.assert_called_once()
     assert response.status_code == 200
@@ -53,7 +53,7 @@ def test_get_processed_count_exception(
 
     mock_get_lot_detail.side_effect = Exception("Unexpected Error")
 
-    response = test_client.get(f"/v1/count/{mock_module}/{mock_lot_no}/{mock_plate}")
+    response = test_client.get(f"/v2/count/{mock_module}/{mock_lot_no}/{mock_plate}")
 
     mock_get_lot_detail.assert_called_once()
     assert response.status_code == 400
@@ -85,7 +85,7 @@ def test_get_processed_count_invalid(
     """Tests handling of invalid arguments during count retrieval."""
     mock_module, mock_lot_no, mock_plate = sample_invalid_args
 
-    response = test_client.get(f"/v1/count/{mock_module}/{mock_lot_no}/{mock_plate}")
+    response = test_client.get(f"/v2/count/{mock_module}/{mock_lot_no}/{mock_plate}")
 
     assert response.status_code == 422
     mock_get_lot_detail.assert_not_called()

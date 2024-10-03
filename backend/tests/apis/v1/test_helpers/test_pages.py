@@ -1,8 +1,8 @@
 import pytest
 from unittest.mock import MagicMock
 
-from apis.v1.helpers.pages import get_page
-from apis.v1.schemas.base import CAIPage, CDCPage, Module
+from apis.v2.helpers.pages import get_page
+from apis.v2.schemas.base import CAIPage, CDCPage, Module
 
 
 @pytest.mark.parametrize(
@@ -16,7 +16,7 @@ def test_get_page(module_value: Module, expected_model: type) -> None:
 def test_get_page_invalid_module(mock_func_logger: MagicMock) -> None:
     """Ensure ValueError is raised for invalid module values and logged."""
 
-    mock_logger = mock_func_logger("apis.v1.helpers.pages.logger")
+    mock_logger = mock_func_logger("apis.v2.helpers.pages.logger")
 
     mock_module = MagicMock()
     mock_module.value = "invalid"
