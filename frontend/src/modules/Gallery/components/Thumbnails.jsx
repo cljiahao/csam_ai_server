@@ -1,4 +1,4 @@
-import { API_URL, MARKERS } from "@/core/config";
+import { MARKERS } from "@/core/config";
 import { Button } from "@/components/ui/button";
 import {
   useCanvasContext,
@@ -67,7 +67,7 @@ const Thumbnails = ({ page, thumbs_array }) => {
             onClick={onThumbnailClick}
           >
             <img
-              src={`${API_URL}/image/${imageDetails.directory}/${folder}/${file_name}`}
+              src={`${__API_URL__}/image/${imageDetails.directory}/${folder}/${file_name}`}
               alt={file_name}
               className="hw-full"
             />

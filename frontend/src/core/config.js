@@ -1,8 +1,3 @@
-import { env } from "../env";
-
-const API_URL = env.VITE_API_URL || "http://localhost:8000/api/v2";
-console.log(import.meta.env);
-
 const MARKERS = {
   marks: [
     { id: 0, name: "default", color: "transparent", radius: 3 },
@@ -14,4 +9,4 @@ const MARKERS = {
 
 const ZOOM_SCALE = { scroll: 10, focus: 7 };
 
-export { API_URL, MARKERS, ZOOM_SCALE };
+export { MARKERS, ZOOM_SCALE };

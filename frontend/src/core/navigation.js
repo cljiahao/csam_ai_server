@@ -8,8 +8,7 @@ const navigation_info = [
     name: "Home",
     url: "/",
     title: "Home Page",
-    description:
-      "Webpage to assist production in collecting Good, NG and Others chip images.",
+    description: "Home Page",
     icon: FaHome,
   },
   {

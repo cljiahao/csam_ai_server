@@ -1,14 +1,16 @@
 import { defineConfig, loadEnv } from "vite";
-import react from "@vitejs/plugin-react";
+import os from "os";
 import path from "path";
+import dotenv from "dotenv";
+import react from "@vitejs/plugin-react";
+
+// Load global .env variables
+dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command, mode }) => {
-  // Load environment variables based on the current mode
-
-  const env = { ...process.env, ...loadEnv(mode, process.cwd(), "") };
-  console.log(env.VITE_API_PATH);
-
+export default defineConfig(({ _, mode }) => {
+  // Load environment variables based on the current mode.
+  const env = { ...process.env, ...loadEnv(mode, process.cwd()) };
   return {
     plugins: [react()],
     resolve: {
@@ -16,29 +18,19 @@ export default defineConfig(({ command, mode }) => {
         "@": path.resolve(__dirname, "./src"),
       },
     },
+    define: {
+      __API_URL__: JSON.stringify(
+        `http://${os.hostname()}:${env.VITE_API_PORT}${env.FASTAPI_ROOT}` ||
+          "http://localhost:5173",
+      ),
+    },
     server: {
       host: true,
-      port: env.APP_PORT || 3000,
+      port: env.VITE_APP_PORT || 3000,
       strictPort: true,
-      open: true, // Automatically open the app in the browser
-      proxy: {
-        "/api": {
-          target: env.API_PATH || "http://localhost:8000",
-          changeOrigin: true,
-          secure: false,
-        },
-      },
     },
     preview: {
-      port: env.APP_PORT || 5173,
-      open: true, // Automatically open the preview in the browser
-      proxy: {
-        "/api": {
-          target: env.API_PATH || "http://localhost:5000",
-          changeOrigin: true,
-          secure: false,
-        },
-      },
+      port: env.VITE_APP_PORT || 5173,
     },
   };
 });
