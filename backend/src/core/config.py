@@ -46,7 +46,7 @@ class APISettings(Settings):
             cors.append(f"http://{self.PC_NAME}:{self.APP_PORT}")
         else:
             cors.append(f"http://{self.PC_NAME}:{self.DEV_APP_PORT}")
-
+        print(cors)
         return cors
 
     @field_validator("FASTAPI_ROOT", mode="before")
