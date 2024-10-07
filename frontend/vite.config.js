@@ -1,5 +1,4 @@
 import { defineConfig, loadEnv } from "vite";
-import os from "os";
 import path from "path";
 import dotenv from "dotenv";
 import react from "@vitejs/plugin-react";
@@ -11,6 +10,7 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
 export default defineConfig(({ _, mode }) => {
   // Load environment variables based on the current mode.
   const env = { ...process.env, ...loadEnv(mode, process.cwd()) };
+
   return {
     plugins: [react()],
     resolve: {
@@ -20,8 +20,8 @@ export default defineConfig(({ _, mode }) => {
     },
     define: {
       __API_URL__: JSON.stringify(
-        `http://${os.hostname()}:${env.VITE_API_PORT}${env.FASTAPI_ROOT}` ||
-          "http://localhost:5173",
+        `http://${env.PC_NAME}:${env.VITE_API_PORT}${env.FASTAPI_ROOT}/${env.FASTAPI_PREFIX}` ||
+          "http://localhost:5000/api/v2",
       ),
     },
     server: {

@@ -2,13 +2,16 @@ from typing import Generator
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from core.config import database_settings
+from core.config import common_settings, database_settings
 from core.directory import directory
 
 # Database URL configuration
-SQLALCHEMY_DATABASE_URL = (
-    f"sqlite:///{directory.config_dir}/{database_settings.DB_NAME}"
+DB_NAME = (
+    database_settings.DB_NAME
+    if common_settings.ENV_STAGE == "prod"
+    else f"{database_settings.DB_NAME}_{common_settings.ENV_STAGE}"
 )
+SQLALCHEMY_DATABASE_URL = f"sqlite:///{directory.config_dir}/{DB_NAME}"
 
 # Create SQLAlchemy engine
 engine = create_engine(
