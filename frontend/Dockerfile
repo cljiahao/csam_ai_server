@@ -17,7 +17,7 @@ WORKDIR /app
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/package.json ./
 COPY --from=build /app/pnpm-lock.yaml ./
-RUN pnpm install --prod --frozen-lockfile
+RUN npm install -g pnpm && pnpm install --frozen-lockfile
 CMD ["npx", "serve", "dist"]
 
 # Staging image
@@ -26,7 +26,7 @@ WORKDIR /app
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/package.json ./
 COPY --from=build /app/pnpm-lock.yaml ./
-RUN pnpm install --prod --frozen-lockfile
+RUN npm install -g pnpm && pnpm install --frozen-lockfile
 CMD ["pnpm", "run", "stage"]
 
 # Development image

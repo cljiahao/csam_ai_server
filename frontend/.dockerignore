@@ -2,5 +2,6 @@
 .env
 config
 build
+dist
 node_modules
 Dockerfile

@@ -39,14 +39,11 @@ class APISettings(Settings):
 
     def _compute_allowed_cors(self) -> list[str]:
         """Compute allowed CORS origins based on PC_NAME and NGINX_PORT."""
-        cors = ["http://localhost:5173"]
-        if common_settings.ENV_STAGE == "prod":
-            cors.append(f"http://{self.PC_NAME}:{self.NGINX_PORT}")
-        elif common_settings.ENV_STAGE == "stage":
+        cors = ["http://localhost:5173", f"http://{self.PC_NAME}:{self.NGINX_PORT}"]
+        if common_settings.ENV_STAGE == "stage":
             cors.append(f"http://{self.PC_NAME}:{self.APP_PORT}")
         else:
             cors.append(f"http://{self.PC_NAME}:{self.DEV_APP_PORT}")
-        print(cors)
         return cors
 
     @field_validator("FASTAPI_ROOT", mode="before")

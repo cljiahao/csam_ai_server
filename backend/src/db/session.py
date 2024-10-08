@@ -7,9 +7,9 @@ from core.directory import directory
 
 # Database URL configuration
 DB_NAME = (
-    database_settings.DB_NAME
+    f"{database_settings.DB_NAME}.db"
     if common_settings.ENV_STAGE == "prod"
-    else f"{database_settings.DB_NAME}_{common_settings.ENV_STAGE}"
+    else f"{database_settings.DB_NAME}_{common_settings.ENV_STAGE}.db"
 )
 SQLALCHEMY_DATABASE_URL = f"sqlite:///{directory.config_dir}/{DB_NAME}"
 
