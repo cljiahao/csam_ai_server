@@ -1,10 +1,6 @@
 import { defineConfig, loadEnv } from "vite";
 import path from "path";
-import dotenv from "dotenv";
 import react from "@vitejs/plugin-react";
-
-// Load global .env variables
-dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 // https://vitejs.dev/config/
 export default defineConfig(({ _, mode }) => {
@@ -18,19 +14,20 @@ export default defineConfig(({ _, mode }) => {
         "@": path.resolve(__dirname, "./src"),
       },
     },
-    define: {
-      __API_URL__: JSON.stringify(
-        `http://${env.PC_NAME}:${env.VITE_API_PORT}${env.FASTAPI_ROOT}/${env.FASTAPI_PREFIX}` ||
-          "http://localhost:5000/api/v2",
-      ),
-    },
     server: {
       host: true,
-      port: env.VITE_APP_PORT || 3000,
+      port: env.VITE_APP_PORT,
       strictPort: true,
+      proxy: {
+        "/api": {
+          target: env.VITE_DEV_API_URL, // Your actual API URL for development
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, ""), // Remove '/api' from the path when forwarding
+        },
+      },
     },
     preview: {
-      port: env.VITE_APP_PORT || 5173,
+      port: env.VITE_APP_PORT,
     },
   };
 });

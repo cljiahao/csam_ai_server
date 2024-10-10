@@ -1,8 +1,5 @@
 from pydantic import ConfigDict, Field, field_validator
 from pydantic_settings import BaseSettings
-from dotenv import load_dotenv, find_dotenv
-
-load_dotenv(dotenv_path=find_dotenv())
 
 
 class Settings(BaseSettings):
@@ -26,11 +23,8 @@ class APISettings(Settings):
 
     FASTAPI_ROOT: str = Field(default="/api")
     PC_NAME: str = Field(default="locahost")
-    NGINX_PORT: int = Field(default=8080)
     API_PORT: int = Field(default=8000)
-    APP_PORT: int = Field(default=3000)
-    DEV_API_PORT: int = Field(default=5000)
-    DEV_APP_PORT: int = Field(default=5173)
+    APP_PORT: int = Field(default=5173)
     ALLOWED_CORS: list[str] = []
 
     def __init__(self, **data):
@@ -39,12 +33,11 @@ class APISettings(Settings):
 
     def _compute_allowed_cors(self) -> list[str]:
         """Compute allowed CORS origins based on PC_NAME and NGINX_PORT."""
-        cors = ["http://localhost:5173", f"http://{self.PC_NAME}:{self.NGINX_PORT}"]
-        if common_settings.ENV_STAGE == "stage":
-            cors.append(f"http://{self.PC_NAME}:{self.APP_PORT}")
-        else:
-            cors.append(f"http://{self.PC_NAME}:{self.DEV_APP_PORT}")
-        return cors
+        return [
+            "http://localhost:5173",
+            f"http://localhost:{self.APP_PORT}",
+            f"http://{self.PC_NAME}:{self.APP_PORT}",
+        ]
 
     @field_validator("FASTAPI_ROOT", mode="before")
     def remove_trailing_slash(cls, value: str) -> str:

@@ -1,7 +1,7 @@
 services:
   api:
     ports: !override
-      - ${API_PORT}
+      - "${API_PORT}:${API_PORT}"
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -12,7 +12,7 @@ services:
       ENV_STAGE: "prod"
   app:
     ports: !override
-      - ${APP_PORT}
+      - "${NGINX_PORT}:80"
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -20,7 +20,3 @@ services:
       tags:
         - "10.50.0.7:5001/csam_ai_server/app:latest"
         - "10.50.0.7:5001/csam_ai_server/app:2.0.0"
-  nginx:
-    environment:
-      API_PORT: ${API_PORT}
-      APP_PORT: ${APP_PORT}

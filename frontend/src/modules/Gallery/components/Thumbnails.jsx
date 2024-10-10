@@ -67,7 +67,7 @@ const Thumbnails = ({ page, thumbs_array }) => {
             onClick={onThumbnailClick}
           >
             <img
-              src={`${__API_URL__}/image/${imageDetails.directory}/${folder}/${file_name}`}
+              src={`/api/image/${imageDetails.directory}/${folder}/${file_name}`}
               alt={file_name}
               className="hw-full"
             />

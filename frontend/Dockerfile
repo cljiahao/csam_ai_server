@@ -1,34 +1,38 @@
+# ARGs for image versions
 ARG NODE=node:20.17.0-alpine3.20
+ARG NGINX=nginx:alpine
 
 # Stage 1: Base image for dependency installation
 FROM $NODE AS base
 WORKDIR /app
 COPY ./package.json ./pnpm-lock.yaml ./
 RUN npm install -g pnpm && pnpm install --frozen-lockfile
+
+# Stage 2: Build the application for staging and production
+FROM base AS build-stage
 COPY ./ ./
+RUN pnpm run build-stage
 
-# Stage 2: Build the application
 FROM base AS build
+COPY ./ ./
 RUN pnpm run build
-
-# Production image
-FROM $NODE AS prod
-WORKDIR /app
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/package.json ./
-COPY --from=build /app/pnpm-lock.yaml ./
-RUN npm install -g pnpm && pnpm install --frozen-lockfile
-CMD ["npx", "serve", "dist"]
-
-# Staging image
-FROM $NODE AS stage
-WORKDIR /app
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/package.json ./
-COPY --from=build /app/pnpm-lock.yaml ./
-RUN npm install -g pnpm && pnpm install --frozen-lockfile
-CMD ["pnpm", "run", "stage"]
 
 # Development image
 FROM base AS dev
+COPY ./ ./
 CMD ["pnpm", "run", "dev"]
+
+# Staging image
+FROM base AS stage
+COPY ./.env* ./vite.config.js ./
+COPY --from=build-stage ./app/dist ./dist
+CMD ["pnpm", "run", "preview-stage"]
+
+# Production image:
+FROM $NGINX AS prod
+COPY --from=build ./app/dist ./usr/share/nginx/html
+COPY ./nginx.conf.template ./etc/nginx/templates/nginx.conf.template
+CMD ["nginx", "-g", "daemon off;"]
+
+# TODO: Probably network link between frontend and backend via proxy have problem
+# TODO: Proxy via docker in vite and nginx 

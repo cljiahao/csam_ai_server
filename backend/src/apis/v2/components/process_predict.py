@@ -16,6 +16,7 @@ from utils.osHandle.write_image import thread_write_images
 from utils.prediction.tensorflow_model import predict_defects
 
 
+
 def process_n_predict(
     lot_no: str, item: str, file: IO, db: Session, page: CAIPage | CDCPage
 ) -> dict[str, str | dict[str, list[str]]]:

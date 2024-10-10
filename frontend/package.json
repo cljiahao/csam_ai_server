@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "vite --mode dev",
     "build": "vite build --mode prod",
-    "preview": "vite preview",
-    "stage": "vite preview --mode dev",
+    "build-stage": "vite build --mode stage",
+    "preview": "vite preview --mode prod",
+    "preview-stage": "vite preview --mode stage",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {

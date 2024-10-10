@@ -21,17 +21,3 @@ services:
       - "${DEV_APP_PORT}:${DEV_APP_PORT}"
     env_file:
       - .env
-  nginx:
-    <<: *base
-    image: nginx:alpine
-    container_name: nginx
-    depends_on:
-      - api
-      - app
-    volumes:
-      - ./nginx/templates:/etc/nginx/templates
-    ports:
-      - "${NGINX_PORT}:80"
-    environment:
-      API_PORT: ${DEV_API_PORT}
-      APP_PORT: ${DEV_APP_PORT}
