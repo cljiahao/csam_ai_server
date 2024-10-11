@@ -38,6 +38,7 @@ def start_application() -> FastAPI:
     app = FastAPI(
         title=common_settings.PROJECT_NAME,
         version=common_settings.PROJECT_VERSION,
+        description=common_settings.PROJECT_DESCRIPTION,
         root_path="/api",
     )
 

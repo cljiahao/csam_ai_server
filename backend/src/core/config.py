@@ -15,13 +15,20 @@ class CommonSettings(Settings):
 
     PROJECT_NAME: str = Field(default="My Project")
     PROJECT_VERSION: str = Field(default="v1.0.0")
+    PROJECT_DESCRIPTION: str = Field(
+        default="""This is a fancy API built with [FastAPI🚀](https://fastapi.tiangolo.com/)
+                                     
+        📝 [Source Code](https:www.google.com)
+        🐞 [Issues](https:www.google.com) 
+        """
+    )
     ENV_STAGE: str = Field(default="stage")
 
 
 class APISettings(Settings):
     """API-specific settings."""
 
-    FASTAPI_ROOT: str = Field(default="/api")
+    FASTAPI_ROOT: str = Field(default="api")
     PC_NAME: str = Field(default="locahost")
     API_PORT: int = Field(default=8000)
     APP_PORT: int = Field(default=5173)

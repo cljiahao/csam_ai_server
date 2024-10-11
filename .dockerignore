@@ -1,0 +1,8 @@
+.git
+.vscode
+.dockerignore
+.gitignore
+compose.yaml
+compose.prod.yaml
+compose.stage.yaml
+compose.dev.yaml

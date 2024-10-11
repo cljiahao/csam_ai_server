@@ -4,20 +4,26 @@ x-defaults:
     restart: always
 
 services:
-  api:
+  backend:
     <<: *base
-    container_name: api
+    container_name: backend
     ports:
       - "${DEV_API_PORT}:${DEV_API_PORT}"
     volumes:
       - ./backend/data:/api/data
       - ./backend/conf:/api/conf
-    env_file:
-      - .env
-  app:
+      - ./backend/log:/api/log
+    networks:
+      - load_balancer
+
+  frontend:
     <<: *base
-    container_name: app
+    container_name: frontend
     ports:
       - "${DEV_APP_PORT}:${DEV_APP_PORT}"
-    env_file:
-      - .env
+    networks:
+      - load_balancer
+
+networks:
+  load_balancer:
+    driver: bridge

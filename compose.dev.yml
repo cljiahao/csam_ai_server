@@ -1,8 +1,9 @@
 services:
-  api:
+  backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      target: dev
     develop:
       watch:
         - action: sync
@@ -10,8 +11,8 @@ services:
           target: ./api/src
     environment:
       WATCHPACK_POLLING: "true"
-      ENV_STAGE: "dev"
-  app:
+
+  frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -28,3 +29,4 @@ services:
     environment:
       WATCHPACK_POLLING: "true"
       WDS_SOCKET_PORT: 0
+      API_PORT: DEV_API_PORT
