@@ -24,7 +24,7 @@ CMD ["pnpm", "run", "dev"]
 
 # Staging image
 FROM base AS stage
-COPY ./.env* ./vite.config.js ./
+COPY ./.env.stage ./vite.config.js ./
 COPY --from=build-stage ./app/dist ./dist
 CMD ["pnpm", "run", "preview-stage"]
 
@@ -33,6 +33,3 @@ FROM $NGINX AS prod
 COPY --from=build ./app/dist ./usr/share/nginx/html
 COPY ./nginx.conf.template ./etc/nginx/templates/nginx.conf.template
 CMD ["nginx", "-g", "daemon off;"]
-
-# TODO: Probably network link between frontend and backend via proxy have problem
-# TODO: Proxy via docker in vite and nginx 

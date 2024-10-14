@@ -20,7 +20,3 @@ services:
       tags:
         - "10.50.0.7:5001/csam_ai_server/app:latest"
         - "10.50.0.7:5001/csam_ai_server/app:2.0.0"
-    depends_on:
-      - backend
-    env_file:
-      - .env

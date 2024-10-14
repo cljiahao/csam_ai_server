@@ -11,7 +11,7 @@ services:
       - "${DEV_API_PORT}:${DEV_API_PORT}"
     volumes:
       - ./backend/data:/api/data
-      - ./backend/conf:/api/conf
+      - ./backend/config:/api/config
       - ./backend/log:/api/log
     networks:
       - load_balancer
@@ -21,6 +21,10 @@ services:
     container_name: frontend
     ports:
       - "${DEV_APP_PORT}:${DEV_APP_PORT}"
+    env_file:
+      - .env
+    depends_on:
+      - backend
     networks:
       - load_balancer
 
