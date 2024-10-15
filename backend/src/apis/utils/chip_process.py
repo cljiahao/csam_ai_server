@@ -34,10 +34,7 @@ def chips(b_img, b_gray, batch_data, process_set, ai):
         Images stored in dictionary to be send back to frontend
     """
 
-    x_crop_lim, y_crop_lim = [
-        math.ceil(x * math.sqrt(2) / 10) * 10 for x in settings.CHIP_IMG_SIZE
-    ]
-    padx, pady = [math.ceil(j / 10) * 10 for j in settings.CHIP_IMG_SIZE]
+    padx, pady = [math.ceil(x * math.sqrt(2) / 10) * 10 for x in settings.CHIP_IMG_SIZE]
 
     blank = np.zeros(b_img.shape[:2], np.uint8)
     mask = mask_chips(b_gray, process_set["chip"])
@@ -69,8 +66,6 @@ def chips(b_img, b_gray, batch_data, process_set, ai):
                 upp_c_area,
                 low_def_area,
                 upp_def_area,
-                x_crop_lim,
-                y_crop_lim,
                 padx,
                 pady,
                 ai,
@@ -91,8 +86,6 @@ def get_chips(
     upp_c_area,
     low_def_area,
     upp_def_area,
-    x_crop_lim,
-    y_crop_lim,
     padx,
     pady,
     ai,
@@ -114,7 +107,7 @@ def get_chips(
                 0, batch, no_of_chips, int(xc - padx), int(yc - pady)
             )
 
-            rotated_img = rotate_chips(b_img, rect, x_crop_lim, y_crop_lim)
+            rotated_img = rotate_chips(b_img, rect, padx, pady)
 
             # Convert colour to RGB for AI Model to predict properly
             if ai:
@@ -146,11 +139,14 @@ def mask_chips(gray, set_chip):
     """
 
     _, ret = cv2.threshold(gray, set_chip["threshold"], 255, cv2.THRESH_BINARY_INV)
-    morph = cv2.morphologyEx(
-        ret, cv2.MORPH_CLOSE, (set_chip["close_x"], set_chip["close_y"])
-    )
-    mask = cv2.erode(
+    morph = cv2.morphologyEx(ret, cv2.MORPH_CLOSE, (3, 3))
+    erode = cv2.erode(
         morph, np.ones((set_chip["erode_x"], set_chip["erode_y"]), np.uint8)
+    )
+    mask = cv2.morphologyEx(
+        erode,
+        cv2.MORPH_CLOSE,
+        np.ones((set_chip["close_x"], set_chip["close_y"]), np.uint8),
     )
 
     return mask
@@ -176,11 +172,16 @@ def check_single(blank, cnt):
     ((x, y), _, _) = cv2.minAreaRect(cnt)
     cv2.drawContours(blank, [cnt], -1, (255, 255, 255), -1)
     crop = blank[
-        int(y - y_crop) : int(y + y_crop),
-        int(x - x_crop) : int(x + x_crop),
+        int(y - y_crop / 2) : int(y + y_crop / 2),
+        int(x - x_crop / 2) : int(x + x_crop / 2),
     ]
-    crop[:] = cv2.erode(crop, np.ones((9, 9), np.uint8))
-    new_cnts, _ = cv2.findContours(blank, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    try:
+        crop[:] = cv2.erode(crop, np.ones((9, 9), np.uint8))
+        new_cnts, _ = cv2.findContours(
+            blank, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+        )
+    except:
+        new_cnts, _ = cv2.findContours(crop, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     if len(new_cnts) > 1:
         for new_c in new_cnts:
@@ -191,7 +192,7 @@ def check_single(blank, cnt):
     return cnt_arr
 
 
-def rotate_chips(src, rect, x_crop_limit, y_crop_limit):
+def rotate_chips(src, rect, padx, pady):
     """
     Parameters
     ----------
@@ -215,8 +216,8 @@ def rotate_chips(src, rect, x_crop_limit, y_crop_limit):
         theta = theta - 90
 
     crop = src[
-        int(y - y_crop_limit) : int(y + y_crop_limit),
-        int(x - x_crop_limit) : int(x + x_crop_limit),
+        int(y - pady) : int(y + pady),
+        int(x - padx) : int(x + padx),
     ]
 
     img = cv2.cvtColor(crop, cv2.COLOR_BGR2RGB)
@@ -226,8 +227,8 @@ def rotate_chips(src, rect, x_crop_limit, y_crop_limit):
     rot_img = np.asarray(rot_img)
     rot_img = cv2.cvtColor(rot_img, cv2.COLOR_RGB2BGR)
     rot_img = rot_img[
-        int(y_crop_limit - y_crop / 2) : int(y_crop_limit + y_crop / 2),
-        int(x_crop_limit - x_crop / 2) : int(x_crop_limit + x_crop / 2),
+        int(pady - y_crop / 2) : int(pady + y_crop / 2),
+        int(padx - x_crop / 2) : int(padx + x_crop / 2),
     ]
 
     return rot_img

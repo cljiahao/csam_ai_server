@@ -1,0 +1,48 @@
+services:
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: dev
+    ports: !override
+      - 8000
+    develop:
+      watch:
+        - action: sync
+          path: ./backend/src
+          target: ./api/src
+    environment:
+      WATCHPACK_POLLING: "true"
+      API_PORT: 8000
+      LOCAL_DB_PATH: "csam_ai_server.db"
+  app:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: dev
+      args:
+        - APP_PORT=3000
+        - NGINX_PORT=3000
+        - FASTAPI_ROOT=${FASTAPI_ROOT}
+        - PC_NAME=${PC_NAME}
+    ports: !override
+      - 3000
+    stdin_open: true
+    tty: true
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend
+          target: ./app
+        - action: rebuild
+          path: ./frontend/package.json
+    environment:
+      WATCHPACK_POLLING: "true"
+      WDS_SOCKET_PORT: 0
+      APP_PORT: 3000
+  nginx:
+    ports: !override
+      - 3000:80
+    environment:
+      API_PORT: 8000
+      APP_PORT: 3000

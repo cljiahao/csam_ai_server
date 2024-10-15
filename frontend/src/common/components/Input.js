@@ -9,7 +9,7 @@ const Input = ({ name, input_info }) => {
             {input_info.name[0].toUpperCase() + input_info.name.slice(1) + ":"}
           </label>
         )}
-        {input_info.in_name && (
+        {typeof input_info.in_name !== "undefined" && (
           <div className="flex-center h-[75%] w-[75%]">
             <input
               className="flex-center h-full w-[75%] text-center"

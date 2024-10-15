@@ -27,23 +27,19 @@ def create_border_img(image):
     """
     Parameters
     ----------
-    file : numpy array
-        Image file from frontend
-    save_dir : str
-        Directory to save folder and files to
+    image : MatLike
+        Original Image File
 
     Returns
     -------
     border_img : MatLike
         Border added image
-    gray : MatLike
+    border_gray : MatLike
         Gray Image for masking purposes
-    [w,h] : list
-        Width and height of the image
     """
     # Added border to include chips near the edge of images,
     # allowing better cropping of chips later on
-    padx, pady = [math.ceil(i / 10) * 10 for i in settings.CHIP_IMG_SIZE]
+    padx, pady = [math.ceil(x * math.sqrt(2) / 10) * 10 for x in settings.CHIP_IMG_SIZE]
     border_img = cv2.copyMakeBorder(image, pady, pady, padx, padx, cv2.BORDER_REPLICATE)
 
     img = border_img.copy()

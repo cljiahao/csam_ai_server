@@ -15,7 +15,7 @@ import Gallery from "../../common/containers/Gallery/Gallery";
 import MenuChildren from "./containers/MenuChildren/MenuChildren";
 import { dataProcess, imgErrorHandle } from "../../utils/dataHandle";
 import { changeColor } from "../../utils/changeColor";
-import { addLocalDB } from "../../utils/api_data";
+import { addLocalDB, getItemType } from "../../utils/api_data";
 import { setFolColor } from "../../utils/api_images";
 
 function CAI() {
@@ -70,20 +70,34 @@ function CAI() {
     await save();
     reset();
 
+    setTrigger({ ...trigger, image: "assets/loading.gif", error: false });
+
     if (
       !details.lot ||
       (details.plate && details.plate.slice(0, 3).toLowerCase() === "end")
     ) {
       details.lot = prompt("Please scan or Input Lot Number.");
+      const res = await getItemType(details.lot);
+      const item = await res.json();
+      if (res.status === 521) {
+        setTrigger({
+          ...trigger,
+          image: "assets/error_lot_no.png",
+          error: true,
+        });
+      } else if (!item) {
+        details.item = prompt("Please scan or Input Item Code.");
+      } else {
+        details.item = item;
+      }
     }
 
     const file = e.target.files[0];
-    if (file) {
-      setTrigger({ ...trigger, image: "assets/loading.gif", error: false });
+    if (file && !trigger.error) {
       details.plate = file.name.split(".")[0];
       setDetails(details);
-      const res = await imgErrorHandle(file, details.lot, type);
-      setTrigger({ ...trigger, image: res.image });
+      const res = await imgErrorHandle(file, details, type);
+      setTrigger({ ...trigger, image: res.image, error: res.error });
       if (!res.error) {
         const [new_array, new_details] = await dataProcess(
           res.json,

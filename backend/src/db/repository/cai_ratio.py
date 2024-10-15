@@ -52,4 +52,4 @@ def create_ratio(ratio, db):
     data = f",,,{ratio['lot']},{dt.now().strftime('%d%m%y %H%M%S')}"
     del ratio["lot"]
     csv_path = write_csv(f_dir, settings.TABLEID_CAI, data, ratio)
-    via_http(csv_path)
+    # via_http(csv_path)

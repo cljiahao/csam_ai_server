@@ -23,16 +23,15 @@ const Thumbnails = ({ highlight, zone }) => {
     setFocus({ ...focus, state: true, x: x, y: y, scale: 7 });
     let target = array.chips[zone][key];
     if (target.color === "transparent") {
-      target.color = marker.color._zoom
-      target.radius = marker.radius._zoom
+      target.color = marker.color._zoom;
+      target.radius = marker.radius._zoom;
       setArray({
         ...array,
         chips: {
           ...array.chips,
           [zone]: {
             ...array.chips[zone],
-            [key]: target
-            ,
+            [key]: target,
           },
         },
       });
@@ -43,8 +42,8 @@ const Thumbnails = ({ highlight, zone }) => {
     setFocus({ ...focus, state: false, x: 0, y: 0, scale: 1 });
     let target = array.chips[zone][key];
     if (target.color === "chartreuse") {
-      target.color = marker.color._default
-      target.radius = marker.radius._default
+      target.color = marker.color._default;
+      target.radius = marker.radius._default;
       setArray({
         ...array,
         chips: {
@@ -64,7 +63,7 @@ const Thumbnails = ({ highlight, zone }) => {
       key={zone}
     >
       {Object.keys(chips).map((k) => {
-        const directory = "/images" + details.directory.split("images")[1];
+        const directory = "/get_image" + details.directory.split("images")[1];
         const folder =
           chips[k]?.class_type === "0"
             ? "temp"

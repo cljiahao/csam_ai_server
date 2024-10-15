@@ -19,6 +19,16 @@ def create_tables():
     Base.metadata.create_all(bind=engine)
 
 
+def create_folders():
+    if not os.path.exists(dire.image_path):
+        os.makedirs(dire.image_path)
+    if not os.path.exists(dire.conf_path):
+        os.makedirs(dire.conf_path)
+    for i in ["json", "model"]:
+        if not os.path.exists(os.path.join(dire.conf_path, i)):
+            os.makedirs(os.path.join(dire.conf_path, i))
+
+
 def configure_cors(app):
     origins = settings.CORS
 
@@ -36,19 +46,21 @@ def include_router(app):
 
 
 def configure_staticfiles(app):
-
-    if not os.path.exists(os.path.join(dire.data_path, "images")):
-        os.makedirs(os.path.join(dire.data_path, "images"))
     app.mount(
-        "/images",
-        StaticFiles(directory=os.path.join(dire.data_path, "images")),
-        name="images",
+        "/data",
+        StaticFiles(directory=dire.data_path),
+        name="data",
     )
 
 
 def start_application():
-    app = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VERSION)
+    app = FastAPI(
+        title=settings.PROJECT_NAME,
+        version=settings.PROJECT_VERSION,
+        root_path=settings.FASTAPI_ROOT,
+    )
     create_tables()
+    create_folders()
     configure_cors(app)
     include_router(app)
     configure_staticfiles(app)
@@ -60,4 +72,4 @@ app = start_application()
 
 @app.get("/")
 def home():
-    return {"msg": "Hello FastAPI🚀"}
+    return {"msg": "Hello Fast_API🚀"}

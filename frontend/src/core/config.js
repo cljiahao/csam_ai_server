@@ -1,11 +1,12 @@
-const API = process.env.REACT_APP_API;
+import { env } from "../env";
+const API = env.REACT_APP_API;
 
 const marker = {
   color: {
     _default: "transparent",
     _zoom: "chartreuse",
   },
-  radius: { _default: 5, _zoom: 10, _highlight: 1 },
+  radius: { _default: 3, _zoom: 10, _highlight: 1 },
   border: { _default: null, _highlight: "2px solid red" },
 };
 

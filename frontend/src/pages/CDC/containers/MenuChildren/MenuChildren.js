@@ -5,7 +5,8 @@ import { FaMinus } from "react-icons/fa";
 import { IoMdAdd } from "react-icons/io";
 
 import ColorPick from "../../../../common/containers/ColorPick/ColorPick";
-import { getFolColor } from "../../../../utils/api_images";
+import { getFolColor, setFolColor } from "../../../../utils/api_images";
+import UploadSettings from "./components/upload";
 
 const MenuChildren = () => {
   const { array, setArray, details, setDetails } = useContext(AppContext);
@@ -49,30 +50,39 @@ const MenuChildren = () => {
     }
   };
 
-  const setColor = () => {
+  const setColor = async () => {
     Object.keys(input).forEach((key) => {
+      const { [input[key].key]: col, ...fol_rest } = array.folders;
       if (input[key].key !== input[key].name) {
+        fol_rest[input[key].name] = input[key].value;
+        array.folders = fol_rest;
         const { [input[key].key]: sel, ...sel_rest } = array.selected;
         sel_rest[input[key].name] = sel;
         array.selected = sel_rest;
         const { [input[key].key]: cnt, ...cnt_rest } = details.real_ng;
         cnt_rest[input[key].name] = cnt;
         details.real_ng = cnt_rest;
-        input[key].key = input[key].name;
       }
-      const { [input[key].key]: col, ...fol_rest } = array.folders;
-      fol_rest[input[key].name] = input[key].value;
-      array.folders = fol_rest;
+      if (col !== input[key].value) {
+        fol_rest[input[key].key] = input[key].value;
+        array.folders = fol_rest;
+      }
     });
     setArray((prevArray) => ({
       ...prevArray,
       folders: array.folders,
       selected: array.selected,
     }));
-    setDetails((prevDetails) => ({ ...prevDetails, real_ng: details.real_ng }));
+    const res = await setFolColor(details.item, array.folders);
+    if (res.ok) {
+      setDetails((prevDetails) => ({
+        ...prevDetails,
+        real_ng: details.real_ng,
+      }));
+    }
   };
 
-  const addColor = () => {
+  const addColor = async () => {
     setInput({
       ...input,
       [Object.keys(input).length]: {
@@ -89,10 +99,16 @@ const MenuChildren = () => {
       folders: array.folders,
       selected: array.selected,
     }));
-    setDetails((prevDetails) => ({ ...prevDetails, real_ng: details.real_ng }));
+    const res = await setFolColor(details.item, array.folders);
+    if (res.ok) {
+      setDetails((prevDetails) => ({
+        ...prevDetails,
+        real_ng: details.real_ng,
+      }));
+    }
   };
 
-  const removeColor = (e) => {
+  const removeColor = async (e) => {
     const name = e.currentTarget.name;
     if (Object.keys(input).length > 1) {
       const { [name]: _, ...rest } = input;
@@ -105,7 +121,10 @@ const MenuChildren = () => {
         folders: fol_rest,
         selected: sel_rest,
       }));
-      setDetails((prevDetails) => ({ ...prevDetails, real_ng: cnt_rest }));
+      const res = await setFolColor(details.item, array.folders);
+      if (res.ok) {
+        setDetails((prevDetails) => ({ ...prevDetails, real_ng: cnt_rest }));
+      }
     } else {
       Swal.fire({
         icon: "error",
@@ -146,6 +165,9 @@ const MenuChildren = () => {
 
   return (
     <div className="flex-center w-full flex-col bg-white py-3">
+      <div className="flex-center w-[95%] rounded-lg bg-slate-300">
+        <UploadSettings />
+      </div>
       <div className="flex-center w-[95%] flex-col">
         <ColorPick
           label={details.item}

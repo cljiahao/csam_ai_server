@@ -1,8 +1,9 @@
 import { API } from "../core/config";
 
-export const uploadImage = async (file, lot_no, type) => {
+export const uploadImage = async (file, details, type) => {
   const formData = new FormData();
-  formData.append("lot_no", lot_no);
+  formData.append("lot_no", details.lot);
+  formData.append("item", details.item);
   formData.append("file", file);
 
   const res = await fetch(`${API}/${type}/upload_file`, {
@@ -35,8 +36,7 @@ export const setFolColor = async (item, color) => {
     },
     body: JSON.stringify({ item: item, color: color }),
   });
-  const json = await res.json();
-  return json;
+  return res;
 };
 
 export const setCache = async (type) => {

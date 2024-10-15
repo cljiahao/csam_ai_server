@@ -76,14 +76,15 @@ def run_CNN(model, item, pred_dict):
     labels_path = os.path.join(dire.model_path, f"{item}.txt")
     data = read_txt(labels_path)
 
-    for key in data.keys():
-        if key in settings.G_TYPES:
+    for key in list(data.keys()):
+        if data[key] in settings.G_TYPES:
             del data[key]
 
+    ng_key = data.keys()
     res = {
         k: pred_dict[k]
         for (i, k) in enumerate(list(pred_dict.keys()))
-        if pred_res[i] in data.keys()
+        if str(pred_res[i]) in ng_key
     }
 
     return res

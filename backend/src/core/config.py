@@ -1,30 +1,24 @@
 import os
 import json
-from pathlib import Path
 
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
-env_path = Path(".") / ".env"
-load_dotenv(dotenv_path=env_path)
+load_dotenv(dotenv_path=find_dotenv())
 
 
-class settings:
+class Settings:
     PROJECT_NAME: str = "CSAM AI SERVER"
-    PROJECT_VERSION: str = "1.0.0"
+    PROJECT_VERSION: str = "2.0.0"
 
-    DBTYPE: str = os.getenv("DBTYPE")
-    USER: str = os.getenv("USER")
-    PASSWORD = os.getenv("PASSWORD")
-    SERVER: str = os.getenv("SERVER", "localhost")
-    PORT: str = os.getenv("PORT", 5432)  # default postgres port is 5432
-    DB: str = os.getenv("DB", "tdd")
-    DATABASE_URL = f"{DBTYPE}://{USER}:{PASSWORD}@{SERVER}:{PORT}/{DB}"
+    FASTAPI_ROOT: str = f"{os.getenv('FASTAPI_ROOT')}/"
+    CORS: list = [f"http://{os.getenv('PC_NAME')}:{os.getenv('NGINX_PORT')}"]
 
-    CORS: list = json.loads(os.getenv("CORS"))
     PRASS_URL: str = os.getenv("PRASS_URL")
     LOT_COL: str = os.getenv("LOT_COL")
     ITEM_COL: str = os.getenv("ITEM_COL")
-    ITEM: str = os.getenv("ITEM")
+    TEST_ITEM: str = os.getenv("TEST_ITEM")
+
+    LOCAL_DB_PATH: str = os.getenv("LOCAL_DB_PATH")
 
     REALTIMEDB: str = os.getenv("REALTIMEDB")
     TABLEID_CDC: str = os.getenv("TABLEID_CDC")
@@ -35,4 +29,4 @@ class settings:
     CHIP_IMG_SIZE: list = [54, 54]
 
 
-settings = settings()
+settings = Settings()

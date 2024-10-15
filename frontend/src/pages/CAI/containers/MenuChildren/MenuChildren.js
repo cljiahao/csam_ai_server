@@ -5,7 +5,7 @@ import { FaMinus } from "react-icons/fa";
 import { IoMdAdd } from "react-icons/io";
 
 import ColorPick from "../../../../common/containers/ColorPick/ColorPick";
-import { getFolColor } from "../../../../utils/api_images";
+import { getFolColor, setFolColor } from "../../../../utils/api_images";
 import Unzip from "./components/Unzip";
 
 const MenuChildren = () => {
@@ -50,30 +50,39 @@ const MenuChildren = () => {
     }
   };
 
-  const setColor = () => {
+  const setColor = async () => {
     Object.keys(input).forEach((key) => {
+      const { [input[key].key]: col, ...fol_rest } = array.folders;
       if (input[key].key !== input[key].name) {
+        fol_rest[input[key].name] = input[key].value;
+        array.folders = fol_rest;
         const { [input[key].key]: sel, ...sel_rest } = array.selected;
         sel_rest[input[key].name] = sel;
         array.selected = sel_rest;
         const { [input[key].key]: cnt, ...cnt_rest } = details.real_ng;
         cnt_rest[input[key].name] = cnt;
         details.real_ng = cnt_rest;
-        input[key].key = input[key].name;
       }
-      const { [input[key].key]: col, ...fol_rest } = array.folders;
-      fol_rest[input[key].name] = input[key].value;
-      array.folders = fol_rest;
+      if (col !== input[key].value) {
+        fol_rest[input[key].key] = input[key].value;
+        array.folders = fol_rest;
+      }
     });
     setArray((prevArray) => ({
       ...prevArray,
       folders: array.folders,
       selected: array.selected,
     }));
-    setDetails((prevDetails) => ({ ...prevDetails, real_ng: details.real_ng }));
+    const res = await setFolColor(details.item, array.folders);
+    if (res.ok) {
+      setDetails((prevDetails) => ({
+        ...prevDetails,
+        real_ng: details.real_ng,
+      }));
+    }
   };
 
-  const addColor = () => {
+  const addColor = async () => {
     setInput({
       ...input,
       [Object.keys(input).length]: {
@@ -90,23 +99,35 @@ const MenuChildren = () => {
       folders: array.folders,
       selected: array.selected,
     }));
-    setDetails((prevDetails) => ({ ...prevDetails, real_ng: details.real_ng }));
+    const res = await setFolColor(details.item, array.folders);
+    if (res.ok) {
+      setDetails((prevDetails) => ({
+        ...prevDetails,
+        real_ng: details.real_ng,
+      }));
+    }
   };
 
-  const removeColor = (e) => {
+  const removeColor = async (e) => {
     const name = e.currentTarget.name;
     if (Object.keys(input).length > 1) {
       const { [name]: _, ...rest } = input;
-      setInput(rest);
       const { [input[name].name]: col, ...fol_rest } = array.folders;
       const { [input[name].name]: sel, ...sel_rest } = array.selected;
       const { [input[name].name]: cnt, ...cnt_rest } = details.real_ng;
+      const res = await setFolColor(details.item, fol_rest);
       setArray((prevArray) => ({
         ...prevArray,
         folders: fol_rest,
         selected: sel_rest,
       }));
-      setDetails((prevDetails) => ({ ...prevDetails, real_ng: cnt_rest }));
+      setInput(rest);
+      if (res.ok) {
+        setDetails((prevDetails) => ({
+          ...prevDetails,
+          real_ng: cnt_rest,
+        }));
+      }
     } else {
       Swal.fire({
         icon: "error",

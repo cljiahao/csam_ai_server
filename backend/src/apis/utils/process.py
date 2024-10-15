@@ -7,17 +7,12 @@ from apis.utils.image_process import create_border_img, save_original
 from apis.utils.batch_process import batch
 from apis.utils.debug import time_print
 from apis.utils.chip_process import chips
-from apis.utils.directory import check_dir
+from apis.utils.directory import check_dir, dire
 from core.read_write import read_json
 
 
-def initialize(lot_no, file, base_path):
+def initialize(lot_no, item, file, base_path):
 
-    item = check_lot(lot_no)
-    if not item:
-        raise HTTPException(
-            status_code=521, detail=f"Lot number: {lot_no} not found in database"
-        )
     plate_no = file.filename.split(".")[0]
     plate_path = os.path.join(base_path, item, lot_no, plate_no)
 
@@ -25,14 +20,14 @@ def initialize(lot_no, file, base_path):
 
     image = save_original(file, plate_path)
 
-    return image, item, plate_path, temp_path
+    return image, plate_path, temp_path
 
 
 def process(image, item, ai=False):
 
     start = time_print("Processing Image")
 
-    process_set = read_json("./core/json/settings.json")[item]
+    process_set = read_json(os.path.join(dire.json_path, "settings.json"))[item]
 
     b_img, b_gray = create_border_img(image)
 

@@ -15,11 +15,11 @@ const ColorPick = ({ label, input_info, button_info }) => {
       {Object.keys(input_info).length > 0 && (
         <div className="flex-center w-full flex-col rounded-xl bg-slate-300 py-3">
           {Object.keys(input_info).map((key) => (
-            <div key={key} className="flex-center h-16 w-full gap-10">
-              <div className="h-full w-[75%]">
+            <div key={key} className="flex-center h-16 w-full">
+              <div className="h-full w-[80%]">
                 <Input name={key} input_info={input_info[key]} />
               </div>
-              <div className="w-[15%]">
+              <div className="flex-center w-[20%]">
                 <Button name={key} button_info={button_info.remove} />
               </div>
             </div>

@@ -7,7 +7,7 @@ import MainNav from "./containers/MainNav/MainNav";
 function Main() {
   const card_info = {
     CDC: {
-      title: "CSAM Data Collections",
+      title: "CSAM Defects Collections",
       short: "CDC",
       description:
         "Website to assist production in collecting Good, NG and Others chip images.",

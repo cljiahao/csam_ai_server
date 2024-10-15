@@ -15,10 +15,13 @@ router = APIRouter()
     "/upload_file", response_model=ChipDetails, response_model_exclude_none=True
 )
 def predict_NG_chips(
-    lot_no: str = Form(...), file: UploadFile = File(...), db: Session = Depends(get_db)
+    lot_no: str = Form(...),
+    item: str = Form(...),
+    file: UploadFile = File(...),
+    db: Session = Depends(get_db),
 ):
     try:
-        chip_dict, item, plate_path, no_of_chips, no_of_batches = CDC(lot_no, file, db)
+        chip_dict, plate_path, no_of_chips, no_of_batches = CDC(lot_no, item, file, db)
     except Exception as e:
         if "detail" in dir(e):
             raise HTTPException(status_code=e.status_code, detail=e.detail)
@@ -27,7 +30,6 @@ def predict_NG_chips(
         )
 
     details = {
-        "item": item,
         "directory": plate_path,
         "chips": no_of_chips,
         "batches": no_of_batches,

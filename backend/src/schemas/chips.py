@@ -5,7 +5,7 @@ from pydantic import BaseModel
 class Details(BaseModel):
     lot: Optional[str] = None
     plate: Optional[str] = None
-    item: str
+    item: Optional[str] = None
     directory: str
     chips: int
     batches: int

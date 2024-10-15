@@ -2,6 +2,7 @@ import os
 from concurrent.futures import ThreadPoolExecutor
 from shutil import copyfile, move
 
+from apis.utils.directory import dire
 from apis.utils.process import update_chip_dict
 from core.read_write import read_json
 from db.repository.cai_ratio import get_ratio
@@ -45,7 +46,9 @@ def set_cache(item, directory, selected):
                 "directory": os.path.join(directory, fol, os_file),
             }
 
-    folder_set = list(read_json("./core/json/folders.json")[item].keys())
+    folder_set = list(
+        read_json(os.path.join(dire.json_path, "folders.json"))[item].keys()
+    )
 
     for key, value in selected.items():
         dest = os.path.join(directory, key)

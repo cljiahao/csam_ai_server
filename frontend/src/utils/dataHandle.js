@@ -1,6 +1,5 @@
 import { API, marker } from "../core/config";
 import { getFolColor, uploadImage } from "./api_images";
-import { unzip_files } from "./api_data";
 
 export const dataProcess = async (json, array, details) => {
   Object.assign(details, json.details);
@@ -43,28 +42,20 @@ export const dataProcess = async (json, array, details) => {
   return [array, details];
 };
 
-export const imgErrorHandle = async (file, lot_no, type) => {
-  const res = await uploadImage(file, lot_no, type);
+export const imgErrorHandle = async (file, details, type) => {
+  const res = await uploadImage(file, details, type);
 
-  if (res.status === 521) {
-    return { error: true, image: "assets/error_lot_no.png" };
-  } else if (res.status === 522) {
+  if (res.status === 522) {
     return { error: true, image: "assets/error.png" };
   } else if (res.status === 520) {
     return { error: true, image: "assets/error.png" };
   } else {
     const json = await res.json();
-    const directory = "/images" + json.details.directory.split("images")[1];
+    const directory = "/get_image" + json.details.directory.split("images")[1];
     return {
       error: false,
       image: `${API}${directory}/original/${file.name}`,
       json: json,
     };
   }
-};
-
-export const unzip_upload = async (file) => {
-  const res = await unzip_files(file);
-  const json = await res.json();
-  return json;
 };

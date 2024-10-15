@@ -7,11 +7,11 @@ from apis.utils.cache import get_cache
 from apis.CAI.utils.predict_ng import prediction
 
 
-def CAI(lot_no, file, db=False):
+def CAI(lot_no, item, file, db=False):
 
     start = time_print("Received file to process")
 
-    image, item, plate_path, temp_path = initialize(lot_no, file, dire.cai_path)
+    image, plate_path, temp_path = initialize(lot_no, item, file, dire.cai_path)
 
     lap = time_print("Initialization", start)
 
@@ -40,4 +40,4 @@ def CAI(lot_no, file, db=False):
 
     _ = time_print("Write and return chip batch data", lap, start)
 
-    return chip_dict, item, plate_path, no_of_chips, no_of_batches
+    return chip_dict, plate_path, no_of_chips, no_of_batches
