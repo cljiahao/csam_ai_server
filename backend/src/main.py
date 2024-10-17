@@ -7,6 +7,9 @@ def load_environment(env):
     """Load environment variables from .env files based on the environment."""
     load_dotenv(dotenv_path=find_dotenv(".env.common"))
     load_dotenv(dotenv_path=find_dotenv(f".env.{env}"))
+    import os
+
+    print(os.environ)
 
 
 def parse_arguments():

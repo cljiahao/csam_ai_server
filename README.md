@@ -57,7 +57,7 @@ it processes the image and show predicted defects to the user for final judgemen
 
 ### Built With
 
-[![My Skills](https://skillicons.dev/icons?i=vite,react,tailwind,fastapi,opencv,tensorflow,nginx,docker,python,js,html,css)](https://skillicons.dev) 
+[![My Skills](https://skillicons.dev/icons?i=vite,react,tailwind,fastapi,opencv,tensorflow,nginx,docker,python,js,html,css)](https://skillicons.dev)
 
 ## Getting Started
 
@@ -84,13 +84,15 @@ Below are the steps to install the libraries to start your journey
 ## Features
 
 ### From V1
+
 - [x] Defects categorizing by colour
 - [x] Selection of ROI via image or thumbnail
 - [x] Improve image processing speed using threading
 - [x] Easy Navigation between pages
-- [x] Upload settings and trained model via zip 
+- [x] Upload settings and trained model via zip
 
 ### From v2
+
 - [ ] Better documentation
 - [ ] Add logging
 - [ ] Cleaner code structure and readability
