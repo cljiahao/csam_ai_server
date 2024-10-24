@@ -209,25 +209,22 @@ def rotate_chips(src, rect, padx, pady):
     rot_img
         Rotated image based on reference point (src_pts and dst_pts)
     """
-    x_crop, y_crop = settings.CHIP_IMG_SIZE
     ((x, y), (width, height), theta) = rect
     if height < width:
-        theta = theta - 90
+        theta -= 90
 
     crop = src[
         int(y - pady) : int(y + pady),
         int(x - padx) : int(x + padx),
     ]
 
-    img = cv2.cvtColor(crop, cv2.COLOR_BGR2RGB)
-    im_pil = Image.fromarray(img)
+    pil_image = Image.fromarray(crop)
+    rotated_image = np.asarray(pil_image.rotate(theta))
 
-    rot_img = im_pil.rotate(theta)
-    rot_img = np.asarray(rot_img)
-    rot_img = cv2.cvtColor(rot_img, cv2.COLOR_RGB2BGR)
-    rot_img = rot_img[
-        int(pady - y_crop / 2) : int(pady + y_crop / 2),
-        int(padx - x_crop / 2) : int(padx + x_crop / 2),
+    x_crop, y_crop = settings.CHIP_IMG_SIZE
+    rotated_image = rotated_image[
+        pady - y_crop // 2 : pady + y_crop // 2,
+        padx - x_crop // 2 : padx + x_crop // 2,
     ]
 
-    return rot_img
+    return rotated_image
