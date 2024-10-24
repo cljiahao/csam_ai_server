@@ -1,8 +1,6 @@
 import os
 import cv2
-from fastapi import HTTPException
 
-from apis.utils.misc import check_lot
 from apis.utils.image_process import create_border_img, save_original
 from apis.utils.batch_process import batch
 from apis.utils.debug import time_print
