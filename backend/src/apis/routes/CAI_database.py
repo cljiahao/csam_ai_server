@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from apis.utils.cache import set_cache
 from db.session import get_db
-from db.repository.cai_ratio import get_ratio, create_ratio
+from db.repository.cai_ratio import create_ratio, get_all_ratio
 from schemas.ratio import CreateRatio
 
 
@@ -13,7 +13,7 @@ router = APIRouter()
 
 @router.get("/read_db")
 def read_db(db: Session = Depends(get_db)):
-    ratio = get_ratio(db)
+    ratio = get_all_ratio(db)
     return ratio
 
 
