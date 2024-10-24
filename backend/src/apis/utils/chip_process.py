@@ -90,15 +90,11 @@ def get_chips(
     pady,
     ai,
 ):
-    if upp_def_area < cv2.contourArea(cnt):
-        cnt_arr = check_single(blank.copy(), cnt)
-    else:
-        cnt_arr = [cnt]
-    for c in cnt_arr:
-        cArea = cv2.contourArea(c)
-        rect = cv2.minAreaRect(c)
-        ((xc, yc), _, _) = rect
+    cnt_arr = check_single(blank.copy(), cnt, upp_def_area)
+    for c, cArea in cnt_arr:
         if low_c_area < cArea < upp_c_area:
+            rect = cv2.minAreaRect(c)
+            ((xc, yc), _, _) = rect
             batch = find_batch_no(xc, yc, batch_data)
             no_of_chips += 1
             # 0 first element of name is to indicate image not selected yet
@@ -151,7 +147,8 @@ def mask_chips(gray, set_chip):
 
     return closed_image
 
-def check_single(blank, cnt):
+
+def check_single(blank, contour, upp_chip_area):
     """
     Parameters
     ----------
@@ -159,36 +156,33 @@ def check_single(blank, cnt):
         Blank Image copy for drawing contours on
     contour : MatLike
         Contour of single chip or multi chip
-    rect
 
     Returns
     -------
     cnt_arr: list
         List of contours
     """
-    cnt_arr = []
-    x_crop, y_crop = settings.CHIP_IMG_SIZE
-    ((x, y), _, _) = cv2.minAreaRect(cnt)
-    cv2.drawContours(blank, [cnt], -1, (255, 255, 255), -1)
-    crop = blank[
-        int(y - y_crop / 2) : int(y + y_crop / 2),
-        int(x - x_crop / 2) : int(x + x_crop / 2),
-    ]
-    try:
-        crop[:] = cv2.erode(crop, np.ones((9, 9), np.uint8))
-        new_cnts, _ = cv2.findContours(
-            blank, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-        )
-    except:
-        new_cnts, _ = cv2.findContours(crop, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    chip_area = cv2.contourArea(contour)
+    if upp_chip_area < chip_area:
+        cv2.drawContours(blank, [contour], -1, (255, 255, 255), -1)
 
-    if len(new_cnts) > 1:
-        for new_c in new_cnts:
-            cnt_arr.append(new_c)
-    else:
-        cnt_arr = new_cnts
+        x, y = np.intp(cv2.minAreaRect(contour)[0])
+        x_crop, y_crop = settings.CHIP_IMG_SIZE
+        crop = blank[
+            y - y_crop // 2 : y + y_crop // 2, x - x_crop // 2 : x + x_crop // 2
+        ]
 
-    return cnt_arr
+        # Erode image in a range or 3,3 to 9,9 to see if can break into more chips
+        for i in range(3, 9):
+            crop[:] = cv2.erode(crop, np.ones((i, i), np.uint8))
+            new_cnts, _ = cv2.findContours(
+                blank, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+            )
+            if len(new_cnts) > 1:
+                contour_arr = [(cnt, cv2.contourArea(cnt)) for cnt in new_cnts]
+                return contour_arr
+
+    return [(contour, chip_area)]
 
 
 def rotate_chips(src, rect, padx, pady):
