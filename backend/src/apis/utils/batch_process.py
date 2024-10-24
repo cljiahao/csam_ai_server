@@ -40,42 +40,39 @@ def mask_batch(gray, batch_set):
     morph : MatLike
         A masked image of non background
     """
-    _, ret = cv2.threshold(gray, batch_set["threshold"], 255, cv2.THRESH_BINARY_INV)
-    # Merge neighbouring chips to form a huge blob mask
-    morph = cv2.morphologyEx(
-        ret,
-        cv2.MORPH_CLOSE,
-        np.ones(
-            (
-                batch_set["close_y"],
-                batch_set["close_x"],
-            ),
-            np.uint8,
+    _, ret = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY_INV)
+
+    # Apply morphological operations: erode and close
+    kernel_erode = np.ones(
+        (
+            batch_set["erode_y"],
+            batch_set["erode_x"],
         ),
+        np.uint8,
     )
+    kernel_close = np.ones(
+        (
+            batch_set["close_y"],
+            batch_set["close_x"],
+        ),
+        np.uint8,
+    )
+
     # Erode to prevent merging between batches
-    morph = cv2.morphologyEx(
-        morph,
-        cv2.MORPH_ERODE,
-        np.ones(
-            (
-                batch_set["erode_y"],
-                batch_set["erode_x"],
-            ),
-            np.uint8,
-        ),
-    )
+    eroded_image = cv2.morphologyEx(ret, cv2.MORPH_ERODE, kernel_erode)
+    # Close to merge neighbouring chips to form a huge blob mask
+    closed_image = cv2.morphologyEx(eroded_image, cv2.MORPH_CLOSE, kernel_close)
 
-    return morph
+    return closed_image
 
 
-def find_batch(mask_img, img_shape) -> list:
+def find_batch(mask_image, image_shape) -> list:
     """
     Parameters
     ----------
-    mask_img : MatLike
+    mask_image : MatLike
         A masked image of non background
-    img_shape : list
+    image_shape : list
         Image Height and Width in a list
 
     Returns
@@ -85,26 +82,29 @@ def find_batch(mask_img, img_shape) -> list:
         [{index: int, x1: double, y1: double, x2: double, y2: double}...]
     """
     # Use to remove noises (Stray Chips / Dirt)
-    img_height, img_width = img_shape
-    thres_area = img_height * img_width * 0.01
+    image_height, image_width = image_shape
+    thres_area = image_height * image_width * 0.01
 
     batch_data = []
 
-    contours, _ = cv2.findContours(mask_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, _ = cv2.findContours(
+        mask_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+    )
 
     for cnt in contours:
-        ((_, _), (wi, he), _) = cv2.minAreaRect(cnt)
-        blob_area = wi * he
+        (_, (width, height), _) = cv2.minAreaRect(cnt)
+        blob_area = width * height
 
-        if blob_area > thres_area:
+        if thres_area < blob_area:
             x, y, w, h = cv2.boundingRect(cnt)
             xc, yc = x + w / 2, y + h / 2
 
             # Factor depends on the size of image (RoundUp)
-            factor = -(-img_height // 1000) * 1000
+            factor = -(-image_height // 1000) * 1000
             index = round(yc / factor, 1) * factor**2 + xc
-            data = {"index": index, "x1": x, "y1": y, "x2": x + w, "y2": y + h}
-            batch_data.append(data)
+            batch_data.append(
+                {"index": index, "x1": x, "y1": y, "x2": x + w, "y2": y + h}
+            )
 
     batch_data = sorted(batch_data, key=lambda x: x["index"])
 
