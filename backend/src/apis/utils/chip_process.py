@@ -138,19 +138,18 @@ def mask_chips(gray, set_chip):
         A masked image of individual chips
     """
 
-    _, ret = cv2.threshold(gray, set_chip["threshold"], 255, cv2.THRESH_BINARY_INV)
-    morph = cv2.morphologyEx(ret, cv2.MORPH_CLOSE, (3, 3))
-    erode = cv2.erode(
-        morph, np.ones((set_chip["erode_x"], set_chip["erode_y"]), np.uint8)
-    )
-    mask = cv2.morphologyEx(
-        erode,
-        cv2.MORPH_CLOSE,
-        np.ones((set_chip["close_x"], set_chip["close_y"]), np.uint8),
-    )
+    _, binary_image = cv2.threshold(gray, 250, 255, cv2.THRESH_BINARY_INV)
 
-    return mask
+    # Apply morphological operations: erode and close
+    kernel_erode = np.ones((set_chip["erode_x"], set_chip["erode_y"]), np.uint8)
+    kernel_close = np.ones((set_chip["close_x"], set_chip["close_y"]), np.uint8)
 
+    # Erode to remove noises surrounding chips
+    eroded_image = cv2.morphologyEx(binary_image, cv2.MORPH_ERODE, kernel_erode)
+    # Close to fill up holes in chips
+    closed_image = cv2.morphologyEx(eroded_image, cv2.MORPH_CLOSE, kernel_close)
+
+    return closed_image
 
 def check_single(blank, cnt):
     """
