@@ -8,7 +8,10 @@ requests==2.31.0                    # HTTP Request
 # opencv-python==4.9.0.80           # Processing Images
 opencv-python-headless==4.9.0.80    # Processing Images
 pillow ==10.3.0                     # Processing Images
-tensorflow==2.15.0                  # AI Model
+tensorflow==2.15.0                  # Framework for Deep Learning AI Model
+torch==2.3.0    		            # Framework for Deep Learning AI Model
+torchvision==0.18.0		            # Framework for Deep Learning AI Model
+torchaudio==2.3.0		            # Framework for Deep Learning AI Model
 
 # Database
 SQLAlchemy==2.0.29                  # Sql Engine (ORM)
