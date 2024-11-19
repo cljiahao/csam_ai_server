@@ -14,7 +14,7 @@
     },
     "thres_range": {
       "low_chip": 0.15,
-      "upp_chip": 3,
+      "upp_chip": 2,
       "low_defect": 0.75,
       "upp_defect": 1.5
     }

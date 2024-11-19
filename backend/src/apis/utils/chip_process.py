@@ -90,7 +90,7 @@ def get_chips(
     pady,
     ai,
 ):
-    cnt_arr = check_single(blank.copy(), cnt, upp_def_area)
+    cnt_arr = check_single(blank.copy(), cnt, upp_c_area)
     for c, cArea in cnt_arr:
         if low_c_area < cArea < upp_c_area:
             rect = cv2.minAreaRect(c)
