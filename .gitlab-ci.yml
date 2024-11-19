@@ -1,0 +1,150 @@
+image: node:lts
+
+stages:
+  - build
+  - test
+  - deploy review
+  - deploy staging
+  - deploy production
+  - production tests
+  - cache
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  policy: pull
+  paths:
+    - node_modules/
+
+variables:
+  STAGING_DOMAIN: ancient-pencil-staging.surge.sh
+  PRODUCTION_DOMAIN: ancient-pencil.surge.sh
+
+update cache:
+  stage: cache
+  only:
+    - schedules
+  cache:
+    key: ${CI_COMMIT_REF_SLUG}
+    policy: push
+    paths:
+      - node_modules/
+  script:
+    - npm install
+
+build website:
+  stage: build
+  only:
+    - main
+    - merge_requests
+  before_script:
+    - echo $CI_COMMIT_SHORT_SHA
+    - npm install
+    - npm install -g gatsby-cli
+  script:
+    - gatsby build
+    - sed -i "s/%%VERSION%%/$CI_COMMIT_SHORT_SHA/" ./public/index.html
+  artifacts:
+    paths:
+      - ./public
+  except:
+    - schedules
+
+test artifact:
+  image: alpine
+  stage: test
+  only:
+    - main
+    - merge_requests
+  cache: {}
+  script:
+    - grep -q "$CI_COMMIT_SHORT_SHA" ./public/index.html
+  except:
+    - schedules
+
+test website:
+  stage: test
+  only:
+    - main
+    - merge_requests
+  before_script:
+    - npm install
+    - npm install -g gatsby-cli
+  script:
+    - gatsby serve &
+    - sleep 3
+    - curl "http://localhost:9000" | tac | tac | grep -q "$CI_COMMIT_SHORT_SHA"
+  except:
+    - schedules
+
+deploy review:
+  stage: deploy review
+  only:
+    - merge_requests
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    url: http://ancient-pencil-$CI_ENVIRONMENT_SLUG.surge.sh
+    on_stop: stop review
+  before_script:
+    - npm install --global surge
+  script:
+    - surge --project ./public --domain ancient-pencil-$CI_ENVIRONMENT_SLUG.surge.sh
+  except:
+    - schedules
+
+stop review:
+  stage: deploy review
+  only:
+    - merge_requests
+  variables:
+    GIT_STRATEGY: none
+  before_script:
+    - npm install --global surge
+  script:
+    - surge teardown ancient-pencil-$CI_ENVIRONMENT_SLUG.surge.sh
+  when: manual
+  environment:
+    name: review/$CI_COMMIT_REF_NAME
+    action: stop
+
+.deploy_template: &deploy
+  only:
+    - main
+  before_script:
+    - npm install --global surge
+  script:
+    - surge --project ./public --domain $DOMAIN
+  environment:
+    url: http://$DOMAIN
+  except:
+    - schedules
+
+deploy staging:
+  <<: *deploy
+  stage: deploy staging
+  variables:
+    DOMAIN: $STAGING_DOMAIN
+  environment:
+    name: staging
+
+deploy production:
+  <<: *deploy
+  stage: deploy production
+  variables:
+    DOMAIN: $PRODUCTION_DOMAIN
+  environment:
+    name: production
+  when: manual
+  allow_failure: false
+
+production tests:
+  image: alpine
+  stage: production tests
+  cache: {}
+  only:
+    - main
+  script:
+    - apk add --no-cache curl
+    - curl "http://$PRODUCTION_DOMAIN" | tac | tac | grep -q "Gatsby"
+    - curl "http://$PRODUCTION_DOMAIN" | tac | tac | grep -q "$CI_COMMIT_SHORT_SHA"
+  except:
+    - schedules

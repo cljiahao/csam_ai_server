@@ -1,38 +1,20 @@
-import os
-import sys
-
-
-sys.path.append("./")
-
-from apis.routes import router
-from core.directory import directory
-from core.config import settings
-from db.base import Base
-from db.session import engine
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from apis.routes import router
+from core.config import common_settings, api_settings
+from db.base import Base
+from db.session import engine
 
-def create_tables():
+
+def create_tables() -> None:
+    """Create database tables based on the metadata."""
     Base.metadata.create_all(bind=engine)
 
 
-def create_folders():
-    folders = [
-        directory.log_dir,
-        directory.json_dir,
-        directory.model_dir,
-        directory.images_dir,
-        directory.data_send_dir,
-    ]
-    for fol in folders:
-        if not os.path.exists(fol):
-            os.makedirs(fol)
-
-
-def configure_cors(app):
-    origins = settings.CORS
+def configure_cors(app: FastAPI) -> None:
+    """Configure CORS settings for the FastAPI application."""
+    origins = api_settings.ALLOWED_CORS
 
     app.add_middleware(
         CORSMiddleware,
@@ -43,30 +25,40 @@ def configure_cors(app):
     )
 
 
-def include_router(app):
+def include_router(app: FastAPI) -> None:
+    """Include application routers."""
     app.include_router(router)
 
 
 # TODO: add metadatas (Tags,Summary,Description) to fastapi
 
 
-def start_application():
+def start_application() -> FastAPI:
+    """Initialize and configure the FastAPI application."""
     app = FastAPI(
-        title=settings.PROJECT_NAME,
-        version=settings.PROJECT_VERSION,
-        root_path=settings.FASTAPI_ROOT,
+        title=common_settings.PROJECT_NAME,
+        version=common_settings.PROJECT_VERSION,
+        description=common_settings.PROJECT_DESCRIPTION,
+        root_path="/api",
     )
-    create_tables()
-    create_folders()
+
     configure_cors(app)
     include_router(app)
+    create_tables()
 
     return app
 
 
+# Initialize the FastAPI application
 app = start_application()
 
 
-@app.get("/")
-def home():
-    return {"msg": "Hello Fast_API🚀"}
+@app.get(
+    "/",
+    tags=["Home"],
+    summary="Home Route",
+    description="A simple home route returning a welcome message.",
+)
+def home() -> dict[str, str]:
+    """Simple home route."""
+    return {"msg": "Hello Fast_API 🚀"}

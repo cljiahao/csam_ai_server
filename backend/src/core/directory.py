@@ -1,21 +1,42 @@
-import os
+from pathlib import Path
 
 
 class Directory:
-    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    """Handles directory paths and folder creation for the application."""
 
-    # Log folder
-    log_dir = os.path.join(base_dir, "log")
+    def __init__(self) -> None:
+        """Initialize directory paths."""
+        self.base_dir = Path(__file__).resolve().parent.parent.parent
 
-    # Config folder
-    config_dir = os.path.join(base_dir, "config")
-    json_dir = os.path.join(config_dir, "json")
-    model_dir = os.path.join(config_dir, "model")
+        # Log folder
+        self.log_dir = self.base_dir / "log"
 
-    # Data folder
-    data_dir = os.path.join(base_dir, "data")
-    images_dir = os.path.join(data_dir, "images")
-    data_send_dir = os.path.join(data_dir, "datasend")
+        # Config folder
+        self.config_dir = self.base_dir / "config"
+        self.json_dir = self.config_dir / "json"
+        self.model_dir = self.config_dir / "model"
+
+        # Data folder
+        self.data_dir = self.base_dir / "data"
+        self.images_dir = self.data_dir / "images"
+        self.data_send_dir = self.data_dir / "datasend"
+
+    def create_folders(self) -> None:
+        """Create necessary folders for logging, configuration, and data."""
+        folders = [
+            self.log_dir,
+            self.json_dir,
+            self.model_dir,
+            self.images_dir,
+            self.data_send_dir,
+        ]
+        for folder in folders:
+            try:
+                folder.mkdir(parents=True, exist_ok=True)
+            except Exception as e:
+                print(f"Failed to create directory {folder}: {e}")
 
 
+# Instantiate Directory and create folders
 directory = Directory()
+directory.create_folders()

@@ -1,0 +1,34 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: stage
+    develop:
+      watch:
+        - action: sync
+          path: ./backend/src
+          target: ./api/src
+    environment:
+      WATCHPACK_POLLING: "true"
+
+  frontend:
+    ports: !override
+      - "${APP_PORT}:${APP_PORT}"
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      target: stage
+    stdin_open: true
+    tty: true
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend
+          target: ./app
+        - action: rebuild
+          path: ./frontend/package.json
+    environment:
+      WATCHPACK_POLLING: "true"
+      WDS_SOCKET_PORT: 0
+      API_PORT: DEV_API_PORT
