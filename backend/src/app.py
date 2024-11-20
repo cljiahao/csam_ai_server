@@ -41,6 +41,10 @@ def start_application() -> FastAPI:
         version=common_settings.PROJECT_VERSION,
         description=textwrap.dedent(common_settings.PROJECT_DESCRIPTION),
         root_path="/api",
+        swagger_ui_parameters={
+            "defaultModelsExpandDepth": -1,  # Hide models section by default
+            "docExpansion": "none",  # Collapse all sections by default
+        },
     )
 
     configure_cors(app)
@@ -56,7 +60,7 @@ app = start_application()
 
 @app.get(
     "/",
-    tags=["Home"],
+    tags=["home"],
     summary="Home Route",
     description="A simple home route returning a welcome message.",
 )
