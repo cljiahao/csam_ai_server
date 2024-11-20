@@ -1,3 +1,4 @@
+import textwrap
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -38,7 +39,7 @@ def start_application() -> FastAPI:
     app = FastAPI(
         title=common_settings.PROJECT_NAME,
         version=common_settings.PROJECT_VERSION,
-        description=common_settings.PROJECT_DESCRIPTION,
+        description=textwrap.dedent(common_settings.PROJECT_DESCRIPTION),
         root_path="/api",
     )
 
