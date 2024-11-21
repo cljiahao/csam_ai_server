@@ -1,3 +1,4 @@
+import textwrap
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -38,8 +39,12 @@ def start_application() -> FastAPI:
     app = FastAPI(
         title=common_settings.PROJECT_NAME,
         version=common_settings.PROJECT_VERSION,
-        description=common_settings.PROJECT_DESCRIPTION,
+        description=textwrap.dedent(common_settings.PROJECT_DESCRIPTION),
         root_path="/api",
+        swagger_ui_parameters={
+            "defaultModelsExpandDepth": -1,  # Hide models section by default
+            "docExpansion": "none",  # Collapse all sections by default
+        },
     )
 
     configure_cors(app)
@@ -55,7 +60,7 @@ app = start_application()
 
 @app.get(
     "/",
-    tags=["Home"],
+    tags=["home"],
     summary="Home Route",
     description="A simple home route returning a welcome message.",
 )

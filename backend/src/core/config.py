@@ -16,10 +16,11 @@ class CommonSettings(Settings):
     PROJECT_NAME: str = Field(default="My Project")
     PROJECT_VERSION: str = Field(default="v1.0.0")
     PROJECT_DESCRIPTION: str = Field(
-        default="""This is a fancy API built with [FastAPI🚀](https://fastapi.tiangolo.com/)
-                                     
-        📝 [Source Code](https:www.google.com)
-        🐞 [Issues](https:www.google.com) 
+        default="""
+        This is a fancy API built with [FastAPI🚀](https://fastapi.tiangolo.com/)
+
+        - 📝 [Source Code](https://www.github.com)
+        - 🐞 [Issues](https://www.github.com/issue)
         """
     )
     ENV_STAGE: str = Field(default="stage")
