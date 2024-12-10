@@ -154,7 +154,7 @@ def sample_settings_group(
                 "item": sample_lot_details["item"],
                 "settings": {
                     "batch": {"erode": [1, 1], "close": [1, 1]},
-                    "chip": {"erode": [1, 1], "close": [1, 1]},
+                    "chip": {"erode": [1, 1], "close": [1, 1], "crop": [54, 54]},
                 },
             },
         ]

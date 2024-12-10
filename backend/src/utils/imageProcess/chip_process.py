@@ -4,7 +4,6 @@ import numpy as np
 from PIL import Image
 from concurrent.futures import ThreadPoolExecutor
 
-import core.constants as core_consts
 import utils.imageProcess.constants as imageProcess_constants
 from core.exceptions import ImageProcessError
 from core.logging import logger
@@ -14,10 +13,6 @@ from utils.imageProcess.image_utils import (
     find_batch_no,
     get_median_area,
 )
-
-
-# TODO: Add new algo of cropping based on average chip length
-# TODO: Improve algorithm processing speed
 
 
 def get_chips(
@@ -43,7 +38,8 @@ def get_chips(
 
     no_of_chips = 0
     temp_dict, ng_dict = {}, {}
-    pad = [math.ceil(x * math.sqrt(2) / 10) * 10 for x in core_consts.CHIP_CROP_SIZE]
+    crop_settings = chip_settings["crop"]
+    pad = [math.ceil(x * math.sqrt(2) / 10) * 10 for x in chip_settings["crop"]]
     try:
         with ThreadPoolExecutor() as exe:
             for contours_metrics in chunk_contours:
@@ -58,6 +54,7 @@ def get_chips(
                     thres_range,
                     pad,
                     ai,
+                    crop_settings,
                 ).result()
     except cv2.error as e:
         std_out = "OpenCV error occurred."
@@ -102,6 +99,7 @@ def find_chips(
     thres_range: dict[str, float],
     pad: list[int],
     ai: bool,
+    crop_settings: list[str],
 ) -> int:
     """Find and process individual chips from the batch data."""
 
@@ -111,6 +109,7 @@ def find_chips(
             contour,
             chip_area,
             thres_range["upp_chip_area"],
+            crop_settings,
         )
 
         for cont, new_chip_area in contour_arr:
@@ -133,7 +132,7 @@ def find_chips(
                     int(yc - pad[1]),
                 )
 
-                rotated_image = rotate_chips(border_image, rect, pad)
+                rotated_image = rotate_chips(border_image, rect, pad, crop_settings)
                 # Convert colour to RGB for AI Model to predict properly
                 if ai:
                     rotated_image = cv2.cvtColor(rotated_image, cv2.COLOR_BGR2RGB)
@@ -156,6 +155,7 @@ def check_single(
     contour: np.ndarray,
     chip_area: float,
     upp_chip_area: float,
+    crop_settings: list[str],
 ) -> list[np.ndarray]:
     """Return list of broken down contours."""
 
@@ -164,7 +164,7 @@ def check_single(
         cv2.drawContours(blank, [contour], -1, (255, 255, 255), -1)
 
         x, y = np.intp(cv2.minAreaRect(contour)[0])
-        x_crop, y_crop = core_consts.CHIP_CROP_SIZE
+        x_crop, y_crop = crop_settings
         crop = blank[
             y - y_crop // 2 : y + y_crop // 2, x - x_crop // 2 : x + x_crop // 2
         ]
@@ -183,7 +183,10 @@ def check_single(
 
 
 def rotate_chips(
-    border_image: np.ndarray, rect: cv2.RotatedRect, pad: list[int]
+    border_image: np.ndarray,
+    rect: cv2.RotatedRect,
+    pad: list[int],
+    crop_settings: list[str],
 ) -> np.ndarray:
     """Return rotated image cropped to specified size."""
 
@@ -199,7 +202,7 @@ def rotate_chips(
     pil_image = Image.fromarray(crop)
     rotated_image = np.asarray(pil_image.rotate(theta))
 
-    x_crop, y_crop = core_consts.CHIP_CROP_SIZE
+    x_crop, y_crop = crop_settings
     rotated_image = rotated_image[
         pad[1] - y_crop // 2 : pad[1] + y_crop // 2,
         pad[0] - x_crop // 2 : pad[0] + x_crop // 2,

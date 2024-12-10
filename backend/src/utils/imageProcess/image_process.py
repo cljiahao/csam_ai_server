@@ -21,7 +21,9 @@ def image_process(
     start, stdout = time_print("Start Processing Image")
     logger.info(stdout)
 
-    border_image, border_gray = create_border_image(image)
+    border_image, border_gray = create_border_image(
+        image, settings_data["chip"]["crop"]
+    )
 
     lap, stdout = time_print("Creating border image and border gray image", start)
     logger.info(stdout)
