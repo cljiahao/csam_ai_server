@@ -4,19 +4,18 @@ import math
 import numpy as np
 
 from core.exceptions import ImageProcessError
-import core.constants as core_consts
 import utils.imageProcess.constants as imageProcess_constants
 from core.logging import logger
 
 
-def create_border_image(image: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+def create_border_image(
+    image: np.ndarray, crop_settings: list[str]
+) -> tuple[np.ndarray, np.ndarray]:
     """Return border extended MatLike image in BGR and Gray."""
 
     # Added border to include chips near the edge of images,
     # allowing better cropping of chips later on
-    padx, pady = [
-        math.ceil(x * math.sqrt(2) / 10) * 10 for x in core_consts.CHIP_CROP_SIZE
-    ]
+    padx, pady = [math.ceil(x * math.sqrt(2) / 10) * 10 for x in crop_settings]
     border_image = cv2.copyMakeBorder(
         image,
         pady,

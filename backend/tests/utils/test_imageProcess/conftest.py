@@ -49,7 +49,7 @@ def sample_batch_config() -> dict[str, tuple[int, int]]:
 @pytest.fixture
 def sample_chip_config() -> dict[str, tuple[int, int]]:
     """Fixture to provide a sample chip configuration."""
-    return {"erode": (5, 5), "close": (2, 2)}
+    return {"erode": (5, 5), "close": (2, 2), "crop": [54, 54]}
 
 
 @pytest.fixture

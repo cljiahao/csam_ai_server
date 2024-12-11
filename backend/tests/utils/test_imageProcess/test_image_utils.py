@@ -11,11 +11,19 @@ from utils.imageProcess.image_utils import (
 )
 
 
-def test_create_border_image(sample_images: dict[str, str | np.ndarray]) -> None:
+def test_create_border_image(
+    sample_images: dict[str, str | np.ndarray],
+    sample_settings_group: dict[
+        str, list[dict[str, str | dict[str, dict[str, list[int]]]]]
+    ],
+) -> None:
     """Test the creation of border images."""
 
     base_image = sample_images["base"]
-    border_image, border_gray = create_border_image(base_image)
+    border_image, border_gray = create_border_image(
+        base_image,
+        sample_settings_group["settingsGroup"][0]["settings"]["chip"]["crop"],
+    )
 
     np.testing.assert_array_equal(border_image, sample_images["border"])
     np.testing.assert_array_equal(border_gray, sample_images["gray"])

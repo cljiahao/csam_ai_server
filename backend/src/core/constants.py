@@ -1,8 +1,5 @@
 # Constants and default settings for image processing and configurations.
 
-# Size of cropped chips
-CHIP_CROP_SIZE: list[int] = [54, 54]
-
 # Valid types for "G"
 G_TYPES: list[str] = ["G", "Good", "g", "good"]
 
@@ -17,7 +14,7 @@ SETTINGS_MODE: list[str] = ["erode", "close"]
 # Default settings for batch and chip processing
 DEFAULT_SETTINGS: dict[str, dict[str, list[int]]] = {
     "batch": {"erode": [1, 1], "close": [1, 1]},
-    "chip": {"erode": [1, 1], "close": [1, 1]},
+    "chip": {"erode": [1, 1], "close": [1, 1], "crop": [54, 54]},
 }
 
 # Default colors for various categories
