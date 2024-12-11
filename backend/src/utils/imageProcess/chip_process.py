@@ -169,15 +169,18 @@ def check_single(
             y - y_crop // 2 : y + y_crop // 2, x - x_crop // 2 : x + x_crop // 2
         ]
 
-        # Erode image in a range or 3,3 to 9,9 to see if can break into more chips
-        for i in range(3, 9):
-            crop[:] = cv2.erode(crop, np.ones((i, i), np.uint8))
-            new_cnts, _ = cv2.findContours(
-                blank, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
-            )
-            if len(new_cnts) > 1:
-                contour_arr = [(cnt, cv2.contourArea(cnt)) for cnt in new_cnts]
-                return contour_arr
+        # Erode image in x and y direction individually to see if can break into more chips
+        for i in range(1, 15):
+            for j in range(1, 15):
+                crop[:] = cv2.erode(crop, np.ones((i, j), np.uint8))
+                new_cnts, _ = cv2.findContours(
+                    blank, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+                )
+                if not len(new_cnts):
+                    break
+                if len(new_cnts) > 1:
+                    contour_arr = [(cnt, cv2.contourArea(cnt)) for cnt in new_cnts]
+                    return contour_arr
 
     return [(contour, chip_area)]
 
