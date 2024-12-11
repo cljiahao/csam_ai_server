@@ -45,7 +45,11 @@ const SettingsForm = ({ page }) => {
                       <Separator className="my-2 pt-[2px]" />
                     </FormLabel>
                     <FormControl className="flex-center px-3">
-                      <Input type="file" {...fileRef} />
+                      <Input
+                        className="cursor-pointer"
+                        type="file"
+                        {...fileRef}
+                      />
                     </FormControl>
                   </div>
                   <FormDescription />
