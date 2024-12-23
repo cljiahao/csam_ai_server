@@ -58,8 +58,7 @@ class DatabaseSettings(Settings):
 
     DB_NAME: str = Field(default="local.db")
     REALTIMEDB: str = Field(default="")
-    TABLEID_CDC: str = Field(default="")
-    TABLEID_CAI: str = Field(default="")
+    TABLEID_CSAM_SERVER: str = Field(default="")
 
 
 class ServiceSettings(Settings):
