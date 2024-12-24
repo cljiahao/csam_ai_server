@@ -21,15 +21,8 @@ class Directory:
         self.images_dir = self.data_dir / "images"
         self.data_send_dir = self.data_dir / "datasend"
 
-    def create_folders(self) -> None:
+    def create_folders(self, folders: list[Path]) -> None:
         """Create necessary folders for logging, configuration, and data."""
-        folders = [
-            self.log_dir,
-            self.json_dir,
-            self.model_dir,
-            self.images_dir,
-            self.data_send_dir,
-        ]
         for folder in folders:
             try:
                 folder.mkdir(parents=True, exist_ok=True)
@@ -39,4 +32,10 @@ class Directory:
 
 # Instantiate Directory and create folders
 directory = Directory()
-directory.create_folders()
+folders = [
+    directory.json_dir,
+    directory.model_dir,
+    directory.images_dir,
+    directory.data_send_dir,
+]
+directory.create_folders(folders)
