@@ -26,7 +26,7 @@ class Settings:
 
     G_TYPES: list = ["G", "Good", "g", "good"]
 
-    CHIP_IMG_SIZE: list = [54, 54]
+    CHIP_IMG_SIZE: list = json.loads(os.getenv("CHIP_IMG_SIZE"))
 
 
 settings = Settings()
