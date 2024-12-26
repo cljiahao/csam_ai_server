@@ -6,7 +6,7 @@ services:
       target: prod
       tags:
         - "10.50.0.7:5001/csam_ai_server/api:latest"
-        - "10.50.0.7:5001/csam_ai_server/api:1.0.1"
+        - "10.50.0.7:5001/csam_ai_server/api:1.1.0"
   app:
     build:
       context: ./frontend
@@ -14,7 +14,7 @@ services:
       target: prod
       tags:
         - "10.50.0.7:5001/csam_ai_server/app:latest"
-        - "10.50.0.7:5001/csam_ai_server/app:1.0.1"
+        - "10.50.0.7:5001/csam_ai_server/app:1.1.0"
       args:
         - APP_PORT=${APP_PORT}
         - NGINX_PORT=${NGINX_PORT}
