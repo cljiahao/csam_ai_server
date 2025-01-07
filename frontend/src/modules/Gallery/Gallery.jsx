@@ -17,10 +17,7 @@ const Gallery = ({ page }) => {
     if (!acc[batch]) {
       acc[batch] = [];
     }
-
-    const isMarkerZero = MARKERS.marks.some(
-      ({ id: markerId }) => markerId === 0,
-    );
+    const isMarkerZero = circle.id === 0;
     const isCDCPage = page.toUpperCase() === "CDC";
 
     if (isMarkerZero && isCDCPage) return acc;
