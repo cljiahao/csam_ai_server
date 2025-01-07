@@ -7,18 +7,24 @@ from unittest.mock import MagicMock
 from apis.v2.components.process_predict import process_n_predict
 from apis.v2.schemas.base import CAIPage, CDCPage
 from core.directory import directory
+from db.models.csam import CSAM_DETAILS
+
+
+@pytest.fixture
+def mock_gray_image():
+    """Creates a mock grayscale image."""
+    return np.zeros((100, 100), dtype=np.uint8)
 
 
 @pytest.fixture
 def sample_process_dicts(
-    sample_chips_batch_details: dict[str, int]
+    mock_gray_image: np.ndarray, sample_chips_batch_details: dict[str, int]
 ) -> tuple[dict, dict, dict, dict, dict, dict]:
     """Returns sample dictionaries for image processing."""
-    mock_image = np.zeros((100, 100), dtype=np.uint8)
     count_dict = sample_chips_batch_details
-    temp_dict = {f"temp{i}.png": mock_image for i in range(1, 6)}
-    ng_dict = {f"ng{i}.png": mock_image for i in range(1, 6)}
-    pred_dict = {f"temp{i}.png": mock_image for i in range(1, 6) if i % 2 == 0}
+    temp_dict = {f"temp{i}.png": mock_gray_image for i in range(1, 6)}
+    ng_dict = {f"ng{i}.png": mock_gray_image for i in range(1, 6)}
+    pred_dict = {f"temp{i}.png": mock_gray_image for i in range(1, 6) if i % 2 == 0}
 
     chip_dict = {
         "batch 1": ["test1.png", "test2.png"],
@@ -125,8 +131,7 @@ def test_process_n_predict_success_new(
 
     mock_iterdir.return_value = mock_iterdir_value
     mock_initialize.return_value = mock_file, mock_plate_path, mock_temp_path
-    # mock_page.model.no_of_batches = 15
-    mock_get_lot_detail.return_value = mock_page.model
+    mock_get_lot_detail.return_value = CSAM_DETAILS
     mock_get_cache_data.return_value = chip_dict
     mock_image_process.return_value = count_dict, temp_dict, ng_dict
     mock_predict_defects.return_value = pred_dict
@@ -140,7 +145,7 @@ def test_process_n_predict_success_new(
         mock_lot_no, mock_item, mock_file, directory.images_dir / mock_page.base_folder
     )
     mock_get_lot_detail.assert_called_once_with(
-        mock_page.model, db_session, mock_lot_no, mock_plate
+        db_session, mock_lot_no, mock_plate, mock_page.ai
     )
     if not mock_iterdir_value:
         mock_image_process.assert_called_once_with(mock_file, mock_item, mock_page.ai)
