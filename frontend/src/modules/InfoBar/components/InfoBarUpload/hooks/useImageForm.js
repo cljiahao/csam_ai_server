@@ -6,15 +6,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useFetch } from "@/hooks/useFetch";
 import { getItemType } from "@/services/api_retrieve";
 import { useInfoBarContext } from "@/modules/InfoBar/contexts/infoBarContext";
+import useSaveInput from "../hooks/useSaveInput";
 
 //TODO: Convert ItemType to combobox for typing and selection
 
-const useImageForm = () => {
+const useImageForm = (page) => {
+  const saveUserInput = useSaveInput();
   const { data, error, fetchData } = useFetch();
   const { infoDetails, updateInfoDetails } = useInfoBarContext();
 
   // Sync the image details from the fetch data or handle error
   useEffect(() => {
+    saveUserInput(page);
     updateInfoDetails(error ? { item: "" } : data);
   }, [data, error, updateInfoDetails]);
 

@@ -11,22 +11,19 @@ import {
 import { Input } from "@/components/ui/input";
 import HoverButton from "@/components/HoverButton";
 import useImageForm from "../hooks/useImageForm";
-import useSaveInput from "../hooks/useSaveInput";
 import { useInfoBarContext } from "@/modules/InfoBar/contexts/infoBarContext";
 
 const ImageForm = ({ page, fileInputRef }) => {
-  const saveUserInput = useSaveInput();
-  const [form_info, form] = useImageForm();
+  const [form_info, form] = useImageForm(page);
   const { updateInfoDetails } = useInfoBarContext();
 
   // Submit form data and trigger file input
   const onSubmit = useCallback(
     (onSubmitData) => {
-      saveUserInput(page);
       updateInfoDetails(onSubmitData);
       fileInputRef.current?.click();
     },
-    [fileInputRef, saveUserInput, page, updateInfoDetails],
+    [fileInputRef, updateInfoDetails],
   );
 
   // Handle form reset
