@@ -58,10 +58,13 @@ def save_local(
         page = get_page(module)
         set_cache_data(item, res_dict.directory, res_dict.chips)
         no_of_real = sum(len(value) for value in res_dict.chips.values())
-        update_lot_detail(page.model, db, lot_no, plate, no_of_real)
+        update_lot_detail(db, lot_no, plate, no_of_real, page.ai)
         return True
     except Exception as e:
         handle_exceptions(e)
+
+
+# TODO: change to API endpoint for receiving file transfer (Model and txt file)
 
 
 @router.post(

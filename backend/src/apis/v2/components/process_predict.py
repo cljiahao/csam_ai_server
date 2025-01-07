@@ -16,7 +16,6 @@ from utils.osHandle.write_image import thread_write_images
 from utils.prediction.tensorflow_model import predict_defects
 
 
-
 def process_n_predict(
     lot_no: str, item: str, file: IO, db: Session, page: CAIPage | CDCPage
 ) -> dict[str, str | dict[str, list[str]]]:
@@ -48,7 +47,7 @@ def process_n_predict(
 
     # Read from database if data exists
     plate_no = Path(file.filename).stem
-    lot_detail = get_lot_detail(page.model, db, lot_no, plate_no)
+    lot_detail = get_lot_detail(db, lot_no, plate_no, page.ai)
 
     lap, stdout = time_print("Initialization checks", start)
     logger.info(stdout)
@@ -101,10 +100,11 @@ def process_n_predict(
             "lotNo": lot_no,
             "plate": plate_no,
             "item": item,
+            "with_ai": page.ai,
         }
 
         lot_dict.update(count_dict)
-        create_lot_detail(page.model, db, lot_dict)
+        create_lot_detail(db, lot_dict)
 
     lap, stdout = time_print("Write data into database", lap)
     logger.info(stdout)
