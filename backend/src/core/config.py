@@ -57,7 +57,7 @@ class DatabaseSettings(Settings):
     """Database configuration settings."""
 
     DB_NAME: str = Field(default="local.db")
-    REALTIMEDB: str = Field(default="")
+    REALTIMEDB_URL: str = Field(default="")
     TABLEID_CSAM_SERVER: str = Field(default="")
 
 
