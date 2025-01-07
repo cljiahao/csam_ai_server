@@ -72,7 +72,7 @@ def get_processed_count(
 
     try:
         page = get_page(module)
-        lot_detail = get_lot_detail(page.model, db, lot_no, plate_no)
+        lot_detail = get_lot_detail(db, lot_no, plate_no, page.ai)
         if module.value == module.cai:
             return {"result": lot_detail.no_of_pred}
         elif module.value == module.cdc:
