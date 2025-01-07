@@ -5,7 +5,6 @@ FROM $PYTHON AS base
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 WORKDIR /api
-COPY ./.env.common ./.env.common
 COPY ./requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir --upgrade -r ./requirements.txt
 COPY ./src ./src
