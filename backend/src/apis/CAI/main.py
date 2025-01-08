@@ -5,8 +5,9 @@ from apis.utils.debug import time_print
 from apis.utils.directory import dire
 from apis.utils.cache import get_cache
 
-# from apis.CAI.utils.tensorflow_predict import prediction
-from apis.CAI.utils.pytorch_predict import prediction
+from apis.CAI.utils.tensorflow_predict import prediction
+
+# from apis.CAI.utils.pytorch_predict import prediction
 
 
 def CAI(lot_no, item, file, db=False):
