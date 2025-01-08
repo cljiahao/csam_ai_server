@@ -17,6 +17,7 @@ services:
       NGINX_PORT: ${NGINX_PORT}
       FASTAPI_ROOT: ${FASTAPI_ROOT}
       PC_NAME: ${PC_NAME}
+      CHIP_IMG_SIZE: ${CHIP_IMG_SIZE}
       PRASS_URL: ${PRASS_URL}
       LOT_COL: ${LOT_COL}
       ITEM_COL: ${ITEM_COL}
