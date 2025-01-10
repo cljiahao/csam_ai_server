@@ -46,10 +46,10 @@ export const imgErrorHandle = async (file, details, type) => {
   const res = await uploadImage(file, details, type);
 
   if (res.status === 522) {
-    return { error: true, image: "assets/error.png" };
+    return { error: true, image: "assets/error_model.png" };
   } else if (res.status === 520) {
     return { error: true, image: "assets/error.png" };
-  } else {
+  } else if (res.ok) {
     const json = await res.json();
     const directory = "/get_image" + json.details.directory.split("images")[1];
     return {
@@ -57,5 +57,7 @@ export const imgErrorHandle = async (file, details, type) => {
       image: `${API}${directory}/original/${file.name}`,
       json: json,
     };
+  } else {
+    return { error: true, image: "assets/error.png" };
   }
 };
