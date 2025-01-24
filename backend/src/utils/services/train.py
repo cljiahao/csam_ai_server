@@ -15,3 +15,20 @@ def get_item_settings(item: str) -> dict | None:
         print(std_out)
         logger.error(std_out)
         raise
+
+
+def get_batch_settings(item: str):
+    batch_erode = 2
+    batch_close = 27
+    return batch_erode, batch_close
+
+
+def get_chip_settings(item: str):
+    chip_erode = 7
+    chip_close = 2
+    return chip_erode, chip_close
+
+
+def get_crop_settings(item: str):
+    crop = 54
+    return crop
