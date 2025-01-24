@@ -1,27 +1,13 @@
 import { createFileRequestOptions, createRequestOptions, sendRequest } from ".";
 
-export const uploadImage = async (form_data, mode, lot_no, item) => {
-  const options = createFileRequestOptions("POST", form_data);
-  return await sendRequest(
-    `/api/upload/image/${mode}/${lot_no}/${item}`,
-    options,
-  );
+export const uploadImage = async (mode, item, lotNo, formData) => {
+  const url = `/api/upload/image/${mode}/${item}/${lotNo}`;
+  const options = createFileRequestOptions("POST", formData);
+  return await sendRequest(url, options);
 };
 
-export const saveFinalJudgement = async (data, mode, lot_no, plate, item) => {
+export const saveFinalJudgement = async (data) => {
+  const url = `/api/upload/save`;
   const options = createRequestOptions("POST", data);
-  return await sendRequest(
-    `/api/upload/save/${mode}/${lot_no}/${plate}/${item}`,
-    options,
-  );
-};
-
-export const uploadSettings = async (data) => {
-  const options = createRequestOptions("POST", data);
-  return await sendRequest(`/api/upload/settings`, options);
-};
-
-export const uploadZip = async (data) => {
-  const options = createRequestOptions("POST", data);
-  return await sendRequest(`/api/upload/zip`, options);
+  return await sendRequest(url, options);
 };
