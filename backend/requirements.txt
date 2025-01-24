@@ -1,19 +1,19 @@
 # API (HTTP)
-fastapi==0.110.1                    # API (Backend <==> Frontend)              
-uvicorn==0.29.0                     # To run FastAPI
-pydantic_settings==2.4.0            # Defining type-checked “settings” objects
-python-multipart==0.0.9             # Form Data Usage
-requests==2.31.0                    # HTTP Request
+fastapi==0.115.6                    # API (Backend <==> Frontend)              
+uvicorn==0.34.0                     # To run FastAPI
+pydantic_settings==2.7.1            # Defining type-checked “settings” objects
+python-multipart==0.0.20            # Form Data Usage
+requests==2.32.3                    # HTTP Request
 
 # Processing
 # opencv-python==4.9.0.80           # Processing Images
-opencv-python-headless==4.9.0.80    # Processing Images
-pillow ==10.3.0                     # Processing Images
+opencv-python-headless==4.11.0.86   # Processing Images
+pillow ==11.1.0                     # Processing Images
 tensorflow==2.15.0                  # AI Model
 
 # Database
-SQLAlchemy==2.0.29                  # Sql Engine (ORM)
+SQLAlchemy==2.0.37                  # Sql Engine (ORM)
 
 # Misc
 python-dotenv==1.0.1                # Env File Reader
-pytest==7.4.2                       # For Testing
+pytest==8.3.4                       # For Testing
