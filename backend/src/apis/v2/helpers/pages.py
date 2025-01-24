@@ -1,7 +1,9 @@
 from apis.v2.schemas.base import CAIPage, CDCPage, Module
-from core.logging import logger
+from core.exceptions import CustomErrorMessage
+from utils.debug import error_handler
 
 
+@error_handler(custom_error=ValueError)
 def get_page(module: Module) -> CAIPage | CDCPage:
     """Return the page object based on the module value."""
 
@@ -9,7 +11,5 @@ def get_page(module: Module) -> CAIPage | CDCPage:
         return CAIPage
     elif module.value == module.cdc:
         return CDCPage
-
-    std_out = f"Invalid module value: {module}"
-    logger.error(std_out)
-    raise ValueError(std_out)
+    else:
+        raise CustomErrorMessage(f"Invalid module value: {module.value}")

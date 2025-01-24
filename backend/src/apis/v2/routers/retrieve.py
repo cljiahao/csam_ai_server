@@ -8,7 +8,7 @@ from apis.v2.helpers.HTTPExceptions import handle_exceptions
 from apis.v2.helpers.pages import get_page
 from apis.v2.schemas.base import Module
 from apis.v2.schemas.retrieve import CountResult, Item
-from db.CRUD.csam import get_lot_detail
+from db.services.chip_lot_details import ChipLotDetailsService
 from db.session import get_db
 from core.logging import logger
 from core.directory import directory
@@ -41,7 +41,7 @@ def get_image(
         str,
         Path(
             description="Path to the image file relative to the image directory",
-            pattern=".png|.jpg$",
+            pattern=".*\.(png|jpg)$",
         ),
     ]
 ):
@@ -72,10 +72,13 @@ def get_processed_count(
 
     try:
         page = get_page(module)
-        lot_detail = get_lot_detail(db, lot_no, plate_no, page.ai)
-        if module.value == module.cai:
-            return {"result": lot_detail.no_of_pred}
-        elif module.value == module.cdc:
-            return {"result": lot_detail.no_of_chips}
+        chip_lot_details_service = ChipLotDetailsService(db)
+        filter_condition = {"lot_no": lot_no, "plate_no": plate_no, "with_ai": page.ai}
+        lot_detail = chip_lot_details_service.read_lot_details(filter_condition)
+        return (
+            {"result": lot_detail.no_of_pred}
+            if page.ai
+            else {"result": lot_detail.no_of_chips}
+        )
     except Exception as e:
         handle_exceptions(e)

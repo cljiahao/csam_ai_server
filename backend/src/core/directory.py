@@ -33,6 +33,7 @@ class Directory:
 # Instantiate Directory and create folders
 directory = Directory()
 folders = [
+    directory.log_dir,
     directory.json_dir,
     directory.model_dir,
     directory.images_dir,

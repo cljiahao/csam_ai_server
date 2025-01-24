@@ -4,12 +4,6 @@ from fastapi import APIRouter
 
 from apis.v2.helpers.HTTPExceptions import handle_exceptions
 from apis.v2.schemas.defects import ColorGroup, Colors
-from utils.fileHandle.json import (
-    get_all_colors_json,
-    get_colors_json,
-    write_all_colors_json,
-    write_colors_json,
-)
 
 
 router = APIRouter()

@@ -17,3 +17,4 @@ resolves #0000
 - [ ] Refactoring
 - [ ] Security patch
 - [ ] UI/UX improvement
+- [ ] Build

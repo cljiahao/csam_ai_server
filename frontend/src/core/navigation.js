@@ -10,6 +10,7 @@ const navigation_info = [
     title: "Home Page",
     description: "Home Page",
     icon: FaHome,
+    component: "Home",
   },
   {
     name: "CDC",
@@ -18,6 +19,7 @@ const navigation_info = [
     description:
       "Webpage to assist production in collecting Good, NG and Others chip images.",
     icon: MdOutlineMoveToInbox,
+    component: "CsamDC",
   },
   {
     name: "CAI",
@@ -26,6 +28,7 @@ const navigation_info = [
     description:
       "Webpage to assist production in predicting NG chip images for final judgement.",
     icon: LiaNetworkWiredSolid,
+    component: "CsamAI",
   },
 ];
 

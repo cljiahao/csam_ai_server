@@ -1,46 +1,79 @@
 import cv2
 import time
 import numpy as np
-from typing import Optional
+from datetime import timedelta
+
+from core.exceptions import CustomErrorMessage
+from core.logging import logger
 
 
 def cvWin(image: np.ndarray, name: str = "image") -> None:
     """Display an image using OpenCV for debugging purposes.
 
     Args:
-        image (np.ndarray): The image to be displayed.
-        name (str): The name of the window. Defaults to "image".
+        image : np.ndarray
+            The image to be displayed.
+        name : str
+            The name of the window. Defaults to "image".
     """
 
     cv2.namedWindow(name, cv2.WINDOW_FREERATIO)
     cv2.imshow(name, image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    if cv2.waitKey(0) & 0xFF == ord("q"):
+        cv2.destroyAllWindows()
 
 
-def time_print(
-    func_name: Optional[str] = None, lap: Optional[float] = None, end: bool = False
-) -> tuple[float, str]:
-    """Log the time taken for a function or process.
+def timer(print_message: str = ""):
+    """A decorator to log the time taken by a function.
 
     Args:
-        func_name (Optional[str]): The name of the function or process being timed. Defaults to None.
-        lap (Optional[float]): The start time of the process. Defaults to None.
-        end (bool): Flag to indicate if the timing should be marked as ended. Defaults to False.
-
-    Returns:
-        Tuple[float, str]: The current time and a message about the time taken.
+        print_message : str
+            A custom message to be logged along with the elapsed time.
     """
 
-    current_time = time.time()
-    if lap is not None:
-        time_taken = round(current_time - lap, 2)
-        stdout = (
-            f"Total time taken: {time_taken} secs"
-            if end
-            else f"{func_name} took: {time_taken} secs"
-        )
-    else:
-        stdout = f"Start Process: {func_name}, please wait ..."
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            start_time = time.time()
+            result = func(*args, **kwargs)
+            end_time = time.time()
+            elapsed_time = timedelta(seconds=end_time - start_time)
+            formatted_time = str(elapsed_time).split(".")[0]
+            if print_message:
+                logger.info(f"{print_message} took: {formatted_time}", stacklevel=2)
+            else:
+                logger.info(f"Total time taken: {formatted_time}", stacklevel=2)
+            return result
 
-    return current_time, stdout
+        return wrapper
+
+    return decorator
+
+
+def error_handler(
+    print_message: str = "",
+    custom_error: Exception = None,
+):
+    """A decorator to log exceptions that occur during the execution of a function.
+
+    Args:
+        print_message (str, optional): A custom message to be logged along with the exception details.
+        custom_error (Exception, optional): A custom exception class to raise instead of the default exception.
+
+    """
+
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except CustomErrorMessage as e:
+                if custom_error:
+                    raise custom_error(str(e))
+                raise Exception(str(e))
+            except Exception as e:
+                if custom_error:
+                    raise custom_error(print_message if print_message else str(e))
+                raise e
+
+        return wrapper
+
+    return decorator

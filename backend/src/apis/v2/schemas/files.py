@@ -1,6 +1,9 @@
 from pydantic import BaseModel
 
+from schemas.chips_data import DefectBatch
 
-class ChipData(BaseModel):
-    chips: dict[str, list]
+
+class DefectBatchDirectory(BaseModel):
+    unique_id: str
     directory: str
+    defect_batches: list[DefectBatch] = []

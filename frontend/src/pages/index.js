@@ -1,5 +1,5 @@
-import CsamAI from "./csamai";
-import CsamDC from "./csamdc";
-import Home from "./home";
+import CsamAI from "./CsamAI";
+import CsamDC from "./CsamDC";
+import Home from "./Home";
 
 export { CsamAI, CsamDC, Home };
