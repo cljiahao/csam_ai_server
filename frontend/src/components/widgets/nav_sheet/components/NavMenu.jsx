@@ -1,3 +1,4 @@
+import { createElement } from "react";
 import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import { IconContext } from "react-icons";
@@ -23,7 +24,7 @@ const NavMenu = ({ nav_info }) => {
                   to={nav.url}
                   className={`${navigationMenuTriggerStyle()} h-full ${width}`}
                 >
-                  <nav.icon />
+                  {createElement(nav.icon)}
                 </Link>
               </NavigationMenuItem>
             ))}

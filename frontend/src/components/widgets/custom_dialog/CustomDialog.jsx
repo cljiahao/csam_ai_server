@@ -6,10 +6,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
-const DialogPopUp = ({ trigger, title, description, children, ...props }) => {
+const CustomDialog = ({
+  className,
+  trigger,
+  title,
+  description,
+  children,
+  ...props
+}) => {
   return (
-    <Dialog {...props}>
+    <Dialog className={cn("flex", className)} {...props}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -22,4 +30,4 @@ const DialogPopUp = ({ trigger, title, description, children, ...props }) => {
   );
 };
 
-export default DialogPopUp;
+export default CustomDialog;
