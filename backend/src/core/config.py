@@ -31,8 +31,8 @@ class APISettings(Settings):
 
     FASTAPI_ROOT: str = Field(default="api")
     PC_NAME: str = Field(default="locahost")
-    API_PORT: int = Field(default=8000)
-    APP_PORT: int = Field(default=5173)
+    SERVER_API_PORT: int = Field(default=8000)
+    SERVER_APP_PORT: int = Field(default=5173)
     ALLOWED_CORS: list[str] = []
 
     def __init__(self, **data):
@@ -43,8 +43,8 @@ class APISettings(Settings):
         """Compute allowed CORS origins based on PC_NAME and NGINX_PORT."""
         return [
             "http://localhost:5173",
-            f"http://localhost:{self.APP_PORT}",
-            f"http://{self.PC_NAME}:{self.APP_PORT}",
+            f"http://localhost:{self.SERVER_APP_PORT}",
+            f"http://{self.PC_NAME}:{self.SERVER_APP_PORT}",
         ]
 
     @field_validator("FASTAPI_ROOT", mode="before")
