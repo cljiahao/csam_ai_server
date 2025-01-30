@@ -13,7 +13,6 @@ class Directory:
 
         # Config folder
         self.config_dir = self.base_dir / "config"
-        self.json_dir = self.config_dir / "json"
         self.model_dir = self.config_dir / "model"
 
         # Data folder
@@ -34,7 +33,6 @@ class Directory:
 directory = Directory()
 folders = [
     directory.log_dir,
-    directory.json_dir,
     directory.model_dir,
     directory.images_dir,
     directory.data_send_dir,
