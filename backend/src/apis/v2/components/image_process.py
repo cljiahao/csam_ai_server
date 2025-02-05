@@ -15,7 +15,7 @@ from utils.debug import timer
 from utils.image_process.border_creator import BorderCreator
 from utils.image_process.contour_handler import ContourHandler
 from utils.image_process.mask_handler import MaskHandler
-from utils.services.train import (
+from services.train import (
     get_batch_settings,
     get_chip_settings,
     get_crop_settings,

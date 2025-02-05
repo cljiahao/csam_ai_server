@@ -12,7 +12,7 @@ from db.services.chip_lot_details import ChipLotDetailsService
 from db.session import get_db
 from core.logging import logger
 from core.directory import directory
-from utils.services.prass import check_lot
+from services.prass import check_lot
 
 router = APIRouter()
 
