@@ -14,9 +14,9 @@ import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 const element_info = {
-  Home: lazy(() => import("@/pages/Home")),
-  CDC: lazy(() => import("@/pages/CsamDC")),
-  CAI: lazy(() => import("@/pages/CsamAI")),
+  Home: lazy(() => import("@/pages/home")),
+  CDC: lazy(() => import("@/pages/csamdc")),
+  CAI: lazy(() => import("@/pages/csamai")),
 };
 
 function App() {
