@@ -5,8 +5,8 @@ from dotenv import find_dotenv, load_dotenv
 
 def load_environment(env):
     """Load environment variables from .env files based on the environment."""
-    load_dotenv(dotenv_path=find_dotenv(f".env.{env}"))
     load_dotenv(dotenv_path=find_dotenv("../.env"))
+    load_dotenv(dotenv_path=find_dotenv(f".env.{env}"))
 
 
 def parse_arguments():
