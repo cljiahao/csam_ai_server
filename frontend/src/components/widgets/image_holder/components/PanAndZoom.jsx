@@ -13,7 +13,7 @@ const PanAndZoom = ({ children, image }) => {
 
   return (
     <div
-      className="flex-center hw-full relative"
+      className="hw-full relative"
       onWheel={onWheel}
       onMouseDown={handlePan}
       onMouseUp={handlePan}
@@ -21,13 +21,13 @@ const PanAndZoom = ({ children, image }) => {
       onDoubleClick={handleResetZoom}
     >
       <div
-        className="flex-center hw-full relative"
+        className="hw-full relative"
         style={{
           transform: `translate(${x}px, ${y}px) scale(${scale})`,
         }}
       >
         {children}
-        <img src={image} alt="temp.jpg" className="hw-full object-fill" />
+        <img src={image} alt="temp.jpg" className="hw-full" />
       </div>
     </div>
   );

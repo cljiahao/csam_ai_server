@@ -7,7 +7,7 @@ const DotCanvas = ({ moveActive }) => {
   } = useMarkCanvas();
 
   return (
-    <svg className="hw-full absolute">
+    <svg className="hw-full absolute left-0 top-0">
       {circles.map((circle) => (
         <circle
           key={circle.id}
