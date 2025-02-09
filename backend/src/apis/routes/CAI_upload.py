@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from apis.CAI.main import CAI
 from schemas.chips import ChipDetails
 from db.session import get_db
+from routes.HTTPException import handle_exceptions
 
 
 router = APIRouter()
@@ -23,11 +24,7 @@ def predict_NG_chips(
     try:
         chip_dict, plate_path, no_of_chips, no_of_batches = CAI(lot_no, item, file, db)
     except Exception as e:
-        if "detail" in dir(e):
-            raise HTTPException(status_code=e.status_code, detail=e.detail)
-        raise HTTPException(
-            status_code=520, detail=f"Error while processing uploaded file"
-        )
+        handle_exceptions(e)
 
     no_of_pred = sum(
         [len(chip_dict[x]) for x in chip_dict if isinstance(chip_dict[x], list)]
