@@ -82,11 +82,14 @@ def filter_defect_data(
     defect_file_names = {defect.file_name for defect in defect_list}
 
     updated_batches = [
-        defect_batch
+        DefectBatch(batch_no=defect_batch.batch_no, defect_files=filtered_files)
         for defect_batch in defect_batch_dict.values()
-        if any(
-            defect_data.file_name in defect_file_names
-            for defect_data in defect_batch.defect_files
+        if (
+            filtered_files := [
+                defect_data
+                for defect_data in defect_batch.defect_files
+                if defect_data.file_name in defect_file_names
+            ]
         )
     ]
 
