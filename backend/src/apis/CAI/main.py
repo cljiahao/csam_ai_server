@@ -20,7 +20,7 @@ def CAI(lot_no, item, file, db=False):
 
     if os.path.isdir(temp_path) and any(os.scandir(temp_path)) and db:
         chip_dict, no_of_chips, no_of_batches = get_cache(plate_path, db)
-        return chip_dict, item, plate_path, no_of_chips, no_of_batches
+        return chip_dict, plate_path, no_of_chips, no_of_batches
 
     no_of_chips, no_of_batches, temp_dict, ng_dict = process(image, item, True)
 
