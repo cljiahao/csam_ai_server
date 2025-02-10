@@ -24,9 +24,9 @@ const Gallery = () => {
           <div className="hw-full grid grid-cols-8 gap-3">
             {defect_batch?.defect_files
               ?.filter((file) => {
+                if (mode === "CAI") return true;
                 if (mode === "CDC" && marksFileNames.has(file.file_name))
                   return true;
-                return false;
               })
               .map((file) => {
                 return (
