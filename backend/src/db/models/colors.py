@@ -9,7 +9,7 @@ class Colors(Base):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     date_created: Mapped[dt] = mapped_column(default=func.now())
     date_updated: Mapped[dt] = mapped_column(default=func.now(), onupdate=func.now())
-    item: Mapped[str] = mapped_column(String, index=True)
+    item: Mapped[str] = mapped_column(String, index=True, unique=True)
     defect_mode: Mapped[str]
     hex_code: Mapped[str]
 
