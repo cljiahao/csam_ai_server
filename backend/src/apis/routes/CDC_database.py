@@ -1,12 +1,12 @@
-from fastapi import Depends, HTTPException
+from fastapi import Depends
 from fastapi import APIRouter
 from sqlalchemy.orm import Session
 
 from apis.utils.cache import set_cache
+from apis.routes.HTTPException import handle_exceptions
 from db.session import get_db
 from db.repository.cdc_ratio import create_ratio, get_all_ratio
 from schemas.ratio import CreateRatio
-from routes.HTTPException import handle_exceptions
 
 
 router = APIRouter()
