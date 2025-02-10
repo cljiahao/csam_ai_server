@@ -12,7 +12,6 @@ def get_item_settings(item: str) -> dict | None:
         return response.json()
     except requests.RequestException as e:
         std_out = f"Error fetching settings from train server: {e}"
-        print(std_out)
         logger.error(std_out)
         raise
 

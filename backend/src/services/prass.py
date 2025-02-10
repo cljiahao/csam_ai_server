@@ -22,7 +22,6 @@ def check_lot(lot_no: str) -> str | None:
         prass = response.json()
     except requests.RequestException as e:
         std_out = f"Error fetching data from PRASS server: {e}"
-        print(std_out)
         logger.error(std_out)
         raise
 
