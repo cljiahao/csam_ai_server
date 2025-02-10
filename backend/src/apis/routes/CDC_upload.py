@@ -1,12 +1,12 @@
 from fastapi import Form, File
-from fastapi import APIRouter, UploadFile, HTTPException
+from fastapi import APIRouter, UploadFile
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from apis.CDC.main import CDC
+from apis.routes.HTTPException import handle_exceptions
 from schemas.chips import ChipDetails
 from db.session import get_db
-from routes.HTTPException import handle_exceptions
 
 
 router = APIRouter()
