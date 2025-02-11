@@ -24,10 +24,12 @@ def handle_exceptions(e: Exception) -> None:
             NoResultsFound,
         ),
     ):
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.args[0])
+        logger.error(str(e), exc_info=True)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
     elif isinstance(e, (DatabaseError, ImageProcessError, CacheError)):
+        logger.error(str(e), exc_info=True)
         raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=e.args[0]
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e)
         )
     else:
         logger.error(str(e), exc_info=True)

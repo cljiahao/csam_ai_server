@@ -26,9 +26,7 @@ class ContourHandler:
     def get_median_area(contours: list[np.ndarray]) -> float:
         """Calculate the median area of the contours in the list."""
         if not contours:
-            std_out = "No contours available to calculate median area."
-            logger.error(std_out)
-            raise ValueError(std_out)
+            raise ValueError("No contours available to calculate median area.")
         contour_areas = np.array([cv2.contourArea(contour) for contour in contours])
         average_area = np.median(contour_areas)
         logger.debug(f"Average Chip Area is {average_area}")
