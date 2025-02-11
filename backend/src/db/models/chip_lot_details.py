@@ -1,4 +1,4 @@
-import uuid
+from uuid import uuid4, UUID
 from datetime import datetime as dt
 from sqlalchemy import String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -7,9 +7,7 @@ from db.base import Base
 
 
 class ChipLotDetails(Base):
-    id: Mapped[str] = mapped_column(
-        primary_key=True, default=str(uuid.uuid4()), index=True
-    )
+    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4, index=True)
     date_created: Mapped[dt] = mapped_column(default=func.now())
     date_updated: Mapped[dt] = mapped_column(default=func.now(), onupdate=func.now())
     lot_no: Mapped[str] = mapped_column(String(10), index=True)
