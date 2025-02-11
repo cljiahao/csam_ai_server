@@ -13,7 +13,7 @@ def check_lot(lot_no: str) -> str | None:
         return service_settings.TEST_ITEM
 
     if not service_settings.PRASS_URL:
-        logger.error("PRASS URL is not configured.")
+        logger.info("PRASS URL is not configured.")
         return
 
     try:
@@ -26,9 +26,7 @@ def check_lot(lot_no: str) -> str | None:
         raise
 
     if not prass[service_settings.LOT_COLUMN]:
-        std_out = f"Lot number: {lot_no} not found in PRASS Server."
-        logger.error(std_out)
-        raise ValueError(std_out)
+        raise ValueError(f"Lot number: {lot_no} not found in PRASS Server.")
 
     item = prass[service_settings.ITEM_COLUMN]
     logger.debug("Lot : %s - Item : %s", lot_no, item)

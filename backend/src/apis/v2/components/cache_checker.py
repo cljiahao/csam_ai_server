@@ -33,9 +33,7 @@ def get_cache_if_exists(
 
     result = map_folder_files(base_partial_path)
     if result is None:
-        std_out = "Images stored previously not found."
-        logger.error(std_out)
-        raise CacheError(std_out)
+        raise CacheError("Images stored previously not found.")
 
     temp_dict, non_temp_dict = result
     folder_mapping = {**temp_dict, **non_temp_dict}
@@ -49,9 +47,9 @@ def get_cache_if_exists(
         logger.info("Chip Details not found or number of files don't match.")
         return None
     if len(folder_mapping) != len(chip_details):
-        std_out = "Number of images stored in folder don't match number stored in DB."
-        logger.error(std_out)
-        raise CacheError(std_out)
+        raise CacheError(
+            "Number of images stored in folder don't match number stored in DB."
+        )
 
     batch_data = group_chip_details_by_batch(chip_details)
 

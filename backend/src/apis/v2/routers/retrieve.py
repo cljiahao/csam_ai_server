@@ -49,9 +49,7 @@ def get_image(
         file_path = directory.images_dir / src
 
         if not file_path.exists():
-            std_out = f"Image file not found: {src}"
-            logger.error(std_out)
-            raise FileNotFoundError(std_out)
+            raise FileNotFoundError(f"Image file not found: {src}")
 
         return FileResponse(file_path)
     except Exception as e:
