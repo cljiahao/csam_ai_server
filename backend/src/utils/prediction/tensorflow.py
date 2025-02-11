@@ -61,7 +61,7 @@ class TFPrediction:
                     f"Labels File: {txt_path.name} has an invalid format at line: {strip_txt}."
                 ) from e
 
-            return labels
+        return labels
 
     def _load_model_file(self) -> Sequential:
         """Loads the TensorFlow/Keras model from the file system."""
@@ -101,7 +101,9 @@ class TFPrediction:
 
         # Filter out labels based on settings
         filtered_labels = {
-            k: v for k, v in self.labels.items() if v.lower() not in ["g", "good"]
+            k: v
+            for k, v in self.labels.items()
+            if v.lower() not in ["g", "good", "air_bubble"]  # TODO: refactor constants
         }
 
         results = [
