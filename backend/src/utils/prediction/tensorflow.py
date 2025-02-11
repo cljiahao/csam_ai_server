@@ -101,7 +101,9 @@ class TFPrediction:
 
         # Filter out labels based on settings
         filtered_labels = {
-            k: v for k, v in self.labels.items() if v.lower() not in ["g", "good"]
+            k: v
+            for k, v in self.labels.items()
+            if v.lower() not in ["g", "good", "air_bubble"]  # TODO: refactor constants
         }
 
         results = [
