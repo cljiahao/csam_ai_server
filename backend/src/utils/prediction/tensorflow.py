@@ -61,7 +61,7 @@ class TFPrediction:
                     f"Labels File: {txt_path.name} has an invalid format at line: {strip_txt}."
                 ) from e
 
-            return labels
+        return labels
 
     def _load_model_file(self) -> Sequential:
         """Loads the TensorFlow/Keras model from the file system."""
