@@ -7,7 +7,7 @@ from apis.v2.helpers.cache_utils import (
     map_folder_files,
     move_file,
 )
-from apis.v2.schemas.files import DefectBatchDirectory
+from apis.v2.schemas.files import FileDataBatchDirectory
 from core.exceptions import CacheError
 from db.services.chip_details import ChipDetailsService
 from db.services.chip_lot_details import ChipLotDetailsService
@@ -16,7 +16,7 @@ from utils.debug import timer
 
 
 @timer("Set cache")
-def set_cache(db: Session, defect_batch_directory: DefectBatchDirectory) -> None:
+def set_cache(db: Session, defect_batch_directory: FileDataBatchDirectory) -> None:
     """Updates the cache by synchronizing defect modes and moving files to respective folders."""
     result = map_folder_files(defect_batch_directory.directory)
     if result is None:
@@ -32,10 +32,10 @@ def set_cache(db: Session, defect_batch_directory: DefectBatchDirectory) -> None
     if not chip_details or len(folder_mapping) != len(chip_details):
         raise CacheError("Mismatch between stored chip images and stored chip details.")
 
-    defect_files = [
-        defect_file
-        for defect_batch in defect_batch_directory.defect_batches
-        for defect_file in defect_batch.defect_files
+    data_files = [
+        data_file
+        for defect_batch in defect_batch_directory.file_data_batches
+        for data_file in defect_batch.data_files
     ]
 
     chip_detail_dict = {
@@ -43,7 +43,7 @@ def set_cache(db: Session, defect_batch_directory: DefectBatchDirectory) -> None
     }
 
     data_changes = get_data_changes(
-        defect_files, chip_detail_dict, folder_mapping, non_temp_dict
+        data_files, chip_detail_dict, folder_mapping, non_temp_dict
     )
     if not data_changes:
         raise CacheError("No defects to update.")
@@ -67,18 +67,18 @@ def set_cache(db: Session, defect_batch_directory: DefectBatchDirectory) -> None
 
 @timer("Get Data Changes")
 def get_data_changes(
-    defect_files: list[DefectData],
+    data_files: list[DefectData],
     chip_detail_dict: dict[str, str],
     folder_mapping: dict[str, Path],
     non_temp_dict: dict[str, Path],
 ) -> list[DefectData]:
     non_temp_changes = get_non_temp_changes(
-        defect_files,
+        data_files,
         chip_detail_dict,
         folder_mapping,
     )
     temp_changes = get_temp_changes(
-        defect_files,
+        data_files,
         chip_detail_dict,
         non_temp_dict,
     )

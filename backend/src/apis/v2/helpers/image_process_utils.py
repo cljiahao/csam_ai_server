@@ -3,7 +3,7 @@ import numpy as np
 
 from apis.v2.helpers.processor.defect_processor import DefectProcessor
 from constants.colors import BGRColors
-from schemas.chips_data import DefectBatch, ImageData
+from schemas.chips_data import FileDataBatch, ImageData
 from schemas.contours import ContourInfo, ContourList
 from utils.image_process.blob_handler import BlobHandler
 from utils.image_process.contour_handler import ContourHandler
@@ -37,7 +37,7 @@ def filter_contours(
     image: np.ndarray,
     border_pad: int,
     chunked_contours: list[list[ContourInfo]],
-) -> tuple[dict[str, DefectBatch], list[ImageData], list[ImageData]]:
+) -> tuple[dict[str, FileDataBatch], list[ImageData], list[ImageData]]:
     """Processes and classifies contours into defect batches."""
 
     common_chunk_len = len(chunked_contours[0])

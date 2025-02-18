@@ -24,31 +24,30 @@ def map_folder_files(base_partial_path: str) -> dict[str, Path] | None:
 
 
 def get_non_temp_changes(
-    defect_files: list[DefectData],
+    data_files: list[DefectData],
     chip_detail_dict: dict[str, DefectData],
     folder_mapping: dict[str, Path],
 ) -> list[DefectData]:
     """Finds changes in non-temp defect files."""
     return [
-        defect_file
-        for defect_file in defect_files
-        if defect_file.file_name not in chip_detail_dict
-        or defect_file.file_name not in folder_mapping
-        or defect_file.defect_mode
-        != chip_detail_dict[defect_file.file_name].defect_mode
+        data_file
+        for data_file in data_files
+        if data_file.file_name not in chip_detail_dict
+        or data_file.file_name not in folder_mapping
+        or data_file.defect_mode != chip_detail_dict[data_file.file_name].defect_mode
     ]
 
 
 def get_temp_changes(
-    defect_files: list[DefectData],
+    data_files: list[DefectData],
     chip_detail_dict: dict[str, DefectData],
     non_temp_dict: dict[str, Path],
 ) -> list[DefectData]:
     """Finds changes in temp defect files."""
-    defect_file_names = {defect_file.file_name for defect_file in defect_files}
+    data_file_names = {data_file.file_name for data_file in data_files}
     temp_changes = []
     for non_temp_file_name in non_temp_dict:
-        if non_temp_file_name not in defect_file_names:
+        if non_temp_file_name not in data_file_names:
             defect_data = chip_detail_dict.get(non_temp_file_name)
             defect_data.defect_mode = "temp"
             temp_changes.append(defect_data)

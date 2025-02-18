@@ -9,7 +9,7 @@ from apis.v2.helpers.processor.batch_processor import BatchProcessor
 from apis.v2.helpers.processor.chip_processor import ChipProcessor
 from apis.v2.helpers.processor.defect_processor import DefectProcessor
 from constants.thresholds import ChipThreshold, ImageThreshold
-from schemas.chips_data import DefectBatch
+from schemas.chips_data import FileDataBatch
 from schemas.contours import ContourList
 from utils.debug import timer
 from utils.image_process.border_creator import BorderCreator
@@ -25,7 +25,7 @@ from services.train import (
 @timer("Process CSAM Image")
 def process_csam_image(
     image: np.ndarray, item: str, lot_no: str, plate_no: str
-) -> tuple[dict[str, DefectBatch], list, list]:
+) -> tuple[dict[str, FileDataBatch], list, list]:
     """Main function for processing the input image."""
 
     # Get crop size

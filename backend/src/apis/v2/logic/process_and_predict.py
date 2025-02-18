@@ -8,11 +8,11 @@ from apis.v2.components.write_images import (
     thread_write_temp_images,
 )
 from apis.v2.schemas.base import CAIPage, CDCPage
-from apis.v2.schemas.files import DefectBatchDirectory
+from apis.v2.schemas.files import FileDataBatchDirectory
 from db.models.chip_lot_details import ChipLotDetails
 from db.services.chip_details import ChipDetailsService
 from db.services.chip_lot_details import ChipLotDetailsService
-from schemas.chips_data import DefectBatch, ImageData
+from schemas.chips_data import FileDataBatch, ImageData
 from utils.debug import timer
 from utils.prediction.tensorflow import TFPrediction
 
@@ -20,7 +20,7 @@ from utils.prediction.tensorflow import TFPrediction
 @timer("Process and Predict")
 def process_and_predict(
     page: CAIPage | CDCPage, item: str, lot_no: str, file: UploadFile, db: Session
-) -> DefectBatchDirectory:
+) -> FileDataBatchDirectory:
     """Process images, run prediction, and save lot details to the database."""
     plate_no = Path(file.filename).stem
     base_partial_path = f"{page.base_folder}/{item}/{lot_no}/{plate_no}"
@@ -58,10 +58,10 @@ def process_and_predict(
 
     chip_lot_details = write_to_db(db, lot_details, filtered_batches)
 
-    return DefectBatchDirectory(
+    return FileDataBatchDirectory(
         unique_id=chip_lot_details.id,
         directory=base_partial_path,
-        defect_batches=filtered_batches,
+        file_data_batches=filtered_batches,
     )
 
 
@@ -74,21 +74,21 @@ def run_tensorflow(item: str, to_predict_list: list[ImageData]) -> list[ImageDat
 
 @timer("Filter Defect Data")
 def filter_defect_data(
-    defect_batch_dict: dict[str, DefectBatch],
+    defect_batch_dict: dict[str, FileDataBatch],
     defect_list: list[ImageData],
-) -> list[DefectBatch]:
+) -> list[FileDataBatch]:
     """Filters defect data, saves chip details to the database, and prepares the response."""
 
-    defect_file_names = {defect.file_name for defect in defect_list}
+    data_file_names = {defect.file_name for defect in defect_list}
 
     updated_batches = [
-        DefectBatch(batch_no=defect_batch.batch_no, defect_files=filtered_files)
+        FileDataBatch(batch_no=defect_batch.batch_no, data_files=filtered_files)
         for defect_batch in defect_batch_dict.values()
         if (
             filtered_files := [
                 defect_data
-                for defect_data in defect_batch.defect_files
-                if defect_data.file_name in defect_file_names
+                for defect_data in defect_batch.data_files
+                if defect_data.file_name in data_file_names
             ]
         )
     ]
@@ -101,7 +101,7 @@ def filter_defect_data(
 
 @timer("Writing to Database")
 def write_to_db(
-    db: Session, lot_details: dict, filtered_batches: list[DefectBatch]
+    db: Session, lot_details: dict, filtered_batches: list[FileDataBatch]
 ) -> ChipLotDetails:
     """Writes lot and chip details to the database."""
     chip_lot_detail_service = ChipLotDetailsService(db)
@@ -114,7 +114,7 @@ def write_to_db(
             "batch_no": filtered_defects.batch_no,
         }
         for filtered_defects in filtered_batches
-        for defect_data in filtered_defects.defect_files
+        for defect_data in filtered_defects.data_files
     ]
 
     chip_detail_service = ChipDetailsService(db)
