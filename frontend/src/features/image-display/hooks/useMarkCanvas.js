@@ -37,7 +37,7 @@ const useMarkCanvas = () => {
   }, [imageRef]); // This effect depends on imageRef
 
   const circles = useMemo(() => {
-    if (!processImageData?.defect_batches || !rect) return [];
+    if (!processImageData?.file_data_batches || !rect) return [];
 
     // Create a map for faster lookup of stored marks
     const marksMap = new Map();
@@ -46,8 +46,8 @@ const useMarkCanvas = () => {
       marksMap.set(mark.file_name + MARKERS.zoom.name, mark);
     });
 
-    return processImageData.defect_batches
-      .flatMap((defect_batch) => defect_batch.defect_files)
+    return processImageData.file_data_batches
+      .flatMap((defect_batch) => defect_batch.data_files)
       .map((file) => {
         const dx = Math.round(file.norm_x_center * rect.width * 100) / 100;
         const dy = Math.round(file.norm_y_center * rect.height * 100) / 100;

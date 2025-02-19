@@ -35,10 +35,10 @@ const useSaveUserInput = () => {
 
     const userInputData = {
       ...processImageData,
-      defect_batches: processImageData?.defect_batches
+      file_data_batches: processImageData?.file_data_batches
         .map((batch) => ({
           ...batch,
-          defect_files: batch.defect_files.reduce((result, file) => {
+          data_files: batch.data_files.reduce((result, file) => {
             if (targetFileNames.has(file.file_name)) {
               result.push({
                 ...file,
@@ -48,7 +48,7 @@ const useSaveUserInput = () => {
             return result;
           }, []),
         }))
-        .filter((batch) => batch.defect_files.length > 0), // Remove batches with no files
+        .filter((batch) => batch.data_filelength > 0), // Remove batches with no files
     };
 
     if (processImageData) processUserInput(userInputData);
