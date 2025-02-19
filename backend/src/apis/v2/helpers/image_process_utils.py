@@ -70,9 +70,9 @@ def process_chunk(
     """Processes a chunk of contours to classify chips and update defect batches."""
     for j, contour_info in enumerate(contour_chunk):
         if (
-            defect_processor.chip_threshold.lower_chip_area
+            defect_processor.chip_threshold.LOWER_CHIP_AREA
             < contour_info.area
-            < defect_processor.chip_threshold.upper_chip_area
+            < defect_processor.chip_threshold.UPPER_CHIP_AREA
         ):
 
             chip_count = start_index + j
