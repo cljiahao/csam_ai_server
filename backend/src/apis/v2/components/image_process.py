@@ -8,7 +8,8 @@ from apis.v2.helpers.image_process_utils import (
 from apis.v2.helpers.processor.batch_processor import BatchProcessor
 from apis.v2.helpers.processor.chip_processor import ChipProcessor
 from apis.v2.helpers.processor.defect_processor import DefectProcessor
-from constants.thresholds import ChipThreshold, ImageThreshold
+from constants.chip_thresholds import ChipThreshold
+from constants.image_thresholds import ImageThreshold
 from schemas.chips_data import FileDataBatch
 from schemas.contours import ContourList
 from utils.debug import timer
@@ -124,7 +125,7 @@ def split_and_refine_contours(
         split_contour
         for contour_info in contour_info_list.contours
         for split_contour in check_single(
-            contour_info, blank, crop_size, chip_threshold.upper_chip_area
+            contour_info, blank, crop_size, chip_threshold.UPPER_CHIP_AREA
         ).contours
     ]
 

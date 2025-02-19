@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 from constants.colors import BGRColors
-from constants.thresholds import ImageThreshold
+from constants.image_thresholds import ImageThreshold
 
 
 class BorderCreator:

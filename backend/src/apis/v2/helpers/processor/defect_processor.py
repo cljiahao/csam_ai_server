@@ -1,6 +1,6 @@
 import numpy as np
 
-from constants.thresholds import ChipThreshold
+from constants.chip_thresholds import ChipThreshold
 from interface.image_process import BatchProcessorInterface, ChipProcessorInterface
 from schemas.chips_data import FileDataBatch, DefectData, ImageData
 from schemas.contours import ContourInfo
@@ -90,8 +90,8 @@ class DefectProcessor:
             file_name=file_name, rotated_image=rotated_image
         )
         if (
-            contour_info.area < self.chip_threshold.lower_defect_area
-            or self.chip_threshold.upper_defect_area < contour_info.area
+            contour_info.area < self.chip_threshold.LOWER_DEFECT_AREA
+            or self.chip_threshold.UPPER_DEFECT_AREA < contour_info.area
         ):
             self.defect_list.append(prediction_image_data)
         else:

@@ -1,7 +1,7 @@
 import cv2
 
 from interface.image_process import BatchProcessorInterface, MaskHandlerInterface
-from constants.thresholds import ImageThreshold
+from constants.image_thresholds import ImageThreshold
 from core.logging import logger
 from schemas.contours import ContourList
 from utils.image_process.contour_handler import ContourHandler
