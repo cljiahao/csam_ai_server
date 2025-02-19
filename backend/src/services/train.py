@@ -18,12 +18,12 @@ def get_item_settings(item: str) -> dict | None:
 
 def get_batch_settings(item: str):
     batch_erode = 2
-    batch_close = 27
+    batch_close = 13
     return batch_erode, batch_close
 
 
 def get_chip_settings(item: str):
-    chip_erode = 7
+    chip_erode = 2
     chip_close = 2
     return chip_erode, chip_close
 
