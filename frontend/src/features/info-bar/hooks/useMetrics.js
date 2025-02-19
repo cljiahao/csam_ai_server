@@ -14,8 +14,8 @@ export const useMetrics = () => {
     ({ marker }) => marker.name !== "default" && marker.name !== "zoom",
   ).length;
   const data_count =
-    processImageData?.defect_batches?.reduce((count, obj) => {
-      return count + (obj.defect_files ? obj.defect_files.length : 0); // Add the length of `list`, handle undefined
+    processImageData?.file_data_batches?.reduce((count, obj) => {
+      return count + (obj.data_files ? obj.data_files.length : 0); // Add the length of `list`, handle undefined
     }, 0) ?? 0;
 
   const count_ratio = `${marks_count} / ${data_count}`;

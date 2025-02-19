@@ -46,13 +46,14 @@ const useImageProcess = () => {
         onSuccess: (data) => {
           if (data) {
             setImage(file);
-            const filteredDefectFiles = data.defect_batches.flatMap((batch) =>
-              batch.defect_files
-                .filter((file) => file.defect_mode !== "temp") // Filter out 'temp' defect_mode
-                .map((file) => ({
-                  file_name: file.file_name,
-                  defect_mode: file.defect_mode,
-                })),
+            const filteredDefectFiles = data.file_data_batches.flatMap(
+              (batch) =>
+                batch.data_files
+                  .filter((file) => file.defect_mode !== "temp") // Filter out 'temp' defect_mode
+                  .map((file) => ({
+                    file_name: file.file_name,
+                    defect_mode: file.defect_mode,
+                  })),
             );
             filteredDefectFiles.forEach(({ file_name, defect_mode }) => {
               addMark(

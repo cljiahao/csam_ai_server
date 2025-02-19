@@ -28,11 +28,11 @@ const useThumbnailHandlers = () => {
   // Handler to focus on the element
   function onFocus(e) {
     const file_name = e.currentTarget.id;
-    const focus_item = processImageData?.defect_batches?.reduce(
+    const focus_item = processImageData?.file_data_batches?.reduce(
       (found, defect_batch) => {
         if (found) return found; // If already found, skip further checks
         return (
-          defect_batch.defect_files.find(
+          defect_batch.data_files.find(
             (file) => file.file_name === file_name,
           ) || null
         );
