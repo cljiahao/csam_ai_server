@@ -1,10 +1,10 @@
 from uuid import UUID
 from pydantic import BaseModel
 
-from schemas.chips_data import DefectBatch
+from schemas.chips_data import FileDataBatch
 
 
-class DefectBatchDirectory(BaseModel):
+class FileDataBatchDirectory(BaseModel):
     unique_id: UUID
     directory: str
-    defect_batches: list[DefectBatch] = []
+    file_data_batches: list[FileDataBatch] = []

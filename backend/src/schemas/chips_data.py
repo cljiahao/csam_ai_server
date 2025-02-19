@@ -10,14 +10,18 @@ class ImageData:
 
 
 @dataclass
-class DefectData:
-    file_name: str
+class CoordsData:
     norm_x_center: float
     norm_y_center: float
+
+
+@dataclass
+class DefectData(CoordsData):
+    file_name: str
     defect_mode: str
 
 
 @dataclass
-class DefectBatch:
+class FileDataBatch:
     batch_no: str
-    defect_files: list[DefectData]
+    data_files: list[DefectData]

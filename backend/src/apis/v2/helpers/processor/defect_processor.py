@@ -2,7 +2,7 @@ import numpy as np
 
 from constants.thresholds import ChipThreshold
 from interface.image_process import BatchProcessorInterface, ChipProcessorInterface
-from schemas.chips_data import DefectBatch, DefectData, ImageData
+from schemas.chips_data import FileDataBatch, DefectData, ImageData
 from schemas.contours import ContourInfo
 
 
@@ -32,7 +32,7 @@ class DefectProcessor:
         self.batch_processor: BatchProcessorInterface = batch_processor
         self.chip_processor: ChipProcessorInterface = chip_processor
         self.chip_threshold: ChipThreshold = chip_threshold
-        self.defect_batch_dict: dict[str, DefectBatch] = {}
+        self.defect_batch_dict: dict[str, FileDataBatch] = {}
         self.to_predict_list: list[ImageData] = []
         self.defect_list: list[ImageData] = []
 
@@ -58,13 +58,13 @@ class DefectProcessor:
         )
 
         # Find and update batch
-        self._update_defect_batches(defect_data, x_center, y_center)
+        self._update_file_data_batches(defect_data, x_center, y_center)
 
         # Rotate chip and classify
         rotated_image = self.chip_processor.rotate_chips(image, contour_info.rect)
         self._classify_chip(contour_info, file_name, rotated_image)
 
-    def _update_defect_batches(
+    def _update_file_data_batches(
         self,
         defect_data: DefectData,
         x: float,
@@ -73,11 +73,11 @@ class DefectProcessor:
         """Associates a defect with a batch based on its coordinates"""
         batch_no = self.batch_processor.find_batch_no(x, y)
         if batch_no not in self.defect_batch_dict:
-            self.defect_batch_dict[batch_no] = DefectBatch(
-                batch_no=batch_no, defect_files=[defect_data]
+            self.defect_batch_dict[batch_no] = FileDataBatch(
+                batch_no=batch_no, data_files=[defect_data]
             )
         else:
-            self.defect_batch_dict[batch_no].defect_files.append(defect_data)
+            self.defect_batch_dict[batch_no].data_files.append(defect_data)
 
     def _classify_chip(
         self,

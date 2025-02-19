@@ -3,13 +3,13 @@ from sqlalchemy.orm import Session
 
 from apis.v2.helpers.cache_utils import map_folder_files
 from apis.v2.schemas.base import CAIPage, CDCPage
-from apis.v2.schemas.files import DefectBatchDirectory
+from apis.v2.schemas.files import FileDataBatchDirectory
 from core.exceptions import CacheError
 from core.logging import logger
 from db.models.chip_details import ChipDetails
 from db.services.chip_details import ChipDetailsService
 from db.services.chip_lot_details import ChipLotDetailsService
-from schemas.chips_data import DefectBatch, DefectData
+from schemas.chips_data import FileDataBatch, DefectData
 from utils.debug import timer
 
 
@@ -20,7 +20,7 @@ def get_cache_if_exists(
     plate_no: str,
     page: CAIPage | CDCPage,
     base_partial_path: str,
-) -> DefectBatchDirectory:
+) -> FileDataBatchDirectory:
     """Retrieves defect data for a given lot and plate, grouped by batch number."""
 
     chip_lot_detail_service = ChipLotDetailsService(db)
@@ -53,11 +53,11 @@ def get_cache_if_exists(
 
     batch_data = group_chip_details_by_batch(chip_details)
 
-    return DefectBatchDirectory(
+    return FileDataBatchDirectory(
         directory=base_partial_path,
         unique_id=chip_lot_details.id,
-        defect_batches=[
-            DefectBatch(batch_no=batch_no, defect_files=defects)
+        file_data_batches=[
+            FileDataBatch(batch_no=batch_no, data_files=defects)
             for batch_no, defects in batch_data.items()
         ],
     )

@@ -8,7 +8,7 @@ from apis.v2.helpers.pages import get_page
 from apis.v2.logic.process_and_predict import process_and_predict
 from apis.v2.logic.update_cache import set_cache
 from apis.v2.schemas.base import Module
-from apis.v2.schemas.files import DefectBatchDirectory
+from apis.v2.schemas.files import FileDataBatchDirectory
 from db.session import get_db
 
 router = APIRouter()
@@ -18,7 +18,7 @@ router = APIRouter()
 
 @router.post(
     "/image/{module}/{item}/{lot_no}",
-    response_model=DefectBatchDirectory,
+    response_model=FileDataBatchDirectory,
     summary="Process Image and return chip data",
     operation_id="UploadFile",
 )
@@ -47,7 +47,7 @@ def process_image(
         ),
     ],
     db: Annotated[Session, Depends(get_db)],
-) -> DefectBatchDirectory:
+) -> FileDataBatchDirectory:
     """Processes an uploaded image and returns defect batch data."""
     try:
         page = get_page(module)
@@ -62,7 +62,7 @@ def process_image(
     operation_id="SaveLocal",
 )
 def save_local(
-    defect_batch_directory: DefectBatchDirectory,
+    defect_batch_directory: FileDataBatchDirectory,
     db: Session = Depends(get_db),
 ) -> bool:
 
