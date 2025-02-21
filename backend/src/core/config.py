@@ -69,6 +69,7 @@ class ServiceSettings(Settings):
     PRASS_URL: str = Field(default="")
     LOT_COLUMN: str = Field(default="")
     ITEM_COLUMN: str = Field(default="")
+    AI_TRAIN_URL: str = Field(default="")
 
 
 # Instantiate settings
