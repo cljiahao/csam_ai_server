@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from sqlalchemy.orm import Session
 
 from apis.v2.helpers.image_process_utils import (
     check_single,
@@ -10,41 +11,39 @@ from apis.v2.helpers.processor.chip_processor import ChipProcessor
 from apis.v2.helpers.processor.defect_processor import DefectProcessor
 from constants.chip_thresholds import ChipThreshold
 from constants.image_thresholds import ImageThreshold
+from core.exceptions import MissingSettings
+from db.models.image_settings import ImageSettings
+from db.services.image_settings import ImageSettingsService
 from schemas.chips_data import FileDataBatch
 from schemas.contours import ContourList
 from utils.debug import timer
 from utils.image_process.border_creator import BorderCreator
 from utils.image_process.contour_handler import ContourHandler
 from utils.image_process.mask_handler import MaskHandler
-from services.train import (
-    get_batch_settings,
-    get_chip_settings,
-    get_crop_settings,
-)
+from services.train import get_image_settings
 
 
 @timer("Process CSAM Image")
 def process_csam_image(
-    image: np.ndarray, item: str, lot_no: str, plate_no: str
+    image: np.ndarray, item: str, lot_no: str, plate_no: str, db: Session
 ) -> tuple[dict[str, FileDataBatch], list, list]:
     """Main function for processing the input image."""
 
-    # Get crop size
-    crop_size = get_crop_settings(item)
+    image_settings = get_or_fetch_image_settings(item, db)
 
     # Border Creation
     border_image, border_gray, border_blank, border_pad = create_border(
-        image, crop_size
+        image, image_settings.crop_size
     )
 
     # Mask Processing
     mask_handler = MaskHandler(border_gray)
 
     # Batch Processing
-    batch_processor = process_batch(mask_handler, item)
+    batch_processor = process_batch(mask_handler, image_settings)
 
     # Chip Processing
-    chip_processor = process_chip(mask_handler, item, border_pad, crop_size)
+    chip_processor = process_chip(mask_handler, border_pad, image_settings)
 
     # Chip Threshold instantiate
     chip_threshold = ChipThreshold()
@@ -53,7 +52,7 @@ def process_csam_image(
         chip_threshold,
         chip_processor.chip_mask,
         border_blank,
-        crop_size,
+        image_settings.crop_size,
     )
 
     # Defect Processing
@@ -71,6 +70,24 @@ def process_csam_image(
     return defect_batch_dict, to_predict_list, defect_list
 
 
+@timer("Get Image Settings")
+def get_or_fetch_image_settings(item: str, db: Session) -> ImageSettings:
+    image_settings = get_image_settings(item)  # External API call
+    if image_settings is not None:
+        return image_settings
+
+    # Fall back to local database if API fails and returns None
+    image_settings_service = ImageSettingsService(db)
+    image_settings = image_settings_service.read_settings(item)
+
+    if image_settings is None:
+        raise MissingSettings(
+            f"Image settings for '{item}' not found in API or database."
+        )
+
+    return image_settings
+
+
 @timer("Border creation")
 def create_border(image: np.ndarray, crop_size: int):
     """Creates border images and returns relevant data."""
@@ -83,20 +100,26 @@ def create_border(image: np.ndarray, crop_size: int):
 
 
 @timer("Batch processing")
-def process_batch(mask_handler: MaskHandler, item: str):
+def process_batch(mask_handler: MaskHandler, image_settings: ImageSettings):
     """Processes the image in batches."""
-    batch_erode, batch_close = get_batch_settings(item)
-    batch_processor = BatchProcessor(mask_handler, batch_erode, batch_close)
+    batch_processor = BatchProcessor(
+        mask_handler, image_settings.batch_erode, image_settings.batch_close
+    )
     batch_processor.get_batch_data()
     return batch_processor
 
 
 @timer("Chip processing")
-def process_chip(mask_handler: MaskHandler, item: str, border_pad: int, crop_size: int):
+def process_chip(
+    mask_handler: MaskHandler, border_pad: int, image_settings: ImageSettings
+):
     """Processes the chip data from the mask handler."""
-    chip_erode, chip_close = get_chip_settings(item)
     chip_processor = ChipProcessor(
-        mask_handler, chip_erode, chip_close, border_pad, crop_size
+        mask_handler,
+        image_settings.chip_erode,
+        image_settings.chip_close,
+        border_pad,
+        image_settings.crop_size,
     )
     return chip_processor
 

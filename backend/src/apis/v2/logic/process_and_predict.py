@@ -31,7 +31,7 @@ def process_and_predict(
 
     image = save_original_image(file, base_partial_path)
     defect_batch_dict, images_to_predict, processed_defects = process_csam_image(
-        image, item, lot_no, plate_no
+        image, item, lot_no, plate_no, db
     )
 
     lot_details = {
