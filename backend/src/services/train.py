@@ -1,33 +1,16 @@
 import requests
 
-
-from core.config import service_settings
+from core.config import ServiceSettings
 from core.logging import logger
+from db.models.image_settings import ImageSettings
+from services.base import APIClient
 
 
-def get_item_settings(item: str) -> dict | None:
+def get_image_settings(item: str) -> ImageSettings:
+
+    api_client = APIClient(ServiceSettings.AI_TRAIN_URL)
     try:
-        response = requests.get(service_settings + item)
-        response.raise_for_status()
-        return response.json()
+        image_settings = api_client.get(item)
+        return image_settings
     except requests.RequestException as e:
-        std_out = f"Error fetching settings from train server: {e}"
-        logger.error(std_out)
-        raise
-
-
-def get_batch_settings(item: str):
-    batch_erode = 2
-    batch_close = 13
-    return batch_erode, batch_close
-
-
-def get_chip_settings(item: str):
-    chip_erode = 2
-    chip_close = 2
-    return chip_erode, chip_close
-
-
-def get_crop_settings(item: str):
-    crop = 54
-    return crop
+        return None
