@@ -4,6 +4,7 @@ import requests
 
 from core.config import service_settings
 from core.logging import logger
+from services.base import APIClient
 
 
 def check_lot(lot_no: str) -> str | None:
@@ -16,19 +17,13 @@ def check_lot(lot_no: str) -> str | None:
         logger.info("PRASS URL is not configured.")
         return
 
-    try:
-        response = requests.get(service_settings.PRASS_URL + lot_no)
-        response.raise_for_status()
-        prass = response.json()
-    except requests.RequestException as e:
-        std_out = f"Error fetching data from PRASS server: {e}"
-        logger.error(std_out)
-        raise
+    api_client = APIClient(service_settings.PRASS_URL)
+    prass_data = api_client.get(lot_no)
 
-    if not prass[service_settings.LOT_COLUMN]:
+    if not prass_data[service_settings.LOT_COLUMN]:
         raise ValueError(f"Lot number: {lot_no} not found in PRASS Server.")
 
-    item = prass[service_settings.ITEM_COLUMN]
+    item = prass_data[service_settings.ITEM_COLUMN]
     logger.debug("Lot : %s - Item : %s", lot_no, item)
 
     return item
