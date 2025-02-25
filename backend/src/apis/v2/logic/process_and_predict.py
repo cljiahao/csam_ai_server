@@ -1,7 +1,9 @@
-from sqlalchemy.orm import Session
 from pathlib import Path
 from fastapi import UploadFile
+from sqlalchemy.orm import Session
+
 from apis.v2.components.cache_checker import get_cache_if_exists
+from apis.v2.components.defects_data_process import process_chunk_contours
 from apis.v2.components.image_process import process_csam_image
 from apis.v2.components.write_images import (
     save_original_image,
@@ -12,7 +14,7 @@ from apis.v2.schemas.files import FileDataBatchDirectory
 from db.models.chip_lot_details import ChipLotDetails
 from db.services.chip_details import ChipDetailsService
 from db.services.chip_lot_details import ChipLotDetailsService
-from schemas.chips_data import FileDataBatch, ImageData
+from schemas.chips_data import DefectData, FileDataBatch, ImageData
 from utils.debug import timer
 from utils.prediction.tensorflow import TFPrediction
 
@@ -30,8 +32,21 @@ def process_and_predict(
         return cache_results
 
     image = save_original_image(file, base_partial_path)
-    defect_batch_dict, images_to_predict, processed_defects = process_csam_image(
-        image, item, lot_no, plate_no, db
+
+    (
+        defect_processor,
+        base_file_name,
+        refined_contours_info_list,
+        border_image,
+        border_pad,
+    ) = process_csam_image(image, item, lot_no, plate_no, db)
+
+    defect_batch_dict, images_to_predict, processed_defects = process_chunk_contours(
+        defect_processor,
+        base_file_name,
+        refined_contours_info_list,
+        border_image,
+        border_pad,
     )
 
     lot_details = {
@@ -54,6 +69,7 @@ def process_and_predict(
         processed_defects.extend(images_to_predict)
 
     thread_write_temp_images(base_partial_path, processed_defects)
+
     filtered_batches = filter_defect_data(defect_batch_dict, processed_defects)
 
     chip_lot_details = write_to_db(db, lot_details, filtered_batches)
@@ -74,7 +90,7 @@ def run_tensorflow(item: str, to_predict_list: list[ImageData]) -> list[ImageDat
 
 @timer("Filter Defect Data")
 def filter_defect_data(
-    defect_batch_dict: dict[str, FileDataBatch],
+    defect_batch_dict: dict[str, list[DefectData]],
     defect_list: list[ImageData],
 ) -> list[FileDataBatch]:
     """Filters defect data, saves chip details to the database, and prepares the response."""
@@ -82,12 +98,12 @@ def filter_defect_data(
     data_file_names = {defect.file_name for defect in defect_list}
 
     updated_batches = [
-        FileDataBatch(batch_no=defect_batch.batch_no, data_files=filtered_files)
-        for defect_batch in defect_batch_dict.values()
+        FileDataBatch(batch_no=batch_no, data_files=filtered_files)
+        for batch_no, defect_data_list in defect_batch_dict.items()
         if (
             filtered_files := [
                 defect_data
-                for defect_data in defect_batch.data_files
+                for defect_data in defect_data_list
                 if defect_data.file_name in data_file_names
             ]
         )

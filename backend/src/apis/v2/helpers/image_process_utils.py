@@ -1,12 +1,59 @@
 import cv2
 import numpy as np
 
-from apis.v2.helpers.processor.defect_processor import DefectProcessor
+from apis.v2.helpers.processor.batch_processor import BatchProcessor
+from apis.v2.helpers.processor.chip_processor import ChipProcessor
 from constants.colors import BGRColors
-from schemas.chips_data import FileDataBatch, ImageData
+from constants.image_thresholds import ImageThreshold
+from db.models.image_settings import ImageSettings
 from schemas.contours import ContourInfo, ContourList
 from utils.image_process.blob_handler import BlobHandler
+from utils.image_process.border_creator import BorderCreator
 from utils.image_process.contour_handler import ContourHandler
+from utils.image_process.mask_handler import MaskHandler
+
+
+def create_border(image: np.ndarray, crop_size: int):
+    """Creates border images and returns relevant data."""
+    border_creator = BorderCreator(image, crop_size)
+    border_gray = border_creator.convert_background_white_and_grayscale()
+    border_blank = border_creator.create_blank_image()
+    border_pad = border_creator.border_pad
+
+    return border_creator.border_image, border_gray, border_blank, border_pad
+
+
+def create_contour_list(mask_image: np.ndarray) -> ContourList:
+    contours, _ = cv2.findContours(
+        mask_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+    )
+
+    return ContourHandler.filter_and_build_contour_info(
+        contours, ImageThreshold.DENOISE_THRESHOLD
+    )
+
+
+def process_batch(mask_handler: MaskHandler, image_settings: ImageSettings):
+    """Processes the image in batches."""
+    batch_processor = BatchProcessor(
+        mask_handler, image_settings.batch_erode, image_settings.batch_close
+    )
+    batch_processor.get_batch_data()
+    return batch_processor
+
+
+def process_chip(
+    mask_handler: MaskHandler, border_pad: int, image_settings: ImageSettings
+):
+    """Processes the chip data from the mask handler."""
+    chip_processor = ChipProcessor(
+        mask_handler,
+        image_settings.chip_erode,
+        image_settings.chip_close,
+        border_pad,
+        image_settings.crop_size,
+    )
+    return chip_processor
 
 
 def check_single(
@@ -29,58 +76,3 @@ def check_single(
             return ContourHandler.filter_and_build_contour_info(new_contours)
 
     return ContourList(contours=[contour_info])
-
-
-def filter_contours(
-    defect_processor: DefectProcessor,
-    base_file_name: str,
-    image: np.ndarray,
-    border_pad: int,
-    chunked_contours: list[list[ContourInfo]],
-) -> tuple[dict[str, FileDataBatch], list[ImageData], list[ImageData]]:
-    """Processes and classifies contours into defect batches."""
-
-    common_chunk_len = len(chunked_contours[0])
-    for i, contour_chunk in enumerate(chunked_contours):
-        start_index = i * common_chunk_len
-        process_chunk(
-            defect_processor,
-            base_file_name,
-            start_index,
-            image,
-            border_pad,
-            contour_chunk,
-        )
-
-    return (
-        defect_processor.defect_batch_dict,
-        defect_processor.to_predict_list,
-        defect_processor.defect_list,
-    )
-
-
-def process_chunk(
-    defect_processor: DefectProcessor,
-    base_file_name: str,
-    start_index: int,
-    image: np.ndarray,
-    border_pad: int,
-    contour_chunk: list[ContourInfo],
-):
-    """Processes a chunk of contours to classify chips and update defect batches."""
-    for j, contour_info in enumerate(contour_chunk):
-        if (
-            defect_processor.chip_threshold.LOWER_CHIP_AREA
-            < contour_info.area
-            < defect_processor.chip_threshold.UPPER_CHIP_AREA
-        ):
-
-            chip_count = start_index + j
-            file_name = f"{base_file_name}_{chip_count}.png"
-
-            defect_processor.process_defects(
-                file_name,
-                image,
-                border_pad,
-                contour_info,
-            )
