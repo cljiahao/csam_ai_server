@@ -7,6 +7,7 @@ import numpy as np
 class ImageData:
     file_name: str
     rotated_image: np.ndarray
+    to_predict: bool
 
 
 @dataclass
@@ -19,6 +20,12 @@ class CoordsData:
 class DefectData(CoordsData):
     file_name: str
     defect_mode: str
+
+
+@dataclass
+class BatchDefectData:
+    batch_no: str
+    defect_data: DefectData
 
 
 @dataclass
