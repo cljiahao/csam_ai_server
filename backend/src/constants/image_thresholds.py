@@ -1,9 +1,8 @@
-from dataclasses import dataclass
+from enum import Enum
 
 
-@dataclass
-class ImageThreshold:
-    BATCH_MULTIPLIER: float = 0.01
-    CHECK_SINGLE_THRESHOLD: int = 10
-    DENOISE_THRESHOLD: int = 50
-    BACKGROUND_THRESHOLD: int = 130
+class ImageThreshold(Enum):
+    BATCH_MULTIPLIER = 0.01
+    CHECK_SINGLE_THRESHOLD = 10
+    DENOISE_THRESHOLD = 50
+    BACKGROUND_THRESHOLD = 130
