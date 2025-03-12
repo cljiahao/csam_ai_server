@@ -7,7 +7,6 @@ from apis.v2.schemas.files import FileDataBatchDirectory
 from core.exceptions import CacheError
 from core.logging import logger
 from db.models.chip_details import ChipDetails
-from db.services.chip_details import ChipDetailsService
 from db.services.chip_lot_details import ChipLotDetailsService
 from schemas.chips_data import FileDataBatch, DefectData
 from utils.debug import timer
@@ -38,11 +37,7 @@ def get_cache_if_exists(
     temp_dict, non_temp_dict = result
     folder_mapping = {**temp_dict, **non_temp_dict}
 
-    logger.info(f"uuid: {chip_lot_details.id}")
-    chip_detail_service = ChipDetailsService(db)
-    chip_details = chip_detail_service.read_chip_details(
-        {"chip_lot_id": chip_lot_details.id}
-    )
+    chip_details = chip_lot_details.chips
     if not chip_details:
         logger.info("Chip Details not found or number of files don't match.")
         return None
@@ -53,6 +48,7 @@ def get_cache_if_exists(
 
     batch_data = group_chip_details_by_batch(chip_details)
 
+    logger.info(f"uuid: {chip_lot_details.id}")
     return FileDataBatchDirectory(
         directory=base_partial_path,
         unique_id=chip_lot_details.id,
