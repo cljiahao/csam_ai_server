@@ -53,10 +53,10 @@ class DefectProcessor:
         contour_info: ContourInfo,
         border_pad: int,
     ) -> BatchDefectData:
-        x_center, y_center = contour_info.rect[0]
-        height, width = image.shape[:2]
-        norm_x_center = round((x_center - border_pad) / (width - border_pad * 2), 6)
-        norm_y_center = round((y_center - border_pad) / (height - border_pad * 2), 6)
+
+        norm_x_center, norm_y_center = self._get_norm_coordinates(
+            contour_info.rect[0], image.shape[:2], border_pad
+        )
 
         # Create DefectData instance
         defect_data = DefectData(
@@ -66,6 +66,7 @@ class DefectProcessor:
             defect_mode="temp",
         )
 
+        x_center, y_center = contour_info.rect[0]
         batch_no = self.batch_processor.find_batch_no(x_center, y_center)
 
         return BatchDefectData(batch_no=batch_no, defect_data=defect_data)
@@ -87,3 +88,12 @@ class DefectProcessor:
         return ImageData(
             file_name=file_name, rotated_image=rotated_image, to_predict=to_predict
         )
+
+    def _get_norm_coordinates(
+        coords: list[int, int], size: list[int, int], border_pad: int = 0
+    ):
+        x, y = coords
+        height, width = size
+        norm_x = round((x - border_pad) / (width - border_pad * 2), 6)
+        norm_y = round((y - border_pad) / (height - border_pad * 2), 6)
+        return norm_x, norm_y
