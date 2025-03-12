@@ -31,7 +31,7 @@ def process_csam_image(
 
     # Border Creation
     border_image, border_gray, border_blank, border_pad = create_border(
-        image, image_settings.crop_size
+        image, crop_size=image_settings.crop_size
     )
 
     # Mask Processing
