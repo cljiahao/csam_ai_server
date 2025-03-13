@@ -1,22 +1,14 @@
-from dataclasses import dataclass
+from enum import Enum
 
 
-@dataclass
-class BGRColors:
-    BACKGROUND: tuple[int, int, int] = (192, 192, 192)
-    BLACK: tuple[int, int, int] = (0, 0, 0)
-    BLUE: tuple[int, int, int] = (255, 0, 0)
-    CYAN: tuple[int, int, int] = (255, 255, 0)
-    GREEN: tuple[int, int, int] = (0, 255, 0)
-    LIME: tuple[int, int, int] = (255, 192, 0)
-    ORANGE: tuple[int, int, int] = (0, 191, 255)
-    RED: tuple[int, int, int] = (0, 0, 255)
-    WHITE: tuple[int, int, int] = (255, 255, 255)
-    YELLOW: tuple[int, int, int] = (0, 255, 255)
-
-
-@dataclass
-class HEXColors:
-    WHITE: str = "#FFFFFF"
-    YELLOW: str = "#FFFF00"
-    CYAN: str = "#00FFFF"
+class BGRColors(Enum):
+    BACKGROUND = (192, 192, 192)
+    BLACK = (0, 0, 0)
+    WHITE = (255, 255, 255)
+    BLUE = (255, 0, 0)
+    CYAN = (255, 255, 0)
+    GREEN = (0, 255, 0)
+    LIME = (0, 255, 192)
+    ORANGE = (0, 191, 255)
+    RED = (0, 0, 255)
+    YELLOW = (0, 255, 255)
