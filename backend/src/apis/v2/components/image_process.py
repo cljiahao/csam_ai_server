@@ -69,14 +69,17 @@ def pre_process_image(
 
 @timer("Get Image Settings")
 def get_or_fetch_image_settings(item: str, db: Session) -> ImageSettings:
+
     image_settings = get_image_settings(item)  # External API call
+
+    image_settings_service = ImageSettingsService(db)
+
     if image_settings is not None:
+        image_settings_service.create_or_update_image_settings(item, image_settings)
         return image_settings
 
     # Fall back to local database if API fails and returns None
-    image_settings_service = ImageSettingsService(db)
-    image_settings = image_settings_service.read_settings(item)
-
+    image_settings = image_settings_service.read_image_settings(item)
     if image_settings is None:
         raise MissingSettings(
             f"Image settings for '{item}' not found in API or database."
