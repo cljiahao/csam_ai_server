@@ -24,7 +24,7 @@ def process_chunk_contours(
 
     chunk_increment = len(chunked_contours[0])
     process_defects_partial = partial(
-        process_defects_for_chunk,
+        chunk_process_defects,
         defect_processor=defect_processor,
         base_file_name=base_file_name,
         image=image,
@@ -46,7 +46,7 @@ def process_chunk_contours(
     return process_results(results)
 
 
-def process_defects_for_chunk(
+def chunk_process_defects(
     chunk: ContourInfo,
     index: int,
     defect_processor: DefectProcessor,
