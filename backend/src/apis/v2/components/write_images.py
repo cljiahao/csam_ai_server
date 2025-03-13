@@ -2,6 +2,7 @@ import numpy as np
 from fastapi import UploadFile
 from concurrent.futures import ThreadPoolExecutor
 
+from constants.folder_names import FolderNames
 from core.directory_manager import directory_manager as dm
 from schemas.chips_data import ImageData
 from utils.debug import timer
@@ -11,7 +12,7 @@ from utils.image_process.image_manager import ImageManager
 @timer("Saving uploaded image")
 def save_original_image(file: UploadFile, base_partial_path: str) -> np.ndarray:
     """Handles the uploaded image by saving it to the specified path after converting it to a NumPy array."""
-    original_path = dm.images_dir / base_partial_path / "original"  # constant
+    original_path = dm.images_dir / base_partial_path / FolderNames.ORIGINAL.value
     dm.create_directory(original_path)
     ImageManager.archive_existing_file(original_path, file.filename)
     image = ImageManager.file_to_image(file)
@@ -23,7 +24,7 @@ def save_original_image(file: UploadFile, base_partial_path: str) -> np.ndarray:
 @timer("Writing dissected images")
 def thread_write_temp_images(base_partial_path: str, defect_list: list[ImageData]):
     """Saves a list of defect images to disk using concurrent threads."""
-    temp_path = dm.images_dir / base_partial_path / "temp"  # constant
+    temp_path = dm.images_dir / base_partial_path / FolderNames.TEMP.value
     dm.create_directory(temp_path)
     with ThreadPoolExecutor() as exe:
         _ = [

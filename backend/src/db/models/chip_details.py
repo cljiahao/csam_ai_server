@@ -2,6 +2,7 @@ from datetime import datetime as dt
 from sqlalchemy import ForeignKey, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from constants.folder_names import FolderNames
 from db.base import Base
 
 
@@ -13,7 +14,7 @@ class ChipDetails(Base):
     file_name: Mapped[str] = mapped_column(unique=True, index=True)
     norm_x_center: Mapped[int]
     norm_y_center: Mapped[int]
-    defect_mode: Mapped[str] = mapped_column(default="temp")
+    defect_mode: Mapped[str] = mapped_column(default=FolderNames.TEMP.value)
 
     # Relationship to ChipLotDetails
     chip_lot_details: Mapped["ChipLotDetails"] = relationship(

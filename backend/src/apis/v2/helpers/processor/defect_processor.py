@@ -1,6 +1,7 @@
 import numpy as np
 
 from constants.chip_thresholds import ChipThreshold
+from constants.folder_names import FolderNames
 from interface.image_process import BatchProcessorInterface, ChipProcessorInterface
 from schemas.chips_data import BatchDefectData, DefectData, ImageData
 from schemas.contours import ContourInfo
@@ -63,7 +64,7 @@ class DefectProcessor:
             file_name=file_name,
             norm_x_center=norm_x_center,
             norm_y_center=norm_y_center,
-            defect_mode="temp",
+            defect_mode=FolderNames.TEMP.value,
         )
 
         x_center, y_center = contour_info.rect[0]
