@@ -5,9 +5,9 @@ from apis.v2.helpers.image_process_utils import (
     check_single,
     create_border,
     create_contour_list,
-    process_batch,
-    process_chip,
 )
+from apis.v2.helpers.processor.batch_processor import BatchProcessor
+from apis.v2.helpers.processor.chip_processor import ChipProcessor
 from apis.v2.helpers.processor.defect_processor import DefectProcessor
 from constants.chip_thresholds import ChipThreshold
 from core.exceptions import MissingSettings
@@ -20,8 +20,8 @@ from utils.image_process.mask_handler import MaskHandler
 from services.train import get_image_settings
 
 
-@timer("Process CSAM Image")
-def process_csam_image(
+@timer("Pre Process Image")
+def pre_process_image(
     image: np.ndarray, item: str, lot_no: str, plate_no: str, db: Session
 ) -> tuple[dict[str, FileDataBatch], list, list]:
     """Main function for processing the input image."""
@@ -69,20 +69,46 @@ def process_csam_image(
 
 @timer("Get Image Settings")
 def get_or_fetch_image_settings(item: str, db: Session) -> ImageSettings:
+
     image_settings = get_image_settings(item)  # External API call
+
+    image_settings_service = ImageSettingsService(db)
+
     if image_settings is not None:
+        image_settings_service.create_or_update_image_settings(item, image_settings)
         return image_settings
 
     # Fall back to local database if API fails and returns None
-    image_settings_service = ImageSettingsService(db)
-    image_settings = image_settings_service.read_settings(item)
-
+    image_settings = image_settings_service.read_image_settings(item)
     if image_settings is None:
         raise MissingSettings(
             f"Image settings for '{item}' not found in API or database."
         )
 
     return image_settings
+
+
+def process_batch(mask_handler: MaskHandler, image_settings: ImageSettings):
+    """Processes the image in batches."""
+    batch_processor = BatchProcessor(
+        mask_handler, image_settings.batch_erode, image_settings.batch_close
+    )
+    batch_processor.get_batch_data()
+    return batch_processor
+
+
+def process_chip(
+    mask_handler: MaskHandler, border_pad: int, image_settings: ImageSettings
+):
+    """Processes the chip data from the mask handler."""
+    chip_processor = ChipProcessor(
+        mask_handler,
+        image_settings.chip_erode,
+        image_settings.chip_close,
+        border_pad,
+        image_settings.crop_size,
+    )
+    return chip_processor
 
 
 @timer("Split and refining")

@@ -1,4 +1,3 @@
-import math
 from sqlalchemy.orm import Session
 
 from core.exceptions import InvalidInputError
@@ -11,57 +10,44 @@ class ImageSettingsService:
         """Initialize service with repository."""
         self.repo = ImageSettingsRepository(db)
 
-    @staticmethod
-    def _create_filter_conditions(item: str) -> dict[str, str]:
-        """Validate filter conditions before querying or deleting."""
-        if not item:
-            raise InvalidInputError("Filter conditions cannot be empty.")
-
-        return {"item": item}
-
-    @staticmethod
-    def _create_settings_dict(
-        erode: int, close: int, average_length: int, is_batch: bool
-    ) -> dict[str, int | str | bool]:
-        """Generate settings dictionary based on batch mode."""
-        if is_batch:
-            return {"batch_erode": erode, "batch_close": close}
-
-        crop_size = math.ceil(average_length * 2)
-        return {
-            "chip_erode": erode,
-            "chip_close": close,
-            "crop_size": crop_size,
+    def _validate_image_settings_keys(self, image_settings_data: dict) -> None:
+        """Validate the keys in the image settings data."""
+        valid_keys = {
+            "batch_erode",
+            "batch_close",
+            "chip_erode",
+            "chip_close",
+            "crop_size",
         }
 
-    def create_settings(
-        self, item: str, erode: int, close: int, average_length: int, is_batch: bool
+        invalid_keys = set(image_settings_data) - valid_keys
+        if invalid_keys:
+            raise InvalidInputError(
+                f"Unknown keys in image settings data: {', '.join(invalid_keys)}"
+            )
+
+    def read_image_settings(self, item: str) -> ImageSettings:
+        """Service layer method to read image settings"""
+        if not item:
+            raise InvalidInputError("Item cannot be empty.")
+        filter_condition = {"item": item}
+
+        return self.repo.read_image_settings(filter_condition)
+
+    def create_or_update_image_settings(
+        self, item: str, image_settings_data: dict[str, int]
     ) -> ImageSettings:
-        """Service layer method to create new settings."""
-        settings_data = self._create_settings_dict(
-            erode, close, average_length, is_batch
-        )
-        settings_data.update({"item": item})
+        """Service layer method to create new or update image settings"""
+        if not item:
+            raise InvalidInputError("Item cannot be empty.")
 
-        return self.repo.create_settings(settings_data)
+        self._validate_image_settings_keys(image_settings_data)
 
-    def read_settings(self, item: str) -> ImageSettings:
-        """Service layer method to read settings."""
-        filter_condition = self._create_filter_conditions(item)
+        data_condition = {"item": item}
 
-        return self.repo.read_settings(filter_condition)
+        existing_settings = self.read_image_settings(item)
+        if not existing_settings:
+            image_settings_data.update(data_condition)
+            return self.repo.create_image_settings(image_settings_data)
 
-    def update_settings(
-        self, item: str, erode: int, close: int, average_length: int, is_batch: bool
-    ) -> ImageSettings:
-        """Service layer method to update settings."""
-        filter_condition = self._create_filter_conditions(item)
-        update_data = self._create_settings_dict(erode, close, average_length, is_batch)
-
-        return self.repo.update_settings(filter_condition, update_data)
-
-    def delete_settings(self, item: str) -> ImageSettings:
-        """Service layer method to delete settings."""
-        filter_condition = self._create_filter_conditions(item)
-
-        return self.repo.delete_settings(filter_condition)
+        return self.repo.update_image_settings(data_condition, image_settings_data)
