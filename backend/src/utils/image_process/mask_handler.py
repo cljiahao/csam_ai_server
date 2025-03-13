@@ -29,14 +29,7 @@ class MaskHandler(MaskHandlerInterface):
 
         return binary_image
 
-    def apply_morphology(self, erode_value: int, close_value: int) -> np.ndarray:
-        """Applies erosion followed by morphological closing to the binary image."""
-        eroded_image = self._erode(self.binary_image, erode_value)
-        closed_image = self._close(eroded_image, close_value)
-        return closed_image
-
-    @staticmethod
-    def _create_kernel(kernel_size: int) -> np.ndarray:
+    def _create_kernel(self, kernel_size: int) -> np.ndarray:
         """Creates a square kernel for morphological operations."""
         return np.ones((kernel_size, kernel_size), dtype=np.uint8)
 
@@ -51,3 +44,9 @@ class MaskHandler(MaskHandlerInterface):
         return cv2.morphologyEx(
             image, cv2.MORPH_CLOSE, self._create_kernel(kernel_size)
         )
+
+    def apply_morphology(self, erode_value: int, close_value: int) -> np.ndarray:
+        """Applies erosion followed by morphological closing to the binary image."""
+        eroded_image = self._erode(self.binary_image, erode_value)
+        closed_image = self._close(eroded_image, close_value)
+        return closed_image
