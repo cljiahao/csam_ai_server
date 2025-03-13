@@ -5,7 +5,7 @@ from concurrent.futures import ThreadPoolExecutor
 from core.directory import directory
 from schemas.chips_data import ImageData
 from utils.debug import timer
-from utils.os_handle.image_manager import ImageManager
+from utils.image_process.image_manager import ImageManager
 
 
 @timer("Saving uploaded image")

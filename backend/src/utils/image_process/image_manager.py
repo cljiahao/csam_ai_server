@@ -1,7 +1,7 @@
 import cv2
+import numpy as np
 from fastapi import UploadFile
 from pathlib import Path
-import numpy as np
 
 from core.logging import logger
 from core.exceptions import ImageProcessError
@@ -32,6 +32,18 @@ class ImageManager(ImageManagerInterface):
         file_content = file.file.read()
         np_image = np.frombuffer(file_content, dtype=np.uint8)
         image = cv2.imdecode(np_image, cv2.IMREAD_COLOR)
+        if image is None:
+            raise Exception()
+        return image
+
+    @staticmethod
+    @error_handler(
+        print_message="Error reading file from path.",
+        custom_error=ImageProcessError,
+    )
+    def path_to_image(path: Path) -> np.ndarray:
+        """Read from path into an OpenCV image."""
+        image = cv2.imread(str(path))
         if image is None:
             raise Exception()
         return image
