@@ -10,8 +10,7 @@ from apis.v2.schemas.base import Module
 from apis.v2.schemas.retrieve import CountResult, Item
 from db.services.chip_lot_details import ChipLotDetailsService
 from db.session import get_db
-from core.logging import logger
-from core.directory import directory
+from core.directory_manager import directory_manager as dm
 from services.prass import check_lot
 
 router = APIRouter()
@@ -43,10 +42,10 @@ def get_image(
             description="Path to the image file relative to the image directory",
             pattern=".*\.(png|jpg)$",
         ),
-    ]
+    ],
 ):
     try:
-        file_path = directory.images_dir / src
+        file_path = dm.images_dir / src
 
         if not file_path.exists():
             raise FileNotFoundError(f"Image file not found: {src}")

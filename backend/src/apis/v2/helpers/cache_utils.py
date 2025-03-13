@@ -1,13 +1,13 @@
 from pathlib import Path
 
-from core.directory import directory
+from core.directory_manager import directory_manager as dm
 from core.logging import logger
 from schemas.chips_data import DefectData
 
 
 def map_folder_files(base_partial_path: str) -> dict[str, Path] | None:
     """Maps file names to their respective folder paths, ignoring 'original' folder."""
-    plate_path = directory.images_dir / base_partial_path
+    plate_path = dm.images_dir / base_partial_path
     if not plate_path.exists() or not plate_path.is_dir():
         return None
 
@@ -71,7 +71,7 @@ def move_file(source_folder: Path, defect: DefectData) -> None:
 
 def count_defects(base_partial_path: str) -> int:
     """Counts the valid defect files excluding 'original' and 'temp' folders."""
-    plate_path = directory.images_dir / base_partial_path
+    plate_path = dm.images_dir / base_partial_path
     if not plate_path.exists() or not plate_path.is_dir():
         return 0
     return sum(

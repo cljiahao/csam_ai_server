@@ -6,7 +6,7 @@ from pathlib import Path
 from datetime import datetime as dt
 
 from core.config import common_settings
-from core.directory import directory
+from core.directory_manager import directory_manager as dm
 
 
 class MyTimedRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
@@ -22,8 +22,8 @@ class MyTimedRotatingFileHandler(logging.handlers.TimedRotatingFileHandler):
         tail = file_path.name
 
         # Ensure log directory and subdirectories exist
-        mth_fol = directory.log_dir / dt.now().strftime("%b%Y")
-        mth_fol.mkdir(parents=True, exist_ok=True)
+        mth_fol = dm.log_dir / dt.now().strftime("%b%Y")
+        dm.create_directory(mth_fol)
 
         # Construct new filename with the month-year prefix
         arr = tail.split(".")
@@ -48,7 +48,7 @@ def setup_logging() -> None:
         for handler_config in handlers.values():
             filename = handler_config.get("filename")
             if filename:
-                handler_config["filename"] = str(directory.log_dir / filename)
+                handler_config["filename"] = str(dm.log_dir / filename)
 
         logging.config.dictConfig(config)
     else:
