@@ -1,10 +1,11 @@
+import numpy as np
 from pathlib import Path
 from fastapi import UploadFile
 from sqlalchemy.orm import Session
 
 from apis.v2.components.cache_checker import get_cache_if_exists
 from apis.v2.components.defects_data_process import process_chunk_contours
-from apis.v2.components.image_process import process_csam_image
+from apis.v2.components.image_process import pre_process_image
 from apis.v2.components.write_images import (
     save_original_image,
     thread_write_temp_images,
@@ -33,20 +34,8 @@ def process_and_predict(
 
     image = save_original_image(file, base_partial_path)
 
-    (
-        defect_processor,
-        base_file_name,
-        refined_contours_info_list,
-        border_image,
-        border_pad,
-    ) = process_csam_image(image, item, lot_no, plate_no, db)
-
-    defect_batch_dict, images_to_predict, processed_defects = process_chunk_contours(
-        defect_processor,
-        base_file_name,
-        refined_contours_info_list,
-        border_image,
-        border_pad,
+    defect_batch_dict, images_to_predict, processed_defects = pre_process_image(
+        image, item, lot_no, plate_no, db
     )
 
     lot_details = {
@@ -78,6 +67,27 @@ def process_and_predict(
         unique_id=chip_lot_details.id,
         directory=base_partial_path,
         file_data_batches=filtered_batches,
+    )
+
+
+@timer("Process CSAM Image")
+def process_csam_image(
+    image: np.ndarray, item: str, lot_no: str, plate_no: str, db: Session
+) -> list[ImageData]:
+    """Processes the CSAM image, including contour extraction and defect processing."""
+
+    (
+        defect_processor,
+        base_file_name,
+        refined_contours_info_list,
+        border_image,
+    ) = pre_process_image(image, item, lot_no, plate_no, db)
+
+    return process_chunk_contours(
+        defect_processor,
+        base_file_name,
+        refined_contours_info_list,
+        border_image,
     )
 
 
