@@ -18,10 +18,12 @@ class BorderCreator:
         border_image (np.ndarray): The resulting image with the border added.
     """
 
-    def __init__(self, image: np.ndarray, crop_size: int) -> None:
+    def __init__(
+        self, image: np.ndarray, border_pad: int = 0, crop_size: int = 0
+    ) -> None:
         """Initializes the BorderCreator with an image and crop size."""
         self.image = image
-        self.border_pad = self._calculate_border_pad(crop_size)
+        self.border_pad = border_pad or self._calculate_border_pad(crop_size)
         self.border_image = self._create_border_image()
 
     def _calculate_border_pad(self, crop_size: int) -> int:
@@ -37,7 +39,7 @@ class BorderCreator:
             self.border_pad,  # Left
             self.border_pad,  # Right
             cv2.BORDER_CONSTANT,
-            value=BGRColors.BACKGROUND,
+            value=BGRColors.BACKGROUND.value,
         )
 
     def create_blank_image(self):
@@ -48,9 +50,9 @@ class BorderCreator:
         """Converts the background of the bordered image to white based on a threshold."""
         border_image_copy = self.border_image.copy()
         background = np.all(
-            border_image_copy >= ImageThreshold.BACKGROUND_THRESHOLD, axis=-1
+            border_image_copy >= ImageThreshold.BACKGROUND_THRESHOLD.value, axis=-1
         )
-        border_image_copy[background] = BGRColors.WHITE
+        border_image_copy[background] = BGRColors.WHITE.value
         return border_image_copy
 
     def convert_background_white_and_grayscale(self) -> np.ndarray:
