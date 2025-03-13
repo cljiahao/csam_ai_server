@@ -7,7 +7,7 @@ import numpy as np
 from keras import models, Sequential
 from tensorflow import keras
 
-from core.directory import directory
+from core.directory_manager import directory_manager as dm
 from core.logging import logger
 from core.exceptions import CustomErrorMessage
 from schemas.chips_data import ImageData
@@ -36,7 +36,7 @@ class TFPrediction:
     def _read_model_mode(self) -> dict[str, str]:
         """Reads and parses the label file to create a mapping of class indices to labels."""
 
-        txt_path = directory.model_dir / self.txt_name
+        txt_path = dm.model_dir / self.txt_name
         if not txt_path.exists():
             raise CustomErrorMessage(
                 f"Model File: {self.txt_name} not found in the model folder."
@@ -65,7 +65,7 @@ class TFPrediction:
 
     def _load_model_file(self) -> Sequential:
         """Loads the TensorFlow/Keras model from the file system."""
-        model_path = directory.model_dir / self.model_name
+        model_path = dm.model_dir / self.model_name
         if not model_path.exists():
             raise CustomErrorMessage(
                 f"Model File: {self.model_name} not found in model folder."
@@ -77,7 +77,7 @@ class TFPrediction:
 
     def write_model_mode(self, labels: list[str]) -> None:
         """Writes a list of labels to the label file."""
-        txt_path = directory.model_dir / self.txt_name
+        txt_path = dm.model_dir / self.txt_name
 
         label_content = "\n".join(f"{i} {label}" for i, label in enumerate(labels))
 

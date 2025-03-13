@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from core.config import common_settings, database_settings
-from core.directory import directory
+from core.directory_manager import directory_manager as dm
 
 # Database URL configuration
 DB_NAME = (
@@ -11,7 +11,7 @@ DB_NAME = (
     if common_settings.ENV_STAGE == "prod"
     else f"{database_settings.DB_NAME}_{common_settings.ENV_STAGE}.db"
 )
-SQLALCHEMY_DATABASE_URL = f"sqlite:///{directory.config_dir}/{DB_NAME}"
+SQLALCHEMY_DATABASE_URL = f"sqlite:///{dm.config_dir}/{DB_NAME}"
 
 # Create SQLAlchemy engine
 engine = create_engine(
