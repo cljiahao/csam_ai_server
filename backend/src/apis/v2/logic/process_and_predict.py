@@ -42,7 +42,7 @@ def process_and_predict(
         "item": item,
         "lot_no": lot_no,
         "plate_no": plate_no,
-        "with_ai": page.ai,
+        "with_ai": page.is_ai.value,
         "no_of_chips": len(images_to_predict) + len(processed_defects),
         "no_of_batches": (
             len(defect_batch_dict) - 1
@@ -51,7 +51,7 @@ def process_and_predict(
         ),
     }
 
-    if page.ai:
+    if page.is_ai.value:
         processed_defects.extend(run_tensorflow(item, images_to_predict))
         lot_details["no_of_pred"] = len(processed_defects)
     else:
