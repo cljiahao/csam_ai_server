@@ -70,11 +70,11 @@ def get_processed_count(
     try:
         page = get_page(server_mode)
         chip_lot_details_service = ChipLotDetailsService(db)
-        filter_condition = {"lot_no": lot_no, "plate_no": plate_no, "with_ai": page.ai}
+        filter_condition = {"lot_no": lot_no, "plate_no": plate_no, "with_ai": page.is_ai.value}
         lot_detail = chip_lot_details_service.read_lot_details(filter_condition)
         return (
             {"result": lot_detail.no_of_pred}
-            if page.ai
+            if page.is_ai.value 
             else {"result": lot_detail.no_of_chips}
         )
     except Exception as e:

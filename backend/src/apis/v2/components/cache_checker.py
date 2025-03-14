@@ -24,7 +24,7 @@ def get_cache_if_exists(
 
     chip_lot_detail_service = ChipLotDetailsService(db)
     chip_lot_details = chip_lot_detail_service.read_lot_details(
-        {"lot_no": lot_no, "plate_no": plate_no, "with_ai": page.ai}
+        {"lot_no": lot_no, "plate_no": plate_no, "with_ai": page.is_ai.value}
     )
     if not chip_lot_details:
         logger.info("Chip Lot Details not found, creating a new data.")
