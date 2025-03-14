@@ -3,14 +3,8 @@ import { Link } from "react-router-dom";
 import { Outlet } from "react-router-dom";
 import { IconContext } from "react-icons";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { navigation_info } from "@/core/navigation";
+import MediaCard from "@/components/widgets/media-card/MediaCard";
 
 const Home = () => {
   return (
@@ -20,19 +14,14 @@ const Home = () => {
           .filter((nav) => nav.name.toLowerCase() !== "home")
           .map((nav) => (
             <Link key={nav.name} to={nav.url} className="hw-full">
-              <Card className="flex-center hw-full hover: bg-white hover:scale-105 hover:bg-slate-50">
-                <CardHeader className="flex-center hw-full gap-3 break-words tracking-wide">
-                  <CardContent className="flex-center hw-full py-16">
-                    {createElement(nav.icon)}
-                  </CardContent>
-                  <CardTitle className="hw-full text-center text-4xl font-bold">
-                    {nav.title}
-                  </CardTitle>
-                  <CardDescription className="hw-full p-5 text-justify text-lg">
-                    {nav.description}
-                  </CardDescription>
-                </CardHeader>
-              </Card>
+              <MediaCard
+                className="hover: space-y-20 bg-white text-4xl hover:scale-105 hover:bg-slate-50"
+                title={nav.title}
+                description={nav.description}
+                descClassName="pt-6 text-lg w-[75%] text-center"
+              >
+                <div className="text-xl">{createElement(nav.icon)}</div>
+              </MediaCard>
             </Link>
           ))}
         <Outlet />
