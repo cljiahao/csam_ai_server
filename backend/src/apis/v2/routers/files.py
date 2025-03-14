@@ -1,10 +1,11 @@
 from typing import Annotated
 from sqlalchemy.orm import Session
-from fastapi import File, Depends, Query, Path as FastAPIPath
+from fastapi import File, Depends, Query, Path
 from fastapi import APIRouter, UploadFile
 
 from apis.v2.helpers.HTTPExceptions import handle_exceptions
 from apis.v2.helpers.pages import get_page
+from apis.v2.logic.model_files import save_model_files
 from apis.v2.logic.process_and_predict import process_and_predict
 from apis.v2.logic.update_cache import set_cache
 from apis.v2.schemas.base import ServerMode
@@ -23,7 +24,7 @@ router = APIRouter()
     operation_id="UploadFile",
 )
 def start_process_image(
-    server_mode: Annotated[ServerMode, FastAPIPath(description="")],
+    server_mode: Annotated[ServerMode, Path(description="")],
     item: Annotated[
         str, Query(description="Item Type", examples=["GCM32ER71E106KA57"])
     ],
@@ -66,40 +67,25 @@ def save_local(
         handle_exceptions(e)
 
 
-# TODO: change to API endpoint for receiving file transfer (Model and txt file)
-
-
-# @router.post(
-#     "/settings",
-#     summary="Process Image and return chip data",
-#     operation_id="UploadSettings",
-# )
-# def upload_settings(
-#     file: UploadFile = File(description="Upload settings.json file."),
-# ) -> bool:
-
-#     logger.info(f"{file.filename} uploaded")
-#     try:
-#         update_settings(file.file, file.filename)
-#         return True
-#     except Exception as e:
-#         handle_exceptions(e)
-
-
-# @router.post(
-#     "/zip",
-#     summary="Process Image and return chip data",
-#     operation_id="UploadZip",
-# )
-# def upload_zip(
-#     file: UploadFile = File(
-#         description="Upload zip file with settings.json and optional, model h5 and txt files."
-#     ),
-# ) -> bool:
-
-#     logger.info(f"{file.filename} uploaded")
-#     try:
-#         unzip_files(file.file)
-#         return True
-#     except Exception as e:
-#         handle_exceptions(e)
+@router.post(
+    "/install_model", summary="Install model received.", operation_id="InstallModel"
+)
+def install_model(
+    item: Annotated[
+        str, Query(description="Item Type", examples=["GCM32ER71E106KA57"])
+    ],
+    file_model_label: Annotated[
+        UploadFile,
+        File(description="Upload model label file ('.txt')"),
+    ],
+    file_model: Annotated[
+        UploadFile,
+        File(description="Upload model file ('.h5','.onnx')"),
+    ],
+    db: Annotated[Session, Depends(get_db)],
+):
+    try:
+        save_model_files(item, file_model_label, file_model, db)
+        return True
+    except Exception as e:
+        handle_exceptions(e)
