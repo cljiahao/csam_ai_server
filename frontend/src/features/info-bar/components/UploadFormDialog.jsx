@@ -73,7 +73,7 @@ const UploadFormDialog = ({ setLotNo, setPlateNo }) => {
 
   return (
     <CustomDialog
-      trigger={<HoverButton icon={nav.icon} text={`${nav.name} Upload`} />}
+      trigger={<HoverButton icon={nav.icon} hoverText={`${nav.name} Upload`} />}
       title={mode === "CDC" ? "Defects Collections" : "AI Predict Defects"}
       description="Upload image to start processing."
       open={isDialogOpen}
@@ -100,8 +100,16 @@ const UploadFormDialog = ({ setLotNo, setPlateNo }) => {
             );
           })}
           <div className="flex-between flex">
-            <HoverButton className="h-12 w-20" type="submit" text="Upload" />
-            <HoverButton className="h-12 w-20" text="Reset" onClick={onReset} />
+            <HoverButton
+              className="h-12 w-20"
+              type="submit"
+              hoverText="Upload"
+            />
+            <HoverButton
+              className="h-12 w-20"
+              hoverText="Reset"
+              onClick={onReset}
+            />
           </div>
         </form>
       </Form>
