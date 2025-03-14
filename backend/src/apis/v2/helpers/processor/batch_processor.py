@@ -65,7 +65,7 @@ class BatchProcessor(BatchProcessorInterface):
     def _calculate_threshold_area(self) -> int:
         """Calculates the threshold area based on image dimensions."""
         image_height, image_width = self.batch_mask.shape[:2]
-        return image_height * image_width * ImageThreshold.BATCH_MULTIPLIER
+        return image_height * image_width * ImageThreshold.BATCH_MULTIPLIER.value
 
     def _calculate_factor(self) -> int:
         """Calculates the factor used to organize batch data."""

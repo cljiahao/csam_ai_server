@@ -25,7 +25,7 @@ def create_contour_list(mask_image: np.ndarray) -> ContourList:
     )
 
     return ContourHandler.filter_and_build_contour_info(
-        contours, ImageThreshold.DENOISE_THRESHOLD
+        contours, ImageThreshold.DENOISE_THRESHOLD.value
     )
 
 
