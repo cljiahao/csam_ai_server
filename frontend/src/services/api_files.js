@@ -1,13 +1,13 @@
 import { createFileRequestOptions, createRequestOptions, sendRequest } from ".";
 
 export const uploadImage = async (mode, item, lotNo, formData) => {
-  const url = `/api/upload/image/${mode}/${item}/${lotNo}`;
+  const url = `/api/upload/process_image/${mode}?item=${item}&lot_no=${lotNo}`;
   const options = createFileRequestOptions("POST", formData);
   return await sendRequest(url, options);
 };
 
 export const saveFinalJudgement = async (data) => {
-  const url = `/api/upload/save`;
+  const url = `/api/upload/save_local`;
   const options = createRequestOptions("POST", data);
   return await sendRequest(url, options);
 };
