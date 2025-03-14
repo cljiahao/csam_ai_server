@@ -55,9 +55,10 @@ class DefectProcessor:
         border_pad: int,
     ) -> BatchDefectData:
 
-        norm_x_center, norm_y_center = self._get_norm_coordinates(
-            contour_info.rect[0], image.shape[:2], border_pad
-        )
+        x, y = contour_info.rect[0]
+        height, width = image.shape[:2]
+        norm_x_center = round((x - border_pad) / (width - border_pad * 2), 6)
+        norm_y_center = round((y - border_pad) / (height - border_pad * 2), 6)
 
         # Create DefectData instance
         defect_data = DefectData(

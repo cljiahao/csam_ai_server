@@ -34,7 +34,7 @@ def process_and_predict(
 
     image = save_original_image(file, base_partial_path)
 
-    defect_batch_dict, images_to_predict, processed_defects = pre_process_image(
+    defect_batch_dict, images_to_predict, processed_defects = process_csam_image(
         image, item, lot_no, plate_no, db
     )
 
@@ -73,7 +73,7 @@ def process_and_predict(
 @timer("Process CSAM Image")
 def process_csam_image(
     image: np.ndarray, item: str, lot_no: str, plate_no: str, db: Session
-) -> list[ImageData]:
+) -> tuple[dict[str, list[DefectData]], list[ImageData], list[ImageData]]:
     """Processes the CSAM image, including contour extraction and defect processing."""
 
     (
@@ -81,6 +81,7 @@ def process_csam_image(
         base_file_name,
         refined_contours_info_list,
         border_image,
+        border_pad
     ) = pre_process_image(image, item, lot_no, plate_no, db)
 
     return process_chunk_contours(
@@ -88,6 +89,7 @@ def process_csam_image(
         base_file_name,
         refined_contours_info_list,
         border_image,
+        border_pad
     )
 
 

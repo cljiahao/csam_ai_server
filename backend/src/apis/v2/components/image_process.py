@@ -23,7 +23,7 @@ from services.train import get_image_settings
 @timer("Pre Process Image")
 def pre_process_image(
     image: np.ndarray, item: str, lot_no: str, plate_no: str, db: Session
-) -> tuple[dict[str, FileDataBatch], list, list]:
+) -> tuple[DefectProcessor, str, ContourList, np.ndarray, int]:
     """Main function for processing the input image."""
 
     # Fetch image settings (either from API or fallback to DB)
@@ -63,7 +63,7 @@ def pre_process_image(
         base_file_name,
         refined_contours_info_list,
         border_image,
-        border_pad,
+        border_pad
     )
 
 
