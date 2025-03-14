@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from constants.folder_names import FolderNames
 from core.directory_manager import directory_manager as dm
 from core.logging import logger
 from schemas.chips_data import DefectData
@@ -13,9 +14,11 @@ def map_folder_files(base_partial_path: str) -> dict[str, Path] | None:
 
     temp_dict, non_temp_dict = {}, {}
     for folder in plate_path.iterdir():
-        if not folder.is_dir() or folder.name == "original":
+        if not folder.is_dir() or folder.name == FolderNames.ORIGINAL.value:
             continue
-        target_dict = temp_dict if folder.name == "temp" else non_temp_dict
+        target_dict = (
+            temp_dict if folder.name == FolderNames.TEMP.value else non_temp_dict
+        )
         target_dict.update(
             {file.name: folder for file in folder.iterdir() if file.is_file()}
         )
@@ -49,7 +52,7 @@ def get_temp_changes(
     for non_temp_file_name in non_temp_dict:
         if non_temp_file_name not in data_file_names:
             defect_data = chip_detail_dict.get(non_temp_file_name)
-            defect_data.defect_mode = "temp"
+            defect_data.defect_mode = FolderNames.TEMP.value
             temp_changes.append(defect_data)
 
     return temp_changes
@@ -75,7 +78,8 @@ def count_defects(base_partial_path: str) -> int:
     if not plate_path.exists() or not plate_path.is_dir():
         return 0
     return sum(
-        len([file for file in folder.iterdir() if file.is_file()])
+        sum(1 for file in folder.iterdir() if file.is_file())
         for folder in plate_path.iterdir()
-        if folder.is_dir() and folder.name not in ["original", "temp"]
+        if folder.is_dir()
+        and folder.name not in {FolderNames.TEMP.value, FolderNames.ORIGINAL.value}
     )

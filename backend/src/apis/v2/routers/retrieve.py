@@ -1,12 +1,12 @@
 from typing import Annotated
 from sqlalchemy.orm import Session
-from fastapi import Depends, Path
+from fastapi import Depends, Path, Query
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 
 from apis.v2.helpers.HTTPExceptions import handle_exceptions
 from apis.v2.helpers.pages import get_page
-from apis.v2.schemas.base import Module
+from apis.v2.schemas.base import ServerMode
 from apis.v2.schemas.retrieve import CountResult, Item
 from db.services.chip_lot_details import ChipLotDetailsService
 from db.session import get_db
@@ -17,12 +17,12 @@ router = APIRouter()
 
 
 @router.get(
-    "/item/{lot_no}",
+    "/item",
     response_model=Item,
     summary="Return Item type from PRASS based on lot number provided",
 )
 def get_item(
-    lot_no: Annotated[str, Path(description="Lot Number", pattern="[a-zA-Z0-9]{10}")]
+    lot_no: Annotated[str, Query(description="Lot Number", pattern="[a-zA-Z0-9]{10}")],
 ):
     try:
         item = check_lot(lot_no)
@@ -56,19 +56,19 @@ def get_image(
 
 
 @router.get(
-    "/count/{module}/{lot_no}/{plate_no}",
+    "/count/{server_mode}",
     response_model=CountResult,
     summary="Return count stored in database.",
 )
 def get_processed_count(
-    module: Module,
-    lot_no: Annotated[str, Path(description="Lot Number", pattern="[a-zA-Z0-9]{10}")],
-    plate_no: Annotated[str, Path(description="Plate No")],
+    server_mode: Annotated[ServerMode, Path(description="")],
+    lot_no: Annotated[str, Query(description="Lot Number", pattern="[a-zA-Z0-9]{10}")],
+    plate_no: Annotated[str, Query(description="Plate No")],
     db: Annotated[Session, Depends(get_db)],
 ):
 
     try:
-        page = get_page(module)
+        page = get_page(server_mode)
         chip_lot_details_service = ChipLotDetailsService(db)
         filter_condition = {"lot_no": lot_no, "plate_no": plate_no, "with_ai": page.ai}
         lot_detail = chip_lot_details_service.read_lot_details(filter_condition)

@@ -1,13 +1,13 @@
 from typing import Annotated
 from sqlalchemy.orm import Session
-from fastapi import File, Depends, Path
+from fastapi import File, Depends, Query, Path as FastAPIPath
 from fastapi import APIRouter, UploadFile
 
 from apis.v2.helpers.HTTPExceptions import handle_exceptions
 from apis.v2.helpers.pages import get_page
 from apis.v2.logic.process_and_predict import process_and_predict
 from apis.v2.logic.update_cache import set_cache
-from apis.v2.schemas.base import Module
+from apis.v2.schemas.base import ServerMode
 from apis.v2.schemas.files import FileDataBatchDirectory
 from db.session import get_db
 
@@ -17,47 +17,40 @@ router = APIRouter()
 
 
 @router.post(
-    "/image/{module}/{item}/{lot_no}",
+    "/process_image/{server_mode}",
     response_model=FileDataBatchDirectory,
     summary="Process Image and return chip data",
     operation_id="UploadFile",
 )
-def process_image(
-    module: Module,
+def start_process_image(
+    server_mode: Annotated[ServerMode, FastAPIPath(description="")],
     item: Annotated[
-        str,
-        Path(
-            description="Item Type",
-            example="GCM32ER71E106KA57",
-        ),
+        str, Query(description="Item Type", examples=["GCM32ER71E106KA57"])
     ],
     lot_no: Annotated[
         str,
-        Path(
-            description="Lot Number",
+        Query(
+            description="Lot Number (Alphanumeric, 10 characters)",
             pattern="[a-zA-Z0-9]{10}",
-            example="1234567890",
+            examples=["1234567890"],
         ),
     ],
     file: Annotated[
         UploadFile,
-        File(
-            description="Upload image file ('.jpg','.png')",
-            example="test.png",
-        ),
+        File(description="Upload image file ('.jpg','.png')"),
     ],
     db: Annotated[Session, Depends(get_db)],
 ) -> FileDataBatchDirectory:
-    """Processes an uploaded image and returns defect batch data."""
     try:
-        page = get_page(module)
+
+        page = get_page(server_mode)
         return process_and_predict(page, item, lot_no, file, db)
     except Exception as e:
         handle_exceptions(e)
 
 
 @router.post(
-    "/save",
+    "/save_local",
     summary="Update local database with new user input",
     operation_id="SaveLocal",
 )

@@ -1,16 +1,16 @@
-from enum import Enum
+from enum import Enum, StrEnum
 
 
-class Module(str, Enum):
-    cai = "CAI"
-    cdc = "CDC"
+class ServerMode(StrEnum):
+    CAI = "CAI"
+    CDC = "CDC"
 
 
-class CAIPage:
-    base_folder: str = "CAI"
-    ai: bool = True
+class CAIPage(Enum):
+    base_folder = "CAI"
+    is_ai = True
 
 
-class CDCPage:
-    base_folder: str = "CDC"
-    ai: bool = False
+class CDCPage(Enum):
+    base_folder = "CDC"
+    is_ai = False
