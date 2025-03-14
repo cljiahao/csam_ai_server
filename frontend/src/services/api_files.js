@@ -1,7 +1,11 @@
 import { createFileRequestOptions, createRequestOptions, sendRequest } from ".";
 
 export const uploadImage = async (mode, item, lotNo, formData) => {
-  const url = `/api/upload/process_image/${mode}?item=${item}&lot_no=${lotNo}`;
+  const params = new URLSearchParams({
+    item: item,
+    lot_no: lotNo
+  });
+  const url = `/api/upload/process_image/${mode}?${params.toString()}`;
   const options = createFileRequestOptions("POST", formData);
   return await sendRequest(url, options);
 };
