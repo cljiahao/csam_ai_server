@@ -17,9 +17,9 @@ const CustomDialog = ({
   ...props
 }) => {
   return (
-    <Dialog className={cn("flex", className)} {...props}>
+    <Dialog {...props}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent>
+      <DialogContent className={cn("flex flex-col", className)}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
