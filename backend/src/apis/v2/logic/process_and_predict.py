@@ -81,7 +81,7 @@ def process_csam_image(
         base_file_name,
         refined_contours_info_list,
         border_image,
-        border_pad
+        border_pad,
     ) = pre_process_image(image, item, lot_no, plate_no, db)
 
     return process_chunk_contours(
@@ -89,7 +89,7 @@ def process_csam_image(
         base_file_name,
         refined_contours_info_list,
         border_image,
-        border_pad
+        border_pad,
     )
 
 
