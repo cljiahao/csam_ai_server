@@ -14,7 +14,6 @@ class DirectoryManager:
 
         # Config folder
         self.config_dir = self.base_dir / "config"
-        self.json_dir = self.config_dir / "json"
         self.model_dir = self.config_dir / "model"
 
         # Data folder
@@ -27,7 +26,6 @@ class DirectoryManager:
         """Initialize base required directory paths."""
         folders = [
             self.log_dir,
-            self.json_dir,
             self.model_dir,
             self.images_dir,
         ]
