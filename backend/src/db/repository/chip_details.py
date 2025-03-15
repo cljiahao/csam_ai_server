@@ -9,7 +9,7 @@ class ChipDetailsRepository(BaseRepository[ChipDetails]):
         super().__init__(db, ChipDetails)
         self.db = db
 
-    def create_bulk_chip_details(self, bulk_chip_data: list[dict]) -> list[ChipDetails]:
+    def bulk_create_chip_details(self, bulk_chip_data: list[dict]) -> list[ChipDetails]:
         """Create new bulk chip details."""
         return self.create(
             bulk_chip_data,
@@ -24,7 +24,7 @@ class ChipDetailsRepository(BaseRepository[ChipDetails]):
             print_message=f"Error reading chip details from the database.",
         )
 
-    def update_bulk_chip_details(
+    def bulk_update_chip_details(
         self, filter_conditions: list[dict], update_data: list[dict]
     ) -> int:
         """Update chip details with provided data."""
@@ -34,7 +34,7 @@ class ChipDetailsRepository(BaseRepository[ChipDetails]):
             print_message=f"Error updating bulk chip details in the database.",
         )
 
-    def delete_bulk_chip_details(self, filter_conditions: list[dict]) -> int:
+    def bulk_delete_chip_details(self, filter_conditions: list[dict]) -> int:
         """Update chip details with provided data."""
         return self.delete(
             filter_conditions,

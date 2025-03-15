@@ -146,6 +146,6 @@ def write_to_db(
     ]
 
     chip_detail_service = ChipDetailsService(db)
-    chip_detail_service.create_chip_details(bulk_chip_details)
+    chip_detail_service.bulk_create_chip_details(bulk_chip_details)
 
     return chip_lot_detail

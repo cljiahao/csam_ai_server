@@ -1,7 +1,7 @@
-from sqlite3 import DatabaseError
+import sqlalchemy as sa
 from typing import Generic, TypeVar, Type
-from sqlalchemy import and_, delete, select, update
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
 
 from core.exceptions import NoResultsFound
 
@@ -31,9 +31,14 @@ class BaseRepository(Generic[T]):
         """Build filter conditions dynamically"""
         if not filters:
             raise ValueError("Filters cannot be empty.")
-        conditions = [
-            getattr(self.model, key) == value for key, value in filters.items()
-        ]
+        conditions = []
+        for key, value in filters.items():
+            if hasattr(self.model, key):
+                conditions.append(getattr(self.model, key) == value)
+            else:
+                raise AttributeError(
+                    f"Model '{self.model.__name__}' has no attribute '{key}'"
+                )
         return conditions
 
     def create(
@@ -44,6 +49,7 @@ class BaseRepository(Generic[T]):
         """Create one or multiple record."""
         try:
             if isinstance(data, list):
+                # Bulk create case
                 instances = [self.model(**item) for item in data]
                 self.db.add_all(instances)
                 self.db.commit()
@@ -51,13 +57,15 @@ class BaseRepository(Generic[T]):
                     self.db.refresh(instance)
                 return instances
             else:
+                # Single create case
                 instance = self.model(**data)
                 self.db.add(instance)
                 self.db.commit()
+                self.db.refresh(instance)
                 return instance
-        except:
+        except Exception as e:
             self.db.rollback()
-            raise DatabaseError(print_message)
+            raise SQLAlchemyError(print_message) from e
 
     def read(
         self,
@@ -67,59 +75,73 @@ class BaseRepository(Generic[T]):
     ) -> T | list[T]:
         """Read one or multiple record."""
         try:
-            conditions = self._build_filter(filter_conditions)
-            statement = select(self.model).filter(and_(*conditions))
-            result = self.db.execute(statement)
-            if return_all:
+            if filter_conditions:
+                conditions = self._build_filter(filter_conditions)
+                statement = sa.select(self.model).filter(sa.and_(*conditions))
+                result = self.db.execute(statement)
+                if return_all:
+                    return result.scalars().all()
+                return result.scalars().first()
+            else:
+                statement = sa.select(self.model)
+                result = self.db.execute(statement)
                 return result.scalars().all()
-            return result.scalars().first()
-        except:
+        except Exception as e:
             self.db.rollback()
-            raise DatabaseError(print_message)
+            raise SQLAlchemyError(print_message) from e
 
     def update(
         self,
-        filter_conditions: dict | list[dict],
-        update_data: dict | list[dict],
+        updates_data: dict[str, dict] | list[dict[str, dict]],
         print_message: str = "Error updating data in database.",
     ) -> int | T:
         """Update one or multiple record."""
         try:
-            if isinstance(filter_conditions, dict) and isinstance(update_data, dict):
+            if isinstance(updates_data, dict):
                 # Single update case
-                conditions = self._build_filter(filter_conditions)
-                statement = select(self.model).filter(and_(*conditions))
+                missing_key = {"filter_conditions", "update_data"} - updates_data.keys()
+                if missing_key:
+                    raise KeyError(f"Missing key {missing_key}")
+                conditions = self._build_filter(updates_data["filter_conditions"])
+                statement = sa.select(self.model).filter(sa.and_(*conditions))
                 result = self.db.execute(statement)
-                instance = result.scalars().first()
+                instance = result.scalar_one_or_none()
                 if not instance:
                     raise NoResultsFound("No matching record found to update.")
-                for key, value in update_data.items():
+                for key, value in updates_data["update_data"].items():
                     setattr(instance, key, value)
                 self.db.commit()
                 self.db.refresh(instance)
                 return instance
-            elif isinstance(filter_conditions, list):
+            elif isinstance(updates_data, list):
                 # Bulk update case
                 count = 0
-                for i, filters in enumerate(filter_conditions):
-                    conditions = self._build_filter(filters)
-                    data = (
-                        update_data[i] if isinstance(update_data, list) else update_data
-                    )
+                for update_item in updates_data:
+                    missing_key = {
+                        "filter_conditions",
+                        "update_data",
+                    } - update_item.keys()
+                    if missing_key:
+                        raise KeyError(f"Missing key {missing_key}")
+
+                    conditions = self._build_filter(update_item["filter_conditions"])
                     statement = (
-                        update(self.model).where(and_(*conditions)).values(**data)
+                        sa.update(self.model)
+                        .where(sa.and_(*conditions))
+                        .values(**update_item["update_data"])
                     )
                     result = self.db.execute(statement)
                     count += result.rowcount
                 self.db.commit()
+                self.db.expire_all()
                 return count
             else:
-                NoResultsFound(
-                    "Invalid input of filter_conditions and update_data type."
+                raise ValueError(
+                    "Invalid input: updates must be a dict or list of dicts."
                 )
         except Exception as e:
             self.db.rollback()
-            raise DatabaseError(
+            raise SQLAlchemyError(
                 str(e) if isinstance(e, NoResultsFound) else print_message
             )
 
@@ -135,24 +157,24 @@ class BaseRepository(Generic[T]):
                 count = 0
                 for filters in filter_conditions:
                     conditions = self._build_filter(filters)
-                    statement = delete(self.model).filter(and_(*conditions))
+                    statement = sa.delete(self.model).filter(sa.and_(*conditions))
                     result = self.db.execute(statement)
                     count += result.rowcount
                 self.db.commit()
+                self.db.expire_all()
                 return count
             else:
                 # Single delete case
                 conditions = self._build_filter(filter_conditions)
-                statement = select(self.model).filter(and_(*conditions))
+                statement = sa.delete(self.model).filter(sa.and_(*conditions))
                 result = self.db.execute(statement)
-                instance = result.scalars().first()
-                if not instance:
+                if result.rowcount == 0:
                     raise NoResultsFound("No record found to delete.")
-                self.db.delete(instance)
                 self.db.commit()
-                return instance
+                self.db.expire_all()
+                return result.rowcount
         except Exception as e:
             self.db.rollback()
-            raise DatabaseError(
+            raise SQLAlchemyError(
                 str(e) if isinstance(e, NoResultsFound) else print_message
             )

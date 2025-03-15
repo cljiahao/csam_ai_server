@@ -10,62 +10,37 @@ class ChipDetailsService:
         """Initialize service with repository."""
         self.repo = ChipDetailsRepository(db)
 
-    def _validate_filter_conditions(self, filter_conditions: dict) -> None:
-        """Validate filter conditions before querying or deleting."""
-        if not filter_conditions:
-            raise InvalidInputError("Filter conditions cannot be empty.")
+    def _validate_chip_details_keys(self, chip_details_data: dict) -> None:
+        """Validate the keys in the chip details data."""
+        valid_keys = {
+            "file_name",
+            "defect_mode",
+            "chip_lot_id",
+            "batch_no",
+        }
 
-        # TODO: Validation
+        invalid_keys = set(chip_details_data) - valid_keys
+        if invalid_keys:
+            raise InvalidInputError(
+                f"Unknown keys in chip details data: {', '.join(invalid_keys)}"
+            )
 
-        # keys_list = ["file_name"]
-        # missing_key = [key for key in keys_list if key not in filter_conditions]
-        # if missing_key:
-        #     raise InvalidInputError(
-        #         f"Filter conditions must include {', '.join(missing_key)}."
-        #     )
-
-    def _validate_chip_data(self, chip_data: dict):
-        """Validate the lot data before creating."""
-        if not chip_data:
-            raise InvalidInputError("No data provided to create.")
-
-        # required_fields = ["file_name"]
-        # for field in required_fields:
-        #     if field not in chip_data:
-        #         raise InvalidInputError(f"Missing required field: {field}")
-
-    def _validate_update_data(self, update_data: dict):
-        """Validate the update data before updating the record."""
-        if not update_data:
-            raise InvalidInputError("No data provided to update.")
-
-    def create_chip_details(self, chip_data: list[dict]) -> list[ChipDetails]:
-        """Service layer method to create new lot details."""
+    def bulk_create_chip_details(self, chip_data: list[dict]) -> list[ChipDetails]:
+        """Service layer method to bulk create new lot details."""
         for data in chip_data:
-            self._validate_chip_data(data)
+            self._validate_chip_details_keys(data)
 
-        return self.repo.create_bulk_chip_details(chip_data)
+        return self.repo.bulk_create_chip_details(chip_data)
 
-    def read_chip_details(self, filter_conditions: dict) -> list[ChipDetails]:
-        """Service layer method to read lot details."""
-        self._validate_filter_conditions(filter_conditions)
+    def read_all_chip_details(self, filter_conditions: dict) -> list[ChipDetails]:
+        """Service layer method to read all lot details based on filter conditions."""
+        self._validate_chip_details_keys(filter_conditions)
 
         return self.repo.read_all_chip_details(filter_conditions)
 
-    def update_chip_details(
-        self, filter_conditions: list[dict], update_data: list[dict]
-    ) -> int:
-        """Service layer method to update lot details."""
-        for filters in filter_conditions:
-            self._validate_filter_conditions(filters)
-        for updates in update_data:
-            self._validate_update_data(updates)
+    def bulk_update_chip_details(self, update_list: list[dict[str, dict]]) -> int:
+        """Service layer method to bulk update lot details."""
+        for update_item in update_list:
+            self._validate_chip_details_keys(update_item["update_data"])
 
-        return self.repo.update_bulk_chip_details(filter_conditions, update_data)
-
-    def delete_chip_details(self, filter_conditions: list[dict]) -> int:
-        """Service layer method to delete lot details."""
-        for filters in filter_conditions:
-            self._validate_filter_conditions(filters)
-
-        return self.repo.delete_bulk_chip_details(filter_conditions)
+        return self.repo.bulk_update_chip_details(update_list)

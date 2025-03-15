@@ -15,26 +15,26 @@ class ImageSettingsRepository(BaseRepository[ImageSettings]):
             print_message=f"Error creating settings from the database.",
         )
 
-    def read_image_settings(self, filter_condition: dict) -> ImageSettings:
+    def read_image_settings(self, filter_conditions: dict) -> ImageSettings:
         """Read image settings based on filter."""
         return self.read(
-            filter_condition,
+            filter_conditions,
             print_message=f"Error reading settings from the database.",
         )
 
     def update_image_settings(
-        self, filter_condition: dict, update_data: dict
+        self, filter_conditions: dict, update_data: dict
     ) -> ImageSettings:
         """Update image settings with provided data."""
         return self.update(
-            filter_condition,
+            filter_conditions,
             update_data,
             print_message=f"Error updating settings in the database.",
         )
 
-    def delete_image_settings(self, filter_condition: dict) -> ImageSettings:
+    def delete_image_settings(self, filter_conditions: dict) -> ImageSettings:
         """Delete image settings based on filter."""
         return self.delete(
-            filter_condition,
+            filter_conditions,
             print_message=f"Error deleting settings from the database.",
         )

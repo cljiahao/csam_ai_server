@@ -30,9 +30,9 @@ class ImageSettingsService:
         """Service layer method to read image settings"""
         if not item:
             raise InvalidInputError("Item cannot be empty.")
-        filter_condition = {"item": item}
+        filter_conditions = {"item": item}
 
-        return self.repo.read_image_settings(filter_condition)
+        return self.repo.read_image_settings(filter_conditions)
 
     def create_or_update_image_settings(
         self, item: str, image_settings_data: dict[str, int]
@@ -50,4 +50,6 @@ class ImageSettingsService:
             image_settings_data.update(data_condition)
             return self.repo.create_image_settings(image_settings_data)
 
-        return self.repo.update_image_settings(data_condition, image_settings_data)
+        return self.repo.update_image_settings(
+            {"filter_conditions": data_condition, "update_data": image_settings_data}
+        )
