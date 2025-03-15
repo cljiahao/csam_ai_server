@@ -25,7 +25,7 @@ def set_cache(db: Session, defect_batch_directory: FileDataBatchDirectory) -> No
     temp_dict, non_temp_dict = result
     folder_mapping = {**temp_dict, **non_temp_dict}
     chip_detail_service = ChipDetailsService(db)
-    chip_details = chip_detail_service.read_chip_details(
+    chip_details = chip_detail_service.read_all_chip_details(
         {"chip_lot_id": defect_batch_directory.unique_id}
     )
 
@@ -54,7 +54,9 @@ def set_cache(db: Session, defect_batch_directory: FileDataBatchDirectory) -> No
             for defect in data_changes
         ]
     )
-    chip_detail_service.update_chip_details(list(filter_conditions), list(update_data))
+    chip_detail_service.bulk_update_chip_details(
+        list(filter_conditions), list(update_data)
+    )
 
     move_files_to_defect_mode_folders(data_changes, folder_mapping)
 

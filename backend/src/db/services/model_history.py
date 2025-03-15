@@ -26,17 +26,17 @@ class ModelHistoryService:
         """Service layer method to read all model history"""
         if not item:
             raise InvalidInputError("Item cannot be empty.")
-        filter_condition = {"item": item}
+        filter_conditions = {"item": item}
 
-        return self.repo.read_all_model_history(filter_condition)
+        return self.repo.read_all_model_history(filter_conditions)
 
     def read_model_history(self, item: str) -> ModelHistory:
         """Service layer method to read model history"""
         if not item:
             raise InvalidInputError("Item cannot be empty.")
-        filter_condition = {"item": item}
+        filter_conditions = {"item": item}
 
-        return self.repo.read_model_history(filter_condition)
+        return self.repo.read_model_history(filter_conditions)
 
     def create_or_update_model_history(
         self, item: str, model_history_data: dict[str, int]
@@ -54,4 +54,6 @@ class ModelHistoryService:
             model_history_data.update(data_condition)
             return self.repo.create_model_history(model_history_data)
 
-        return self.repo.update_model_history(data_condition, model_history_data)
+        return self.repo.update_model_history(
+            {"filter_conditions": data_condition, "update_data": model_history_data}
+        )
