@@ -66,10 +66,10 @@ class ServiceSettings(Settings):
 
     TEST_LOT_NO: str = Field(default="1234567890")
     TEST_ITEM: str = Field(default="GCM32ER71E106KA59_+B55-E01GJ")
+    AI_TRAIN_URL: str = Field(default="")
     PRASS_URL: str = Field(default="")
     LOT_COLUMN: str = Field(default="")
     ITEM_COLUMN: str = Field(default="")
-    AI_TRAIN_URL: str = Field(default="")
 
 
 # Instantiate settings
