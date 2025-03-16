@@ -20,9 +20,11 @@ const HoverButton = forwardRef(
                 })}
               </div>
             )}
-            <span className="text-wrap leading-tight group-hover:hidden">
+            {text && (
+              <span className="text-wrap leading-tight group-hover:hidden">
               {text}
             </span>
+          )}
           </div>
         )}
         <span
