@@ -39,7 +39,7 @@ def check_single(
 
     if contour_info.area > check_single_threshold:
         drawn_roi = cv2.drawContours(
-            blank.copy(), contour_info.contour, -1, BGRColors.WHITE, -1
+            blank.copy(), contour_info.contour, -1, BGRColors.WHITE.value, -1
         )
         ((x_center, y_center), _, _) = contour_info.rect
         crop_image = BlobHandler.crop_roi(drawn_roi, x_center, y_center, crop_size // 2)
