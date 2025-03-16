@@ -13,6 +13,8 @@ class ChipDetailsService:
     def _validate_chip_details_keys(self, chip_details_data: dict) -> None:
         """Validate the keys in the chip details data."""
         valid_keys = {
+            "norm_x_center",
+            "norm_y_center",
             "file_name",
             "defect_mode",
             "chip_lot_id",
