@@ -37,7 +37,7 @@ def save_model_files(
     model_history_service.create_or_update_model_history(
         item,
         {
-            "model_file_name": model_file.filename,
+            "ai_model_name": model_file.filename,
             "model_label_file_name": model_label_file.filename,
         },
     )
