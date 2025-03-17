@@ -17,7 +17,7 @@ router = APIRouter()
 )
 def get_dot_colors(
     item: Annotated[
-        str, Query(description="Item Type", examples=["GCM32ER71E106KA59_+B55-E01GJ"])
+        str, Query(description="Item Type", examples=["GCM32ER71E106KA59_+B55-E02GJ"])
     ],
     db: Annotated[Session, Depends(get_db)],
 ):

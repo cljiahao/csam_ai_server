@@ -65,7 +65,7 @@ class ServiceSettings(Settings):
     """Service-specific settings."""
 
     TEST_LOT_NO: str = Field(default="1234567890")
-    TEST_ITEM: str = Field(default="GCM32ER71E106KA59_+B55-E01GJ")
+    TEST_ITEM: str = Field(default="GCM32ER71E106KA59_+B55-E02GJ")
     AI_TRAIN_URL: str = Field(default="")
     PRASS_URL: str = Field(default="")
     LOT_COLUMN: str = Field(default="")

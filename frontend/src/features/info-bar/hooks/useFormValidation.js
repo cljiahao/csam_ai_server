@@ -36,7 +36,7 @@ const useFormValidation = () => {
     },
     item: {
       label: "Item Type",
-      placeholder: "GCM32ER71E106KA59_+B55-E01GJ",
+      placeholder: "GCM32ER71E106KA59_+B55-E02GJ",
       schema: z.string().min(1, {
         message: "Please key in Item Type.",
       }),
