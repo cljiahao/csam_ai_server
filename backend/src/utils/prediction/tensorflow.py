@@ -21,14 +21,14 @@ class TFPrediction:
         item (str): The base name of the model and label files (without extensions).
 
     Attributes:
-        model_name (str): The name of the model file.
+        ai_model_name (str): The name of the model file.
         txt_name (str): The name of the label file.
         labels (dict[str, str]): Mapping of class indices to labels.
         model (Sequential): The TensorFlow/Keras model used for predictions.
     """
 
     def __init__(self, item: str) -> None:
-        self.model_name = f"{item}.h5"
+        self.ai_model_name = f"{item}.h5"
         self.txt_name = f"{item}.txt"
         self.labels = self._read_model_mode()
         self.model = self._load_model_file()
@@ -65,10 +65,10 @@ class TFPrediction:
 
     def _load_model_file(self) -> Sequential:
         """Loads the TensorFlow/Keras model from the file system."""
-        model_path = dm.model_dir / self.model_name
+        model_path = dm.model_dir / self.ai_model_name
         if not model_path.exists():
             raise CustomErrorMessage(
-                f"Model File: {self.model_name} not found in model folder."
+                f"Model File: {self.ai_model_name} not found in model folder."
             )
 
         model = models.load_model(model_path)
