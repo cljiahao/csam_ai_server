@@ -26,7 +26,7 @@ def process_and_predict(
 ) -> FileDataBatchDirectory:
     """Process images, run prediction, and save lot details to the database."""
     plate_no = Path(file.filename).stem
-    base_partial_path = f"{page.base_folder}/{item}/{lot_no}/{plate_no}"
+    base_partial_path = f"{page.base_folder.value}/{item}/{lot_no}/{plate_no}"
 
     cache_results = get_cache_if_exists(db, lot_no, plate_no, page, base_partial_path)
     if cache_results is not None:
