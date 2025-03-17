@@ -2,15 +2,9 @@ import { createRequestOptions, sendRequest } from ".";
 
 export const getItemType = async (lotNo) => {
   const params = new URLSearchParams({
-    lot_no: lotNo
+    lot_no: lotNo,
   });
   const url = `/api/item?${params.toString()}`;
-  const options = createRequestOptions("GET");
-  return await sendRequest(url, options);
-};
-
-export const getImageSrc = async (src_path) => {
-  const url = `/api/image/${src_path}`;
   const options = createRequestOptions("GET");
   return await sendRequest(url, options);
 };
@@ -18,7 +12,7 @@ export const getImageSrc = async (src_path) => {
 export const getProcessedCount = async (mode, lotNo, plate) => {
   const params = new URLSearchParams({
     lot_no: lotNo,
-    plate_no: plate
+    plate_no: plate,
   });
   const url = `/api/count/${mode}?${params.toString()}`;
   const options = createRequestOptions("GET");
