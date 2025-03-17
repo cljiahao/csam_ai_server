@@ -26,7 +26,7 @@ router = APIRouter()
 def start_process_image(
     server_mode: Annotated[ServerMode, Path(description="")],
     item: Annotated[
-        str, Query(description="Item Type", examples=["GCM32ER71E106KA59_+B55-E01GJ"])
+        str, Query(description="Item Type", examples=["GCM32ER71E106KA59_+B55-E02GJ"])
     ],
     lot_no: Annotated[
         str,
@@ -72,7 +72,7 @@ def save_local(
 )
 def install_model(
     item: Annotated[
-        str, Query(description="Item Type", examples=["GCM32ER71E106KA59_+B55-E01GJ"])
+        str, Query(description="Item Type", examples=["GCM32ER71E106KA59_+B55-E02GJ"])
     ],
     file_model_label: Annotated[
         UploadFile,
