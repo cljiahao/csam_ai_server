@@ -9,7 +9,7 @@ class DotColorsRepository(BaseRepository[DotColors]):
         super().__init__(db, DotColors)
 
     def bulk_create_dot_colors(self, dot_colors_list: list[dict]) -> DotColors:
-        """Create new dot colors details."""
+        """Bulk create new dot colors details."""
         return self.create(
             dot_colors_list,
             print_message=f"Error creating dot colors details from the database.",
@@ -24,14 +24,14 @@ class DotColorsRepository(BaseRepository[DotColors]):
         )
 
     def bulk_update_dot_colors(self, updates_list: list[dict[str, dict]]) -> DotColors:
-        """Update dot colors details with provided data."""
+        """Bulk update dot colors details with provided data."""
         return self.update(
             updates_list,
             print_message=f"Error updating dot colors details in the database.",
         )
 
     def bulk_delete_dot_colors(self, filter_conditions: list[dict]) -> DotColors:
-        """Delete dot colors details based on filter."""
+        """Bulk delete dot colors details based on filter."""
         return self.delete(
             filter_conditions,
             print_message=f"Error deleting dot colors details from the database.",
