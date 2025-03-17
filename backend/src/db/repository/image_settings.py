@@ -23,12 +23,11 @@ class ImageSettingsRepository(BaseRepository[ImageSettings]):
         )
 
     def update_image_settings(
-        self, filter_conditions: dict, update_data: dict
+        self, updates_list: list[dict[str, dict]]
     ) -> ImageSettings:
         """Update image settings with provided data."""
         return self.update(
-            filter_conditions,
-            update_data,
+            updates_list,
             print_message=f"Error updating settings in the database.",
         )
 

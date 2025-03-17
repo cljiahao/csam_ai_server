@@ -23,12 +23,12 @@ class ChipLotDetailsRepository(BaseRepository[ChipLotDetails]):
         )
 
     def update_lot_details(
-        self, filter_conditions: dict, update_data: dict
+        self,
+        updates_data: dict[str, dict] | list[dict[str, dict]],
     ) -> ChipLotDetails:
         """Update lot details with provided data."""
         return self.update(
-            filter_conditions,
-            update_data,
+            updates_data,
             print_message=f"Error updating lot details in the database.",
         )
 

@@ -30,13 +30,10 @@ class ModelHistoryRepository(BaseRepository[ModelHistory]):
             print_message=f"Error reading model history details from the database.",
         )
 
-    def update_model_history(
-        self, filter_conditions: dict, update_data: dict
-    ) -> ModelHistory:
+    def update_model_history(self, updates_list: list[dict[str, dict]]) -> ModelHistory:
         """Update model history details with provided data."""
         return self.update(
-            filter_conditions,
-            update_data,
+            updates_list,
             print_message=f"Error updating model history details in the database.",
         )
 
