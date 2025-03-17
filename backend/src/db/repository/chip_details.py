@@ -24,14 +24,11 @@ class ChipDetailsRepository(BaseRepository[ChipDetails]):
             print_message=f"Error reading chip details from the database.",
         )
 
-    def bulk_update_chip_details(
-        self, filter_conditions: list[dict], update_data: list[dict]
-    ) -> int:
         """Update chip details with provided data."""
+    def bulk_update_chip_details(self, updates_list: list[dict[str, dict]]) -> int:
         return self.update(
-            filter_conditions,
-            update_data,
             print_message=f"Error updating bulk chip details in the database.",
+            updates_list,
         )
 
     def bulk_delete_chip_details(self, filter_conditions: list[dict]) -> int:

@@ -48,15 +48,15 @@ def set_cache(db: Session, defect_batch_directory: FileDataBatchDirectory) -> No
     if not data_changes:
         raise CacheError("No defects to update.")
 
-    filter_conditions, update_data = zip(
-        *[
-            ({"file_name": defect.file_name}, {"defect_mode": defect.defect_mode})
-            for defect in data_changes
-        ]
-    )
-    chip_detail_service.bulk_update_chip_details(
-        list(filter_conditions), list(update_data)
-    )
+    update_list = [
+        {
+            "filter_conditions": {"file_name": defect.file_name},
+            "update_data": {"defect_mode": defect.defect_mode},
+        }
+        for defect in data_changes
+    ]
+
+    chip_detail_service.bulk_update_chip_details(update_list)
 
     move_files_to_defect_mode_folders(data_changes, folder_mapping)
 
