@@ -2,6 +2,7 @@ from typing import Annotated
 from sqlalchemy.orm import Session
 from fastapi import File, Depends, Query, Path
 from fastapi import APIRouter, UploadFile
+from fastapi.responses import FileResponse
 
 from apis.v2.helpers.HTTPExceptions import handle_exceptions
 from apis.v2.helpers.pages import get_page
@@ -10,11 +11,36 @@ from apis.v2.logic.process_and_predict import process_and_predict
 from apis.v2.logic.update_cache import set_cache
 from apis.v2.schemas.base import ServerMode
 from apis.v2.schemas.files import FileDataBatchDirectory
+from core.directory_manager import directory_manager as dm
 from db.session import get_db
 
 router = APIRouter()
 
 # TODO: implement pagination in the future
+
+
+@router.get(
+    "/{src:path}",
+    summary="Return image data",
+)
+def get_image(
+    src: Annotated[
+        str,
+        Path(
+            description="Path to the image file relative to the image directory",
+            pattern=".*\.(png|jpg)$",
+        ),
+    ],
+):
+    try:
+        file_path = dm.images_dir / src
+
+        if not file_path.exists():
+            raise FileNotFoundError(f"Image file not found: {src}")
+
+        return FileResponse(file_path)
+    except Exception as e:
+        handle_exceptions(e)
 
 
 @router.post(

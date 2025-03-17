@@ -32,30 +32,6 @@ def get_item(
 
 
 @router.get(
-    "/image/{src:path}",
-    summary="Return image data",
-)
-def get_image(
-    src: Annotated[
-        str,
-        Path(
-            description="Path to the image file relative to the image directory",
-            pattern=".*\.(png|jpg)$",
-        ),
-    ],
-):
-    try:
-        file_path = dm.images_dir / src
-
-        if not file_path.exists():
-            raise FileNotFoundError(f"Image file not found: {src}")
-
-        return FileResponse(file_path)
-    except Exception as e:
-        handle_exceptions(e)
-
-
-@router.get(
     "/count/{server_mode}",
     response_model=CountResult,
     summary="Return count stored in database.",
