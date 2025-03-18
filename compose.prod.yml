@@ -19,4 +19,4 @@ services:
       target: prod
       tags:
         - "10.50.0.7:5001/csam_ai_server/app:latest"
-        - "10.50.0.7:5001/csam_ai_server/app:2.1.3"
+        - "10.50.0.7:5001/csam_ai_server/app:2.1.4"
