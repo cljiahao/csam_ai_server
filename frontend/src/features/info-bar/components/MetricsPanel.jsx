@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import LabelValue from "@/components/widgets/label_value/LabelValue";
 import { useMetrics } from "../hooks/useMetrics";
 
-const MetricsPanel = ({lotNo, plateNo}) => {
+const MetricsPanel = ({ lotNo, plateNo }) => {
   const location = useLocation();
   const mode = location.pathname.split("/").pop();
 
