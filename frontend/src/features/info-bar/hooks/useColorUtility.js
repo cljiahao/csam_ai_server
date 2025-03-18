@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { getDotColors, saveDotColors } from "@/services/dotColorsService";
+import { getDotColors, saveDotColors } from "@/services/api_colors";
 import { useColorStore } from "@/store/color";
 
 const useFetchColors = ({ setError }) => {
