@@ -13,6 +13,7 @@ router = APIRouter()
 
 @router.get(
     "/dotter",
+    response_model=ItemDotColors,
     summary="Return list of Dot Colors based on item type provided",
 )
 def get_dot_colors(
