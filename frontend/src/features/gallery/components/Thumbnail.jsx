@@ -8,7 +8,8 @@ const Thumbnail = ({ directory, defect_mode, file_name }) => {
     action: { onFocus, unFocus, onMark },
   } = useThumbnailHandlers();
 
-  const file_path = `/api/image/${directory}/${defect_mode}/${file_name}`;
+  // TODO: use getImageSrc instead of directly using filepath
+  const file_path = `/api/upload/${directory}/${defect_mode}/${file_name}`;
 
   return (
     <Button
