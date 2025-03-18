@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { uploadImage } from "@/services/api_files";
 import { useShallow } from "zustand/react/shallow";
 import useMarking from "@/hooks/useMarking";
-import { MARKERS } from "@/core/constants";
+import { useColorStore } from "@/store/color";
 
 const useImageMutation = ({ setError }) => {
   const queryClient = useQueryClient();
@@ -18,7 +18,7 @@ const useImageMutation = ({ setError }) => {
     onError: (error) => {
       console.log(error.message);
       setError(error.message);
-      queryClient.removeQueries(["processedImageData"]); // Clear cache on error
+      queryClient.removeQueries(["processedImageData"]);
     },
   });
 };
@@ -34,6 +34,7 @@ const useImageProcess = () => {
       setError: state.setError,
     })),
   );
+  const colors = useColorStore((state) => state.colors);
 
   const { mutateAsync: processImage } = useImageMutation({ setError });
 
@@ -49,17 +50,25 @@ const useImageProcess = () => {
             const filteredDefectFiles = data.file_data_batches.flatMap(
               (batch) =>
                 batch.data_files
-                  .filter((file) => file.defect_mode !== "temp") // Filter out 'temp' defect_mode
+                  .filter((file) => file.defect_mode !== "temp")
                   .map((file) => ({
                     file_name: file.file_name,
                     defect_mode: file.defect_mode,
                   })),
             );
             filteredDefectFiles.forEach(({ file_name, defect_mode }) => {
-              addMark(
-                file_name,
-                MARKERS.colors.find((color) => color.name === defect_mode),
+              const colorObj = colors.find(
+                (color) => color.defect_label === defect_mode,
               );
+              if (colorObj) {
+                addMark(file_name, {
+                  name: colorObj.defect_label,
+                  color: colorObj.hex_color,
+                  radius: 1,
+                });
+              } else {
+                console.warn(`No color found for defect_mode: ${defect_mode}`);
+              }
             });
           }
         },
