@@ -4,14 +4,15 @@ import UploadFormDialog from "./components/UploadFormDialog";
 import UtilityPanel from "./components/UtilityPanel";
 
 const InfoBar = () => {
+  const [item, setItem] = useState("");
   const [lotNo, setLotNo] = useState("");
   const [plateNo, setPlateNo] = useState("");
 
   return (
     <div className="flex-between h-20 w-full flex-shrink-0 gap-3 px-3">
-      <UtilityPanel />
+      <UtilityPanel item={item}/>
       <MetricsPanel lotNo={lotNo} plateNo={plateNo} />
-      <UploadFormDialog setLotNo={setLotNo} setPlateNo={setPlateNo} />
+      <UploadFormDialog setItem={setItem} setLotNo={setLotNo} setPlateNo={setPlateNo} />
     </div>
   );
 };
