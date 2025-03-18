@@ -48,7 +48,7 @@ const useSaveUserInput = () => {
             return result;
           }, []),
         }))
-        .filter((batch) => batch.data_filelength > 0), // Remove batches with no files
+        .filter((batch) => batch.data_file.length > 0), // Remove batches with no files
     };
 
     if (processImageData) processUserInput(userInputData);
