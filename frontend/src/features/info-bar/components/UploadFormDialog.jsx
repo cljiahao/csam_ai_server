@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -6,14 +8,19 @@ import CustomDialog from "@/components/widgets/custom_dialog/CustomDialog";
 import HoverButton from "@/components/widgets/hover_button/HoverButton";
 import CustomFormField from "@/components/widgets/custom_form_field/CustomFormField";
 import { navigation_info } from "@/core/navigation";
+import { toast } from "@/hooks/use-toast";
+import { resetStore } from "@/store/resetStore";
 import useFormValidation from "../hooks/useFormValidation";
 import useImageProcess from "../hooks/useImageProcess";
-import { useQueryClient } from "@tanstack/react-query";
-import { resetStore } from "@/store/resetStore";
-import { toast } from "@/hooks/use-toast";
 import useSaveUserInput from "../hooks/useSaveUserInput";
+import useColorUtility from "../hooks/useColorUtility";
+import { useColorStore } from "@/store/color";
 
-const UploadFormDialog = ({ setLotNo, setPlateNo }) => {
+const UploadFormDialog = ({ setItem, setLotNo, setPlateNo }) => {
+  const [error, setError] = useState();
+
+  const setZColors = useColorStore((state) => state.setColors);
+
   const location = useLocation();
   const mode = location.pathname.split("/").pop();
   const nav = navigation_info.find((nav) => nav.name === mode);
@@ -32,11 +39,14 @@ const UploadFormDialog = ({ setLotNo, setPlateNo }) => {
     action: { handleSaveUserInput },
   } = useSaveUserInput();
 
+  const {
+    action: { fetchColors },
+  } = useColorUtility(setError);
+
   const handleDialogOpen = () => {
     if (!isDialogOpen) {
       handleSaveUserInput();
     }
-
     setDialogOpen((prevState) => !prevState);
   };
 
@@ -52,6 +62,7 @@ const UploadFormDialog = ({ setLotNo, setPlateNo }) => {
       const lotNo = uploadForm.getValues("lotNo");
 
       setDialogOpen(false);
+      setItem(item);
       setLotNo(lotNo);
       setPlateNo(file.name.split(".")[0]);
 
@@ -67,6 +78,8 @@ const UploadFormDialog = ({ setLotNo, setPlateNo }) => {
         duration: 2000,
       });
 
+      // TODO: update color by pulling from backend
+      fetchColors({ item }).then((data) => setZColors(data.dot_colors_list));
       handleImageProcess(mode, item, lotNo, file);
     }
   };

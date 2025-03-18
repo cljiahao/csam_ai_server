@@ -35,7 +35,7 @@ const useImageProcess = () => {
     })),
   );
 
-  const { mutate: processImage } = useImageMutation({ setError });
+  const { mutateAsync: processImage } = useImageMutation({ setError });
 
   const handleImageProcess = (mode, item, lotNo, file) => {
     const formData = new FormData();
