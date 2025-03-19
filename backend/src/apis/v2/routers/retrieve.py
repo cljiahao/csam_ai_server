@@ -6,6 +6,7 @@ from fastapi.responses import FileResponse
 
 from apis.v2.helpers.HTTPExceptions import handle_exceptions
 from apis.v2.helpers.pages import get_page
+from apis.v2.logic.model_files import get_model_history
 from apis.v2.schemas.base import ServerMode
 from apis.v2.schemas.retrieve import CountResult, Item
 from db.services.chip_lot_details import ChipLotDetailsService
@@ -57,5 +58,21 @@ def get_processed_count(
             if page.is_ai.value
             else {"result": lot_detail.no_of_chips}
         )
+    except Exception as e:
+        handle_exceptions(e)
+
+
+@router.get(
+    "/model_history",
+    summary="Return count stored in database.",
+)
+def get_model_history_by_item(
+    item: Annotated[
+        str, Query(description="Item Type", examples=["GCM32ER71E106KA59_+B55-E02GJ"])
+    ],
+    db: Annotated[Session, Depends(get_db)],
+):
+    try:
+        return get_model_history(item, db)
     except Exception as e:
         handle_exceptions(e)

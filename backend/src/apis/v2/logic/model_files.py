@@ -43,3 +43,16 @@ def save_model_files(
     )
 
     return True
+
+
+def get_model_history(db: Session, item: str = None):
+
+    model_history_service = ModelHistoryService(db)
+
+    model_history = (
+        model_history_service.read_model_history(item)
+        if item
+        else model_history_service.read_all_model_history()
+    )
+
+    return model_history
