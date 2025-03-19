@@ -45,7 +45,7 @@ const UploadFormDialog = ({ item, setItem, lotNo, setLotNo, setPlateNo }) => {
 
   const handleDialogOpen = () => {
     if (!isDialogOpen) {
-      handleSaveUserInput(item, lotNo);
+      handleSaveUserInput({ item, lotNo });
     }
     setDialogOpen((prevState) => !prevState);
   };
