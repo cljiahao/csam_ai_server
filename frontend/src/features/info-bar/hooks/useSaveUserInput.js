@@ -6,7 +6,8 @@ const useSaveUserMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["saveUserInput"],
-    mutationFn: async (data) => await saveFinalJudgement(data),
+    mutationFn: async ({ item, lotNo, data }) =>
+      await saveFinalJudgement(item, lotNo, data),
     onSuccess: (data) => {
       queryClient.setQueryData(["saveUserInput"], data);
     },
