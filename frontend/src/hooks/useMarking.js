@@ -1,3 +1,4 @@
+import { MARKERS } from "@/core/constants";
 import { useColorStore } from "@/store/color";
 import { useCoordStores } from "@/store/display";
 import { useMarkerStore } from "@/store/marker";
@@ -35,6 +36,7 @@ const useMarking = () => {
     );
     if (currentIndex === colors.length - 1) {
       removeMark(file_name);
+      removeMark(file_name + MARKERS.zoom.name, MARKERS.zoom);
       return;
     }
     const nextColor = colors[currentIndex + 1];
