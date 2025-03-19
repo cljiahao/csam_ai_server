@@ -16,7 +16,7 @@ import useSaveUserInput from "../hooks/useSaveUserInput";
 import useColorUtility from "../hooks/useColorUtility";
 import { useColorStore } from "@/store/color";
 
-const UploadFormDialog = ({ setItem, setLotNo, setPlateNo }) => {
+const UploadFormDialog = ({ item, setItem, lotNo, setLotNo, setPlateNo }) => {
   const [error, setError] = useState();
 
   const setZColors = useColorStore((state) => state.setColors);
@@ -45,7 +45,7 @@ const UploadFormDialog = ({ setItem, setLotNo, setPlateNo }) => {
 
   const handleDialogOpen = () => {
     if (!isDialogOpen) {
-      handleSaveUserInput();
+      handleSaveUserInput(item, lotNo);
     }
     setDialogOpen((prevState) => !prevState);
   };
