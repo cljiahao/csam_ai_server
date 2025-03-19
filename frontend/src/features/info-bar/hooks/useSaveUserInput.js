@@ -29,7 +29,7 @@ const useSaveUserInput = () => {
 
   const { mutate: processUserInput } = useSaveUserMutation();
 
-  const handleSaveUserInput = () => {
+  const handleSaveUserInput = ({ item, lotNo }) => {
     const targetFileNames = new Map(
       marks.map((mark) => [mark.file_name, mark.marker.name]),
     );
