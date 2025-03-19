@@ -6,8 +6,7 @@ const useSaveUserMutation = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["saveUserInput"],
-    mutationFn: async ({ item, lotNo, data }) =>
-      await saveFinalJudgement(item, lotNo, data),
+    mutationFn: async (data) => await saveFinalJudgement(data),
     onSuccess: (data) => {
       queryClient.setQueryData(["saveUserInput"], data);
     },
@@ -29,7 +28,7 @@ const useSaveUserInput = () => {
 
   const { mutate: processUserInput } = useSaveUserMutation();
 
-  const handleSaveUserInput = ({ item, lotNo }) => {
+  const handleSaveUserInput = () => {
     const targetFileNames = new Map(
       marks.map((mark) => [mark.file_name, mark.marker.name]),
     );
@@ -51,8 +50,7 @@ const useSaveUserInput = () => {
         }))
         .filter((batch) => batch.data_files?.length > 0), // Remove batches with no files
     };
-    if (processImageData)
-      processUserInput({ item, lotNo, data: userInputData });
+    if (processImageData) processUserInput(userInputData);
   };
 
   return {

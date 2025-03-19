@@ -10,15 +10,9 @@ const InfoBar = () => {
 
   return (
     <div className="flex-between h-20 w-full flex-shrink-0 gap-3 px-3">
-      <UtilityPanel item={item} />
+      <UtilityPanel item={item}/>
       <MetricsPanel lotNo={lotNo} plateNo={plateNo} />
-      <UploadFormDialog
-        item={item}
-        setItem={setItem}
-        lotNo={lotNo}
-        setLotNo={setLotNo}
-        setPlateNo={setPlateNo}
-      />
+      <UploadFormDialog setItem={setItem} setLotNo={setLotNo} setPlateNo={setPlateNo} />
     </div>
   );
 };

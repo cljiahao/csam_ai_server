@@ -16,12 +16,8 @@ export const uploadImage = async (mode, item, lotNo, formData) => {
   return await sendRequest(url, options);
 };
 
-export const saveFinalJudgement = async (item, lotNo, data) => {
-  const params = new URLSearchParams({
-    item: item,
-    lot_no: lotNo,
-  });
-  const url = `/api/upload/save_local?${params.toString()}`;
+export const saveFinalJudgement = async (data) => {
+  const url = `/api/upload/save_local`;
   const options = createRequestOptions("POST", data);
   return await sendRequest(url, options);
 };
