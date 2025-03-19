@@ -60,14 +60,12 @@ const useImageProcess = () => {
               const colorObj = colors.find(
                 (color) => color.defect_label === defect_mode,
               );
-              if (colorObj) {
-                addMark(file_name, {
-                  name: colorObj.defect_label,
-                  color: colorObj.hex_color,
-                  radius: 1,
-                });
-              } else {
-                console.warn(`No color found for defect_mode: ${defect_mode}`);
+              if (!colorObj) return;
+              addMark(file_name, {
+                name: colorObj.defect_label,
+                color: colorObj.hex_color,
+                radius: 1,
+              });
               }
             });
           }
