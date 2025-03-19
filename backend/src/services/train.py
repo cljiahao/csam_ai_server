@@ -26,7 +26,7 @@ def post_image_file(
 
     api_client = APIClient(service_settings.AI_TRAIN_URL)
     try:
-        image_file_name = Path(defect_batch_directory.directory).stem
+        image_file_name = Path(defect_batch_directory.directory).name
         original_path = (
             dm.images_dir
             / defect_batch_directory.directory
@@ -35,17 +35,16 @@ def post_image_file(
         file_path_list = {
             "file": original_path / f"{image_file_name}.png",
         }
-
         data = {
             "item": item,
             "lot_no": lot_no,
-            "defect_batch_directory": defect_batch_directory,
+            "defect_batch_directory": defect_batch_directory.model_dump_json(),
         }
-
-        image_settings = api_client.post_files(
+        print(data)
+        image_results = api_client.post_files(
             "/api/v2/image/process_image", file_path_list=file_path_list, data=data
         )
-        return image_settings
+        return image_results
     except requests.RequestException as e:
         raise Exception(f"Failed to post model files: {e}")
 
