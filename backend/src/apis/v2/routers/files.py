@@ -13,6 +13,7 @@ from apis.v2.schemas.base import ServerMode
 from apis.v2.schemas.files import FileDataBatchDirectory
 from core.directory_manager import directory_manager as dm
 from db.session import get_db
+from services.train import post_image_file, train_health_check
 
 router = APIRouter()
 
@@ -82,12 +83,25 @@ def start_process_image(
     operation_id="SaveLocal",
 )
 def save_local(
+    item: Annotated[
+        str, Query(description="Item Type", examples=["GCM32ER71E106KA59_+B55-E02GJ"])
+    ],
+    lot_no: Annotated[
+        str,
+        Query(
+            description="Lot Number (Alphanumeric, 10 characters)",
+            pattern="[a-zA-Z0-9]{10}",
+            examples=["1234567890"],
+        ),
+    ],
     defect_batch_directory: FileDataBatchDirectory,
     db: Session = Depends(get_db),
 ) -> bool:
 
     try:
         set_cache(db, defect_batch_directory)
+        if train_health_check():
+            post_image_file(item, lot_no, defect_batch_directory)
         return True
     except Exception as e:
         handle_exceptions(e)
