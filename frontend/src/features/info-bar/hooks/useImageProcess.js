@@ -66,7 +66,6 @@ const useImageProcess = () => {
                 color: colorObj.hex_color,
                 radius: 1,
               });
-              }
             });
           }
         },
