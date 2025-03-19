@@ -18,3 +18,12 @@ export const getProcessedCount = async (mode, lotNo, plate) => {
   const options = createRequestOptions("GET");
   return await sendRequest(url, options);
 };
+
+export const getModelHistory = async (item) => {
+  const params = new URLSearchParams({
+    item: item ?? "",
+  });
+  const url = `/api/model_history?${params.toString()}`;
+  const options = createRequestOptions("GET");
+  return await sendRequest(url, options);
+};
