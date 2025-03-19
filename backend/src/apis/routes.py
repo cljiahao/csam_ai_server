@@ -8,6 +8,6 @@ router = APIRouter()
 router.include_router(base.router, prefix="/v2")
 
 
-@router.get("/health", tags=["health"])
+@router.get("/v2/health", tags=["health"])
 def health():
     return {"status": "OK"}
