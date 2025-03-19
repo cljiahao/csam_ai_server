@@ -13,7 +13,8 @@ class ModelHistoryService:
     def _validate_model_history_keys(self, model_history_data: dict) -> None:
         """Validate the keys in the model history data."""
         valid_keys = {
-            "ai_model_name",
+            "file_name",
+            "label_file_name",
         }
 
         invalid_keys = set(model_history_data) - valid_keys
