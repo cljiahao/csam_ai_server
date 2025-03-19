@@ -51,7 +51,8 @@ const useSaveUserInput = () => {
         }))
         .filter((batch) => batch.data_files?.length > 0), // Remove batches with no files
     };
-    if (processImageData) processUserInput(userInputData);
+    if (processImageData)
+      processUserInput({ item, lotNo, data: userInputData });
   };
 
   return {
