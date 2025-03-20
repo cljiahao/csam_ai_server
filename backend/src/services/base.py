@@ -60,11 +60,10 @@ class APIClient:
                     key: stack.enter_context(open(path, "rb"))
                     for key, path in file_path_list.items()
                 }
-
                 response = requests.post(
                     url,
                     files=files,
-                    json=data,
+                    data=data,
                     headers=combined_headers,
                     timeout=self.timeout,
                 )

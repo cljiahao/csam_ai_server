@@ -99,9 +99,9 @@ def save_local(
 ) -> bool:
 
     try:
-        set_cache(db, defect_batch_directory)
         if train_health_check():
             post_image_file(item, lot_no, defect_batch_directory)
+        set_cache(db, defect_batch_directory)
         return True
     except Exception as e:
         handle_exceptions(e)
@@ -129,3 +129,4 @@ def install_model(
         return True
     except Exception as e:
         handle_exceptions(e)
+
