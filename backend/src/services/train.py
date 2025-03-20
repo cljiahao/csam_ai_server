@@ -40,7 +40,6 @@ def post_image_file(
             "lot_no": lot_no,
             "defect_batch_directory": defect_batch_directory.model_dump_json(),
         }
-        print(data)
         image_results = api_client.post_files(
             "/api/v2/image/process_image", file_path_list=file_path_list, data=data
         )
