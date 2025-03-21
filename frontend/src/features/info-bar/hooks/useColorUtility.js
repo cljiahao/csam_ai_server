@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { v4 as uuidv4 } from "uuid";
 
 import { getDotColors, saveDotColors } from "@/services/api_colors";
 import { useColorStore } from "@/store/color";
@@ -15,7 +16,7 @@ const useFetchColors = ({ setError }) => {
     onError: (error) => {
       console.log(error.message);
       setError(error.message);
-      queryClient.removeQueries(["fetchedColors"]); // Clear cache on error
+      queryClient.removeQueries(["fetchedColors"]);
     },
   });
 };
@@ -31,16 +32,14 @@ const useSaveColors = ({ setError }) => {
     onError: (error) => {
       console.log(error.message);
       setError(error.message);
-      queryClient.removeQueries(["savedColors"]); // Clear cache on error
+      queryClient.removeQueries(["savedColors"]);
     },
   });
 };
 
 const useColorUtility = ({ setError }) => {
   const colorRef = useRef();
-
   const [isOpen, setIsOpen] = useState(false);
-
   const setZColors = useColorStore((state) => state.setColors);
 
   const { mutateAsync: fetchColors, data: colorData } = useFetchColors({
@@ -62,7 +61,12 @@ const useColorUtility = ({ setError }) => {
   useEffect(() => {
     const setColors = colorRef?.current?.setColors;
     if (setColors) {
-      setColors(colorData?.dot_colors_list);
+      const fetchedColors = colorData?.dot_colors_list || [];
+      const colorsList =
+        fetchedColors.length > 0
+          ? fetchedColors
+          : [{ uuid: uuidv4(), defect_label: "NG", hex_color: "#FFFF00" }];
+      setColors(colorsList);
     }
   }, [colorData]);
 
