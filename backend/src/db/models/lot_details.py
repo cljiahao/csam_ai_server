@@ -6,7 +6,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from db.base import Base
 
 
-class ChipLotDetails(Base):
+class LotDetails(Base):
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4, index=True)
     date_created: Mapped[dt] = mapped_column(default=func.now())
     date_updated: Mapped[dt] = mapped_column(default=func.now(), onupdate=func.now())
@@ -17,12 +17,12 @@ class ChipLotDetails(Base):
     no_of_batches: Mapped[int] = mapped_column(default=0)
     no_of_pred: Mapped[int] = mapped_column(default=0)
     no_of_real: Mapped[int] = mapped_column(default=0)
-    with_ai: Mapped[int] = mapped_column(default=0)
+    is_ai: Mapped[int] = mapped_column(default=0)
 
     # Relationship to ChipDetails
-    chips: Mapped[list["ChipDetails"]] = relationship(
-        "ChipDetails", back_populates="chip_lot_details"
+    chip_details: Mapped[list["ChipDetails"]] = relationship(
+        "ChipDetails", back_populates="lot_details"
     )
 
     def __repr__(self):
-        return f"<ChipLotDetails(id={self.id}, lot_no='{self.lot_no}', plate_no='{self.plate_no}')>"
+        return f"<LotDetails(id={self.id}, lot_no='{self.lot_no}', plate_no='{self.plate_no}')>"

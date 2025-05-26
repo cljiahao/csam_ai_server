@@ -8,32 +8,30 @@ class ImageSettingsRepository(BaseRepository[ImageSettings]):
     def __init__(self, db: Session):
         super().__init__(db, ImageSettings)
 
-    def create_image_settings(self, settings_data: dict) -> ImageSettings:
+    def create_image_settings(self, settings_data: dict) -> list[ImageSettings]:
         """Create new image settings."""
         return self.create(
             settings_data,
-            print_message=f"Error creating settings from the database.",
+            print_message="Error creating new data into ImageSettings database.",
         )
 
-    def read_image_settings(self, filter_conditions: dict) -> ImageSettings:
+    def read_image_settings(self, filter_conditions: dict) -> list[ImageSettings]:
         """Read image settings based on filter."""
         return self.read(
             filter_conditions,
-            print_message=f"Error reading settings from the database.",
+            print_message="Error reading data from ImageSettings database.",
         )
 
-    def update_image_settings(
-        self, updates_list: list[dict[str, dict]]
-    ) -> ImageSettings:
+    def update_image_settings(self, update_lists: list[dict[str, dict]]) -> int:
         """Update image settings with provided data."""
         return self.update(
-            updates_list,
-            print_message=f"Error updating settings in the database.",
+            update_lists,
+            print_message="Error updating data in ImageSettings database.",
         )
 
-    def delete_image_settings(self, filter_conditions: dict) -> ImageSettings:
+    def delete_image_settings(self, filter_conditions: dict) -> int:
         """Delete image settings based on filter."""
         return self.delete(
             filter_conditions,
-            print_message=f"Error deleting settings from the database.",
+            print_message="Error deleting data from ImageSettings database.",
         )

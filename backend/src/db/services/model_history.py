@@ -37,11 +37,11 @@ class ModelHistoryService:
             raise InvalidInputError("Item cannot be empty.")
         filter_conditions = {"item": item}
 
-        return self.repo.read_model_history(filter_conditions)
+        return self.repo.read_model_history(filter_conditions)[0]
 
     def create_or_update_model_history(
         self, item: str, model_history_data: dict[str, int]
-    ) -> ModelHistory:
+    ) -> ModelHistory | int:
         """Service layer method to create new or update model history"""
         if not item:
             raise InvalidInputError("Item cannot be empty.")
@@ -51,10 +51,11 @@ class ModelHistoryService:
         data_condition = {"item": item}
 
         existing_settings = self.read_model_history(item)
-        if not existing_settings:
-            model_history_data.update(data_condition)
-            return self.repo.create_model_history(model_history_data)
+        if existing_settings:
+            self.repo.update_model_history(
+                {"filter_conditions": data_condition, "update_data": model_history_data}
+            )
+            return self.read_model_history(item)
 
-        return self.repo.update_model_history(
-            {"filter_conditions": data_condition, "update_data": model_history_data}
-        )
+        model_history_data.update(data_condition)
+        return self.repo.create_model_history(model_history_data)[0]
