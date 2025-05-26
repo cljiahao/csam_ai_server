@@ -1,6 +1,14 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class FolderNames(Enum):
+class CSAMImageFolderName(StrEnum):
     ORIGINAL = "original"
     TEMP = "temp"
+
+
+class BaseSetsFolderName(StrEnum):
+    BASE = "base"
+    NG = "ng"
+    GOOD = "good"
+    OTHERS = "others"
+    DEFORM = "deform"
