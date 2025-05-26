@@ -1,8 +1,9 @@
+import json
 import requests
 from pathlib import Path
 from contextlib import ExitStack
 
-from core.logging import logger
+from utils.debug import error_handler
 
 
 class APIClient:
@@ -13,42 +14,55 @@ class APIClient:
         self.timeout = timeout
         self.base_headers = {"Content-Type": "application/json"}
         self.file_headers = {"Accept": "application/json"}
+        self.session = requests.Session()
 
-    def get(self, endpoint: str, headers: dict = None, params: dict = None):
+    @error_handler()
+    def get(
+        self,
+        endpoint: str,
+        headers: dict[str, str] = None,
+        params: dict[str, any] = None,
+    ) -> any:
         """Handles GET requests."""
         url = f"{self.base_url}/{endpoint.lstrip('/')}"
         combined_headers = {**self.base_headers, **(headers or {})}
         try:
-            response = requests.get(
+            response = self.session.get(
                 url, headers=combined_headers, params=params, timeout=self.timeout
             )
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
-            logger.error(f"GET request to {url} failed: {e}")
-            raise
+            raise requests.RequestException(f"GET request to {url} failed: {e}")
+        except json.JSONDecodeError as e:
+            return response.status_code
 
-    def post(self, endpoint: str, data: dict = None, headers: dict = None):
+    @error_handler()
+    def post(
+        self, endpoint: str, data: dict[str, any] = None, headers: dict[str, str] = None
+    ) -> any:
         """Handles POST requests."""
         url = f"{self.base_url}/{endpoint.lstrip('/')}"
         combined_headers = {**self.base_headers, **(headers or {})}
         try:
-            response = requests.post(
+            response = self.session.post(
                 url, json=data, headers=combined_headers, timeout=self.timeout
             )
             response.raise_for_status()
             return response.json()
         except requests.RequestException as e:
-            logger.error(f"POST request to {url} failed: {e}")
-            raise
+            raise requests.RequestException(f"POST request to {url} failed: {e}")
+        except json.JSONDecodeError as e:
+            return response.status_code
 
+    @error_handler()
     def post_files(
         self,
         endpoint: str,
         file_path_list: dict[str, Path],
-        data: dict = None,
-        headers: dict = None,
-    ):
+        data: dict[str, any] = None,
+        headers: dict[str, str] = None,
+    ) -> any:
         """Handles POST requests with a file upload."""
         url = f"{self.base_url}/{endpoint.lstrip('/')}"
         combined_headers = {**self.file_headers, **(headers or {})}
@@ -60,7 +74,7 @@ class APIClient:
                     key: stack.enter_context(open(path, "rb"))
                     for key, path in file_path_list.items()
                 }
-                response = requests.post(
+                response = self.session.post(
                     url,
                     files=files,
                     data=data,
@@ -70,5 +84,6 @@ class APIClient:
                 response.raise_for_status()
                 return response.json()
         except requests.RequestException as e:
-            logger.error(f"POST file request to {url} failed: {e}")
-            raise
+            raise requests.RequestException(f"POST file request to {url} failed: {e}")
+        except json.JSONDecodeError as e:
+            return response.status_code
