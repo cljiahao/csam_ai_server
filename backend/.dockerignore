@@ -1,8 +1,13 @@
+# Project base
+./config
+./data
+./log
+./tests
+
 # Git
 .git
 .gitignore
 .gitattributes
-
 
 # CI
 .codeclimate.yml
