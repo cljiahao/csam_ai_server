@@ -47,9 +47,7 @@ class LotDetailsService:
     def read_lot_details_by_id(self, lot_details_id: str) -> LotDetails:
         """Service layer method to read by id"""
 
-        return self.lot_details_repo.read_lot_details(
-            {"lot_details_id": lot_details_id}
-        )[0]
+        return self.lot_details_repo.read_lot_details({"id": lot_details_id})[0]
 
     def read_lot_details(self, lot_no: str, plate_no: str, is_ai: int) -> LotDetails:
         """Service layer method to read lot details by filter conditions"""
