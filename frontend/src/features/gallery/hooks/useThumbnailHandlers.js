@@ -32,7 +32,7 @@ const useThumbnailHandlers = () => {
       (found, defect_batch) => {
         if (found) return found; // If already found, skip further checks
         return (
-          defect_batch.data_files.find(
+          defect_batch.defect_records.find(
             (file) => file.file_name === file_name,
           ) || null
         );

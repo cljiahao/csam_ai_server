@@ -47,7 +47,7 @@ const useMarkCanvas = () => {
     });
 
     return processImageData.file_data_batches
-      .flatMap((defect_batch) => defect_batch.data_files)
+      .flatMap((defect_batch) => defect_batch.defect_records)
       .map((file) => {
         const dx = Math.round(file.norm_x_center * rect.width * 100) / 100;
         const dy = Math.round(file.norm_y_center * rect.height * 100) / 100;

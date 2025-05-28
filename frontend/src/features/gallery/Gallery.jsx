@@ -22,7 +22,7 @@ const Gallery = () => {
           </Label>
           <Separator className="h-[0.15em] rounded-xl" />
           <div className="hw-full grid grid-cols-8 gap-3">
-            {defect_batch?.data_files
+            {defect_batch?.defect_records
               ?.filter((file) => {
                 if (mode === "CAI") return true;
                 if (mode === "CDC" && marksFileNames.has(file.file_name))
