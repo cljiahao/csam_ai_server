@@ -126,6 +126,7 @@ def extract_refined_contour_info_list(
 
 
 def chip_out_of_spec(threshold: ChipThreshold, contour: ContourInfo) -> bool:
+    """Condition to check if contour is within threshold set for chips."""
     return threshold.LOWER_CHIP_AREA < contour.area < threshold.UPPER_CHIP_AREA
 
 
@@ -140,17 +141,3 @@ def rotate_and_crop_chip_image(
     rotated_image = np.asarray(pil_image.rotate(theta))
 
     return BlobHandler.crop_roi(rotated_image, padding, padding, crop_size // 2)
-
-
-def chip_crop_finder(
-    contour_infos: ContourInfoList, image: np.ndarray
-) -> ContourInfoList:
-    """Finds potential chip crops by refining contours based on size and attempting to split large ones."""
-    average_length = contour_infos.get_average_length()
-    crop_size = math.ceil(average_length // 2 * 4)
-
-    chip_threshold = update_chip_threshold(contour_infos)
-    refined_contour_info_list = extract_refined_contour_info_list(
-        contour_infos, image, crop_size, chip_threshold
-    )
-    return ContourInfoList(contours=refined_contour_info_list)
