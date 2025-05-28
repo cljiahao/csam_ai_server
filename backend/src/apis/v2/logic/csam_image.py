@@ -104,9 +104,10 @@ def process_csam_image(
     batch_contour_infos = create_batch_contour_info_list(binary_image, image_settings)
     batch_data = get_batch_data_from_contour_info(border_image, batch_contour_infos)
 
-    chip_contour_infos, chip_threshold = create_chip_contour_info_list(
-        border_image, binary_image, image_settings
+    black_refined_contour_infos, non_black_refined_contour_infos, chip_threshold = (
+        create_chip_contour_info_list(border_image, binary_image, image_settings)
     )
+    chip_contour_infos = black_refined_contour_infos + non_black_refined_contour_infos
 
     non_deform_data_list = []
     deform_data_list = []

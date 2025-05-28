@@ -23,14 +23,14 @@ def create_chip_contour_info_list(
     chip_threshold = update_chip_threshold(non_black_contour_info_list)
     crop_size = image_settings.crop_size
 
-    combined_contours_infos = (
-        black_contour_info_list.contours + non_black_contour_info_list.contours
+    black_refined_contour_infos = extract_refined_contour_info_list(
+        black_contour_info_list, border_image, crop_size, chip_threshold
     )
-    refined_contour_info_list = extract_refined_contour_info_list(
-        combined_contours_infos, border_image, crop_size, chip_threshold
+    non_black_refined_contour_infos = extract_refined_contour_info_list(
+        non_black_contour_info_list, border_image, crop_size, chip_threshold
     )
 
-    return refined_contour_info_list, chip_threshold
+    return black_refined_contour_infos, non_black_refined_contour_infos, chip_threshold
 
 
 def find_black_contours(image: np.ndarray) -> ContourInfoList:
