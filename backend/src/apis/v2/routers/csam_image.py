@@ -72,12 +72,13 @@ def get_image(
 
 
 @router.post(
-    "/save_local",
+    "/save_local/{server_mode}",
     summary="Update local database with new user input",
     operation_id="SaveLocal",
     status_code=status.HTTP_204_NO_CONTENT,
 )
 def save_local(
+    server_mode: Annotated[ServerMode, Path(description="Server Mode (CAI or CDC)")],
     item: Annotated[
         str, Query(description="Item Type", examples=[service_settings.TEST_ITEM])
     ],
@@ -94,6 +95,6 @@ def save_local(
 ) -> Response:
 
     if train_health_check():
-        post_image_file(item, lot_no, defect_batch_directory)
+        post_image_file(server_mode.value, item, lot_no, defect_batch_directory)
     set_cache_data(defect_batch_directory, db)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
