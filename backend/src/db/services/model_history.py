@@ -23,13 +23,9 @@ class ModelHistoryService:
                 f"Unknown keys in model history data: {', '.join(invalid_keys)}"
             )
 
-    def read_all_model_history(self, item: str) -> list[ModelHistory]:
+    def read_all_model_history(self) -> list[ModelHistory]:
         """Service layer method to read all model history"""
-        if not item:
-            raise InvalidInputError("Item cannot be empty.")
-        filter_conditions = {"item": item}
-
-        return self.repo.read_all_model_history(filter_conditions)
+        return self.repo.read_all_model_history({})
 
     def read_model_history(self, item: str) -> ModelHistory:
         """Service layer method to read model history"""
