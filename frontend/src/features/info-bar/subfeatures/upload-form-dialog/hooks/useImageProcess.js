@@ -1,9 +1,10 @@
-import { useImageStore } from "@/store/display";
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { uploadImage } from "@/services/api_files";
+import { useImageStore } from "@/store/display";
 import { useShallow } from "zustand/react/shallow";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
 import useMarking from "@/hooks/useMarking";
+import { uploadImage } from "@/services/api_csam_image";
 import { useColorStore } from "@/store/color";
 
 const useImageMutation = ({ setError }) => {
@@ -34,22 +35,25 @@ const useImageProcess = () => {
       setError: state.setError,
     })),
   );
-  const colors = useColorStore((state) => state.colors);
+
+  const setColors = useColorStore((state) => state.setColors);
 
   const { mutateAsync: processImage } = useImageMutation({ setError });
 
-  const handleImageProcess = (mode, item, lotNo, file) => {
+  const handleImageProcess = (mode, item, lotNo, file, colors) => {
+    setColors(colors);
+
     const formData = new FormData();
     formData.append("file", file);
     processImage(
-      { mode, item, lotNo, formData },
+      { mode, item, lotNo, formData, colors },
       {
         onSuccess: (data) => {
           if (data) {
             setImage(file);
             const filteredDefectFiles = data.file_data_batches.flatMap(
               (batch) =>
-                batch.data_files
+                batch.defect_records
                   .filter((file) => file.defect_mode !== "temp")
                   .map((file) => ({
                     file_name: file.file_name,

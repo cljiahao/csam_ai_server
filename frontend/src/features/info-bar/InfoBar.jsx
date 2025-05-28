@@ -1,24 +1,18 @@
-import { useState } from "react";
+import { useLocation } from "react-router-dom";
+
 import MetricsPanel from "./components/MetricsPanel";
-import UploadFormDialog from "./components/UploadFormDialog";
-import UtilityPanel from "./components/UtilityPanel";
+import UploadFormDialog from "./subfeatures/upload-form-dialog/UploadFormDialog";
+import UtilityPanel from "./subfeatures/utility-panel/UtilityPanel";
 
 const InfoBar = () => {
-  const [item, setItem] = useState("");
-  const [lotNo, setLotNo] = useState("");
-  const [plateNo, setPlateNo] = useState("");
+  const location = useLocation();
+  const mode = location.pathname.split("/").filter((path) => path !== "")[0];
 
   return (
     <div className="flex-between h-20 w-full flex-shrink-0 gap-3 px-3">
-      <UtilityPanel item={item} />
-      <MetricsPanel lotNo={lotNo} plateNo={plateNo} />
-      <UploadFormDialog
-        item={item}
-        setItem={setItem}
-        lotNo={lotNo}
-        setLotNo={setLotNo}
-        setPlateNo={setPlateNo}
-      />
+      <UtilityPanel />
+      <MetricsPanel mode={mode} />
+      <UploadFormDialog mode={mode} />
     </div>
   );
 };

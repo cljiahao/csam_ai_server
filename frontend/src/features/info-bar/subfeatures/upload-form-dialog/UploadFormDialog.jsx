@@ -1,28 +1,50 @@
-import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { Form } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import CustomDialog from "@/components/widgets/custom_dialog/CustomDialog";
-import HoverButton from "@/components/widgets/hover_button/HoverButton";
-import CustomFormField from "@/components/widgets/custom_form_field/CustomFormField";
+import CustomDialog from "@/components/widgets/custom-dialog/CustomDialog";
+import HoverButton from "@/components/widgets/hover-button/HoverButton";
+import CustomFormField from "@/components/widgets/custom-form-field/CustomFormField";
 import { navigation_info } from "@/core/navigation";
 import { toast } from "@/hooks/use-toast";
 import { resetStore } from "@/store/resetStore";
-import useFormValidation from "../hooks/useFormValidation";
-import useImageProcess from "../hooks/useImageProcess";
-import useSaveUserInput from "../hooks/useSaveUserInput";
-import useColorUtility from "../hooks/useColorUtility";
-import { useColorStore } from "@/store/color";
+import useBaseStore from "@/store/base";
+import useFormValidation from "./hooks/useFormValidation";
+import useImageProcess from "./hooks/useImageProcess";
+import useSaveUserInput from "../../hooks/useSaveUserInput";
+import useColorUtility from "../utility-panel/hooks/useColorUtility";
+import { useState } from "react";
+import { useShallow } from "zustand/react/shallow";
+import { useItemStore } from "../../store/item";
+import { useLotNoStore } from "../../store/lotNo";
+import { usePlateNoStore } from "../../store/plateNo";
 
-const UploadFormDialog = ({ item, setItem, lotNo, setLotNo, setPlateNo }) => {
-  const [error, setError] = useState();
+const UploadFormDialog = ({ mode }) => {
+  const [isSaved, setSaved] = useState(true);
+  const { error, updateError } = useBaseStore(
+    useShallow((state) => ({
+      error: state.error,
+      updateError: state.updateError,
+    })),
+  );
 
-  const setZColors = useColorStore((state) => state.setColors);
+  const { item, setItem } = useItemStore(
+    useShallow((state) => ({
+      item: state.item,
+      setItem: state.setItem,
+    })),
+  );
 
-  const location = useLocation();
-  const mode = location.pathname.split("/").pop();
+  const { lotNo, setLotNo } = useLotNoStore(
+    useShallow((state) => ({
+      lotNo: state.lotNo,
+      setLotNo: state.setLotNo,
+    })),
+  );
+
+  const setPlateNo = usePlateNoStore((state) => state.setPlateNo);
+
   const nav = navigation_info.find((nav) => nav.name === mode);
   const queryClient = useQueryClient();
   const {
@@ -41,11 +63,15 @@ const UploadFormDialog = ({ item, setItem, lotNo, setLotNo, setPlateNo }) => {
 
   const {
     action: { fetchColors },
-  } = useColorUtility(setError);
+  } = useColorUtility(updateError);
 
   const handleDialogOpen = () => {
     if (!isDialogOpen) {
-      handleSaveUserInput({ item, lotNo });
+      uploadForm.setValue("item", "");
+      handleSaveUserInput({ mode, item, lotNo });
+      if (!error) {
+        setSaved(true);
+      }
     }
     setDialogOpen((prevState) => !prevState);
   };
@@ -78,15 +104,30 @@ const UploadFormDialog = ({ item, setItem, lotNo, setLotNo, setPlateNo }) => {
         duration: 2000,
       });
 
-      // TODO: update color by pulling from backend
-      fetchColors({ item }).then((data) => setZColors(data.dot_colors_list));
-      handleImageProcess(mode, item, lotNo, file);
+      fetchColors({ item }).then((data) => {
+        let colors = [];
+        if (data?.dot_colors_list.length > 0) {
+          colors = data.dot_colors_list;
+        } else {
+          colors = [
+            { uuid: uuidv4(), defect_label: "NG", hex_color: "#FFFF00" },
+          ];
+        }
+        handleImageProcess(mode, item, lotNo, file, colors);
+        setSaved(!isSaved);
+      });
     }
   };
 
   return (
     <CustomDialog
-      trigger={<HoverButton icon={nav.icon} hoverText={`${nav.name} Upload`} />}
+      trigger={
+        <HoverButton
+          className={isSaved ? "" : "bg-red-300"}
+          icon={nav.icon}
+          hoverText={`${nav.name} Upload`}
+        />
+      }
       title={mode === "CDC" ? "Defects Collections" : "AI Predict Defects"}
       description="Upload image to start processing."
       open={isDialogOpen}

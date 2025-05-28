@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { getItemType } from "@/services/api_retrieve";
+import { getItemType } from "@/services/api_stats_data";
 
 const LOT_NO_REGEX = /^[a-zA-Z0-9]{10}$/;
 
