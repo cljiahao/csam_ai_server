@@ -149,17 +149,17 @@ def move_files_to_defect_mode_folders(
             logger.warning(f"File {defect['file_name']} not found in {source_folder}")
 
 
-def map_file_name_to_folder(folder_path: Path) -> dict[str, Path]:
+def map_file_name_to_folder(folder_dir: Path) -> dict[str, Path]:
     """Maps file names to their respective folder paths, ignoring 'original' folder."""
-    if not folder_path.exists() or not folder_path.is_dir():
+    if not folder_dir.exists() or not folder_dir.is_dir():
         return {}
 
     return {
-        file.name: folder
-        for folder in folder_path.iterdir()
-        if folder != CSAMImageFolderName.ORIGINAL
-        for file in folder.iterdir()
-        if file.is_file()
+        file_path.name: folder_path
+        for folder_path in folder_dir.iterdir()
+        if folder_path.name != CSAMImageFolderName.ORIGINAL
+        for file_path in folder_path.iterdir()
+        if file_path.is_file() and file_path.suffix == ".png"
     }
 
 
