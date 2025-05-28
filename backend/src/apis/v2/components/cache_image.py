@@ -103,7 +103,7 @@ def set_cache_data(
 
 def compute_defect_changes(
     defect_records: list[DefectData],
-    file_name_to_folder: dict[str, str],
+    file_name_to_folder: dict[str, Path],
     chip_details: list[ChipDetails],
 ) -> list[dict[str, str]]:
     """Returns a list of image data changes for database update"""
@@ -120,7 +120,7 @@ def compute_defect_changes(
     revert_defect_changes = [
         {"file_name": file_name, "defect_mode": CSAMImageFolderName.TEMP}
         for file_name, folder in file_name_to_folder.items()
-        if folder != CSAMImageFolderName.TEMP
+        if folder.name != CSAMImageFolderName.TEMP
         and file_name not in defect_record_file_names
     ]
 
