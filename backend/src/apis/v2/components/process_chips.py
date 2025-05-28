@@ -95,8 +95,7 @@ def check_single(
 ) -> ContourInfoList:
     """Analyzes a single contour, attempting to split it if its area exceeds a threshold."""
     if contour.area > threshold:
-        contour = contour.contour
-        drawn_roi = BlobHandler.draw_blob_mask_from_contours(image, contour)
+        drawn_roi = BlobHandler.draw_blob_mask_from_contours(image, contour.contour)
         ((x_center, y_center), _, _) = contour.rect
         crop_image = BlobHandler.crop_roi(drawn_roi, x_center, y_center, crop_size // 2)
 
