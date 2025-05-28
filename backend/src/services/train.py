@@ -31,6 +31,7 @@ def get_image_settings(item: str) -> dict[str, str] | None:
 
 @error_handler()
 def post_image_file(
+    server_mode: str,
     item: str,
     lot_no: str,
     defect_batch_directory: FileDataBatchDirectory,
@@ -47,7 +48,9 @@ def post_image_file(
         "defect_batch_directory": defect_batch_directory.model_dump_json(),
     }
     image_results = api_client.post_files(
-        API_PROCESS_IMAGE_ENDPOINT, file_path_list=file_path_list, data=data
+        f"{API_PROCESS_IMAGE_ENDPOINT}/{server_mode}",
+        file_path_list=file_path_list,
+        data=data,
     )
     return image_results
 
