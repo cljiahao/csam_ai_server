@@ -17,7 +17,7 @@ def get_cache_data(
     lot_no: str,
     plate_no: str,
     is_ai: int,
-    base_partial_path: Path,
+    base_partial_path: str,
     db: Session,
 ) -> FileDataBatchDirectory:
     """Retrieves cached image defect data from the database and filesystem."""
@@ -27,7 +27,8 @@ def get_cache_data(
         logger.info("Chip Lot Details not found, creating a new data.")
         return None
 
-    file_name_folder_dict = map_file_name_to_folder(base_partial_path)
+    plate_path = dm.images_dir / base_partial_path
+    file_name_folder_dict = map_file_name_to_folder(plate_path)
     chip_details: list[ChipDetails] = lot_details.chip_details
 
     validate_image_data_integrity(file_name_folder_dict, chip_details)
