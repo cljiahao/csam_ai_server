@@ -39,7 +39,7 @@ def run_model_prediction(
 def setup_evaluation_environment(item: str) -> tuple[models.Sequential, dict[str, str]]:
     """Sets up the necessary environments for evaluation."""
     txt_path = dm.model_dir / f"{item}{ModelFiles.LABEL_EXT}"
-    model_path = dm.model_dir / f"{item}{ModelFiles.KERAS_MODEL_EXT}"
+    model_path = dm.model_dir / f"{item}{ModelFiles.H5_MODEL_EXT}"
 
     model = TensorflowModel.load_model(model_path)
     labels = TensorflowModel.read_class_txt(txt_path)

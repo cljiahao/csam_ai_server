@@ -44,7 +44,7 @@ def install_updated_ai_model(
 ) -> None:
     # Define file save paths
     model_label_save_path = dm.model_dir / f"{item}{ModelFiles.LABEL_EXT}"
-    model_save_path = dm.model_dir / f"{item}{ModelFiles.ONNX_MODEL_EXT}"
+    model_save_path = dm.model_dir / f"{item}{ModelFiles.H5_MODEL_EXT}"
 
     # Save files using extracted function
     save_uploaded_file(model_label_file, model_label_save_path)
