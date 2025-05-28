@@ -65,7 +65,8 @@ def process_and_predict(
     }
 
     if is_ai:
-        deform_image_datas.extend(run_model_prediction(item, to_predict_image_datas))
+        predicted_defect_images = run_model_prediction(item, to_predict_image_datas)
+        deform_image_datas.extend(predicted_defect_images)
         lot_details["no_of_pred"] = len(deform_image_datas)
     else:
         deform_image_datas.extend(to_predict_image_datas)
