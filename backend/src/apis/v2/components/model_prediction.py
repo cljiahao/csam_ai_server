@@ -32,7 +32,7 @@ def run_model_prediction(
     return [
         to_predict_list[i]
         for i, predict in enumerate(predictions)
-        if str(predict) in filtered_labels
+        if predict in filtered_labels
     ]
 
 
