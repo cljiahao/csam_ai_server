@@ -102,7 +102,8 @@ def check_single(
 
         new_contours = BlobHandler.split_blobs_with_erosion(crop_image, drawn_roi)
         if new_contours:
-            return ContourHandler.filter_and_build_contour_info(new_contours)
+            clean_contours = ContourHandler.filter_and_build_contour_info(new_contours)
+            return ContourHandler.rotate_contour_upright(clean_contours)
 
     return ContourInfoList(contours=[contour])
 
@@ -132,9 +133,7 @@ def rotate_and_crop_chip_image(
     contour_info: ContourInfo, border_image: np.ndarray, padding: int, crop_size: int
 ) -> np.ndarray:
     """Rotates and crops a chip image based on its contour information."""
-    ((x_center, y_center), (width, height), theta) = contour_info.rect
-    if height < width:
-        theta -= 90
+    (x_center, y_center), _, theta = contour_info.rect
 
     pre_crop_image = BlobHandler.crop_roi(border_image, x_center, y_center, padding)
     pil_image = Image.fromarray(pre_crop_image)

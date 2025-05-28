@@ -79,17 +79,30 @@ class ContourHandler:
             if (blob_area := cv2.contourArea(contour)) > denoise_threshold
         ]
 
-        processed_contours = []
-        for contour_info in clean_contours:
-            center, (width, height), angle = contour_info.rect
-            if width > height:
-                contour_info.rect = (center, (height, width), angle)
-            processed_contours.append(contour_info)
-
         logger.debug(
             f"Filtered {len(clean_contours)} contours based on area threshold.",
             stacklevel=2,
         )
+
+        return ContourInfoList(contours=clean_contours)
+
+    @error_handler()
+    @staticmethod
+    def rotate_contour_upright(contours: list[np.ndarray] | ContourInfoList):
+        """Rotate contours upright based on width and height.
+
+        Args:
+            contours: A list of NumPy arrays representing contours or ContourInfoList.
+
+        Returns:
+            A ContourInfoList object containing filtered ContourInfo objects.
+        """
+        processed_contours = []
+        for contour_info in contours:
+            center, (width, height), angle = contour_info.rect
+            if height < width:
+                contour_info.rect = (center, (height, width), angle - 90)
+            processed_contours.append(contour_info)
 
         return ContourInfoList(contours=processed_contours)
 

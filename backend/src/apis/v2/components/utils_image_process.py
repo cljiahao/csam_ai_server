@@ -18,7 +18,10 @@ def create_contour_list(
     contours, _ = cv2.findContours(
         mask_image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
     )
-    return ContourHandler.filter_and_build_contour_info(contours, denoise_threshold)
+    clean_contours = ContourHandler.filter_and_build_contour_info(
+        contours, denoise_threshold
+    )
+    return ContourHandler.rotate_contour_upright(clean_contours)
 
 
 def convert_white_bg_to_gray_to_binary(image: np.ndarray) -> np.ndarray:
