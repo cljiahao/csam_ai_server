@@ -44,7 +44,7 @@ function SubApp() {
           key={info.name}
           path={info.url}
           element={
-            <Suspense fallback={<Loading />}>
+            <Suspense fallback={<Loading className="h-screen" />}>
               <SeoHead title={info.title} />
               {createElement(element_info[info.name])}
             </Suspense>
