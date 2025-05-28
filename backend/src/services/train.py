@@ -1,5 +1,7 @@
 import requests
+import urllib.parse
 from pathlib import Path
+
 
 from apis.v2.schemas.csam_image import FileDataBatchDirectory
 from constants.folder_names import CSAMImageFolderName
@@ -17,8 +19,11 @@ API_HEALTH_CHECK_ENDPOINT = "/api/v2/health"
 def get_image_settings(item: str) -> dict[str, str] | None:
 
     api_client = APIClient(service_settings.AI_TRAIN_URL)
+    search_params = urllib.parse.urlencode({"item": item})
     try:
-        image_settings = api_client.get(f"{API_IMAGE_SETTINGS_ENDPOINT}?item={item}")
+        image_settings = api_client.get(
+            f"{API_IMAGE_SETTINGS_ENDPOINT}?{search_params}"
+        )
         return image_settings
     except requests.RequestException as e:
         return None
