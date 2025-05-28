@@ -5,7 +5,7 @@ from keras import models
 
 
 from apis.v2.schemas.csam_image import LabeledImageData
-from constants.tensorflow_model import ModelFiles
+from constants.tensorflow_model import DatasetModes, ModelFiles
 from core.directory_manager import directory_manager as dm
 from utils.ai_prediction.tensorflow_model import TensorflowModel
 
@@ -26,9 +26,7 @@ def run_model_prediction(
     predictions = np.argmax(prediction_result, axis=1)
 
     filtered_labels = {
-        k: v
-        for k, v in class_names.items()
-        if v.lower() not in ["g", "good", "air_bubble"]  # TODO: refactor constants
+        k: v for k, v in class_names.items() if v.lower() == DatasetModes.NG
     }
 
     return [
