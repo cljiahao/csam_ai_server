@@ -7,8 +7,8 @@ import { useImageRef } from "./hooks/useImageRef";
 import DotCanvas from "./components/DotCanvas";
 import Loading from "@/components/status/loading";
 import Error from "@/components/status/error";
-import ImageHolder from "@/components/widgets/image_holder/ImageHolder";
-import { usePanZoom } from "@/components/widgets/image_holder/hooks/usePanZoom";
+import ImageHolder from "@/components/widgets/image-holder/ImageHolder";
+import { usePanZoom } from "@/components/widgets/image-holder/hooks/usePanZoom";
 
 const ImageDisplay = () => {
   const location = useLocation();
