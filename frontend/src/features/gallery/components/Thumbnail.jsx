@@ -9,7 +9,7 @@ const Thumbnail = ({ directory, defect_mode, file_name }) => {
   } = useThumbnailHandlers();
 
   // TODO: use getImageSrc instead of directly using filepath
-  const file_path = `/api/upload/${directory}/${defect_mode}/${file_name}`;
+  const file_path = `/api/csam_image/${directory}/${defect_mode}/${file_name}`;
 
   return (
     <Button
