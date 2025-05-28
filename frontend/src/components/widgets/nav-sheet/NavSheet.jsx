@@ -1,9 +1,16 @@
 import { IconContext } from "react-icons";
 import { IoMenu } from "react-icons/io5";
 
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
-import NavMenu from "@/components/widgets/nav_sheet/components/NavMenu";
+import NavMenu from "@/components/widgets/nav-sheet/components/NavMenu";
 
 const NavSheet = ({ children, nav_info, ...props }) => {
   return (
@@ -13,9 +20,13 @@ const NavSheet = ({ children, nav_info, ...props }) => {
           <IoMenu />
         </IconContext.Provider>
       </SheetTrigger>
-      <SheetContent className="flex h-full w-full flex-col py-2">
-        <NavMenu nav_info={nav_info} />
-        <Separator />
+      <SheetContent className="hw-full flex flex-col gap-0 py-0">
+        <SheetHeader className="flex-center w-full py-2">
+          <SheetTitle className="sr-only" />
+          <SheetDescription className="sr-only" />
+          <NavMenu nav_info={nav_info} />
+          <Separator />
+        </SheetHeader>
         <div className="flex min-h-0 flex-1">{children}</div>
       </SheetContent>
     </Sheet>
