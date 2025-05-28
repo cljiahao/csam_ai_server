@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from core.exceptions import InvalidInputError
+from core.exceptions import InvalidInputError, NoResultsFound
 from db.models.model_history import ModelHistory
 from db.repository.model_history import ModelHistoryRepository
 
@@ -34,6 +34,16 @@ class ModelHistoryService:
         filter_conditions = {"item": item}
 
         return self.repo.read_model_history(filter_conditions)[0]
+
+    def read_model_history_not_empty(self, item: str) -> ModelHistory:
+        """Service layer method to read model history, ensure not empty"""
+        model_history = self.read_model_history(item)
+
+        if model_history is None:
+            raise NoResultsFound(
+                f"Model History for '{item}' not found in API or database."
+            )
+        return model_history
 
     def create_or_update_model_history(
         self, item: str, model_history_data: dict[str, int]
