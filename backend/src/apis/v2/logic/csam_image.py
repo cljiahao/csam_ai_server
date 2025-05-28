@@ -115,7 +115,9 @@ def process_csam_image(
     for i, contour_info in enumerate(chip_contour_infos, start=1):
         coordinates = contour_info.rect[0]
         batch_no = find_batch_no(batch_data, coordinates)
-        norm_coords = normalize_coordinates(coordinates, border_image.shape[:2])
+        norm_coords = normalize_coordinates(
+            coordinates, border_image.shape[:2], border_padding
+        )
 
         rotated_image = rotate_and_crop_chip_image(
             contour_info, border_image, border_padding, crop_size
