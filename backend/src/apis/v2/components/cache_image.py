@@ -129,24 +129,24 @@ def compute_defect_changes(
 
 @timer("Moving files to correct path")
 def move_files_to_defect_mode_folders(
-    defect_data: list[DefectData], file_name_folder_map: dict[str, Path]
+    defect_data: list[dict[str, str]], file_name_folder_map: dict[str, Path]
 ) -> None:
     """Move files from the source folder to their respective defect mode folders."""
     for defect in defect_data:
-        source_folder = file_name_folder_map.get(defect.file_name)
+        source_folder = file_name_folder_map.get(defect["file_name"])
         if not source_folder:
             continue
 
-        destination_folder = source_folder.parent / defect.defect_mode
-        source_file = source_folder / defect.file_name
-        dm.create_directory(destination_file)
+        destination_folder = source_folder.parent / defect["defect_mode"]
+        source_file = source_folder / defect["file_name"]
+        dm.create_directory(destination_folder)
 
-        if source_file.exists():
-            destination_file = destination_folder / defect.file_name
+        if source_file.exists() and not source_folder.samefile(destination_folder):
+            destination_file = destination_folder / defect["file_name"]
             source_file.rename(destination_file)
-            logger.info(f"Moved {defect.file_name} to {destination_file}")
+            logger.info(f"Moved {defect['file_name']} to {destination_file}")
         else:
-            logger.warning(f"File {defect.file_name} not found in {source_folder}")
+            logger.warning(f"File {defect['file_name']} not found in {source_folder}")
 
 
 def map_file_name_to_folder(folder_path: Path) -> dict[str, Path]:
