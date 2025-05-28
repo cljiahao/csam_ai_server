@@ -131,9 +131,9 @@ def process_csam_image(
             norm_y_center=norm_coords.norm_y,
         )
         if deform_chip_condition(chip_threshold, contour_info):
-            deform_data_list.append(label_image_data)
-        else:
             non_deform_data_list.append(label_image_data)
+        else:
+            deform_data_list.append(label_image_data)
 
     return non_deform_data_list, deform_data_list
 
