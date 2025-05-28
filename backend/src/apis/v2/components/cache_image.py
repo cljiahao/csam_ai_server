@@ -98,7 +98,7 @@ def set_cache_data(
     move_files_to_defect_mode_folders(image_data_changes, file_name_folder_map)
 
     lot_details_service.bulk_update_chip_details(image_data_changes)
-    lot_details_service.update_lot_details(lot_details_id)
+    lot_details_service.update_lot_details(lot_details_id, len(image_data_changes))
 
 
 def compute_defect_changes(
