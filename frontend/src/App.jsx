@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 
 import { navigation_info } from "@/core/navigation";
-import Loading from "./components/status/loading";
+import Loading from "./components/static/loading";
 import SeoHead from "./components/layouts/SeoHead";
 import { resetStore } from "./store/resetStore";
 import { useEffect } from "react";
