@@ -28,7 +28,7 @@ const useFormValidation = () => {
   const uploadFormInfo = {
     lotNo: {
       label: "Lot Number",
-      placeholder: "1234567890",
+      placeholder: import.meta.env.VITE_TEST_LOT_NO,
       schema: z.string().regex(LOT_NO_REGEX, {
         message: "Lot Number must be exactly 10 alphanumeric characters.",
       }),
@@ -36,7 +36,7 @@ const useFormValidation = () => {
     },
     item: {
       label: "Item Type",
-      placeholder: "GCM32ER71E106KA59_+B55-E02GJ",
+      placeholder: import.meta.env.VITE_TEST_ITEM,
       schema: z.string().min(1, {
         message: "Please key in Item Type.",
       }),
