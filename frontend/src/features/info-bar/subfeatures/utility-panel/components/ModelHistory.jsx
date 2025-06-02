@@ -3,7 +3,7 @@ import { LuArrowUpDown } from "react-icons/lu";
 
 import CustomDialog from "@/components/widgets/custom-dialog/CustomDialog";
 import HoverButton from "@/components/widgets/hover-button/HoverButton";
-import LabelValue from "@/components/status/label_value";
+import LabelValue from "@/components/static/label-value";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/widgets/data-table/DataTable";
 import useModelHistory from "../hooks/useModelHistory";
@@ -13,7 +13,7 @@ const ModelHistory = () => {
     state: { isDialogOpen, allModelHistory, modelHistoryByItem },
     action: { handleDialogOpen },
   } = useModelHistory();
-  console.log(allModelHistory);
+
   const tableColumns = [
     {
       accessorKey: "id",
