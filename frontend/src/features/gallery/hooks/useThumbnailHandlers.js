@@ -1,13 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
 import { useShallow } from "zustand/react/shallow";
 import { MARKERS, ZOOM_SCALE } from "@/core/constants";
 import { useCoordStores, useImageStore } from "@/store/display";
 import useMarking from "@/hooks/useMarking";
+import { useQueryImageData } from "../api/gallery";
 
 const useThumbnailHandlers = () => {
-  const { data: processImageData } = useQuery({
-    queryKey: ["processedImageData"],
-  });
+  const imageData = useQueryImageData();
 
   const {
     state: { marks },
@@ -28,7 +26,7 @@ const useThumbnailHandlers = () => {
   // Handler to focus on the element
   function onFocus(e) {
     const file_name = e.currentTarget.id;
-    const focus_item = processImageData?.file_data_batches?.reduce(
+    const focus_item = imageData?.file_data_batches?.reduce(
       (found, defect_batch) => {
         if (found) return found; // If already found, skip further checks
         return (
@@ -57,7 +55,7 @@ const useThumbnailHandlers = () => {
   }
 
   return {
-    state: { processImageData, marksFileNames },
+    state: { imageData, marksFileNames },
     action: { onFocus, unFocus, onMark },
   };
 };
