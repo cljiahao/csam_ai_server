@@ -22,9 +22,9 @@ const HoverButton = forwardRef(
             )}
             {text && (
               <span className="text-wrap leading-tight group-hover:hidden">
-              {text}
-            </span>
-          )}
+                {text}
+              </span>
+            )}
           </div>
         )}
         <span

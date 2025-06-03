@@ -1,6 +1,6 @@
-import { v4 as uuidv4 } from "uuid";
 import { forwardRef, useImperativeHandle, useState } from "react";
 import { FaTrash } from "react-icons/fa";
+import { v4 as uuidv4 } from "uuid";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

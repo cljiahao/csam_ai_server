@@ -1,11 +1,20 @@
-import { usePanZoom } from "../hooks/usePanZoom";
+import { cn } from "@/lib/utils";
+import { useImageHolderContext } from "../context/ImageHolderContext";
 
-const PanAndZoom = ({ children, image }) => {
+const PanAndZoom = ({ className, children }) => {
+  const { image, panZoomState, imageState } = useImageHolderContext();
+
   const {
     state: { x, y, scale },
     action: { handlePan, onWheel, resetCoords },
-  } = usePanZoom();
+  } = panZoomState;
 
+  const {
+    state: { imageRef },
+    action: { handleImageLoad },
+  } = imageState;
+
+  // TODO: remove static tagname circle and make it dynamic
   function handleResetZoom(e) {
     if (e && e.target.tagName.toLowerCase() === "circle") return;
     resetCoords();
@@ -13,7 +22,7 @@ const PanAndZoom = ({ children, image }) => {
 
   return (
     <div
-      className="hw-full relative"
+      className={cn("hw-full relative", className)}
       onWheel={onWheel}
       onMouseDown={handlePan}
       onMouseUp={handlePan}
@@ -27,7 +36,13 @@ const PanAndZoom = ({ children, image }) => {
         }}
       >
         {children}
-        <img src={image} alt="temp.jpg" className="hw-full" />
+        <img
+          className="hw-full overflow-hidden object-contain"
+          ref={imageRef}
+          src={image}
+          alt={image}
+          onLoad={handleImageLoad}
+        />
       </div>
     </div>
   );

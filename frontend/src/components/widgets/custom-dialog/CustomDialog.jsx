@@ -19,7 +19,7 @@ const CustomDialog = ({
   return (
     <Dialog {...props}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className={cn("flex flex-col", className)}>
+      <DialogContent className={cn("flex h-full w-full flex-col", className)}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
