@@ -17,6 +17,7 @@ class LabeledImageData(Coordinates):
 
 
 class DefectData(Coordinates):
+    id: str
     file_name: str
     defect_mode: str
 

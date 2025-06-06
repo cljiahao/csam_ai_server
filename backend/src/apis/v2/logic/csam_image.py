@@ -157,9 +157,10 @@ def group_defect_data_by_batch(
     image_data_list: list[LabeledImageData],
 ) -> list[FileDataBatch]:
     batch_to_defect_data = defaultdict(list)
-    for image_data in image_data_list:
+    for i, image_data in enumerate(image_data_list):
         batch_to_defect_data[image_data.batch_no].append(
             DefectData(
+                id=str(i),
                 norm_x_center=image_data.norm_x_center,
                 norm_y_center=image_data.norm_y_center,
                 file_name=image_data.file_name,

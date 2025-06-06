@@ -47,9 +47,10 @@ def group_cache_data_by_batch(
 ) -> list[FileDataBatch]:
     """Groups a list of chip details into batches based on their batch number."""
     batch_to_defect_data = defaultdict(list)
-    for chip_details in chip_details_list:
+    for i, chip_details in enumerate(chip_details_list):
         batch_to_defect_data[chip_details.batch_no].append(
             DefectData(
+                id=str(i),
                 norm_x_center=chip_details.norm_x_center,
                 norm_y_center=chip_details.norm_y_center,
                 file_name=chip_details.file_name,
