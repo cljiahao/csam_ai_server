@@ -1,34 +1,33 @@
 import { useState } from "react";
-import useColorUtility from "./useColorUtility";
+
+import { useInfoBarContext } from "@/features/info-bar/contexts/InfoBarContext";
 import useModelHistory from "./useModelHistory";
-import { useItemStore } from "@/features/info-bar/store/item";
+import useLabelColor from "./useLabelColor";
 
 const useUtilityPanel = () => {
-  const item = useItemStore((state) => state.item);
   const [isOpen, setIsOpen] = useState(false);
+  const { item } = useInfoBarContext();
 
   const {
-    state: { colorRef },
-    action: { fetchColors, saveColors, setZColors },
-  } = useColorUtility();
+    state: { colorRef, colorData },
+    action: { fetchColors, saveColors },
+  } = useLabelColor();
 
   const {
     action: { fetchModelHistory },
   } = useModelHistory();
 
   function handleNavSheetOpen() {
-    const dotColors = colorRef?.current?.colors;
     if (!isOpen && item) {
       fetchColors({ item });
       fetchModelHistory({ item });
-    } else if (dotColors?.length > 0) {
-      saveColors({ itemDotColors: { item: item, dot_colors_list: dotColors } });
-      setZColors(dotColors);
+    } else if (colorRef?.current?.labelColors?.length > 0 && item) {
+      saveColors({ item, dotColors: colorRef.current.labelColors });
     }
     setIsOpen(!isOpen);
   }
   return {
-    state: { isOpen, colorRef, item },
+    state: { colorData, colorRef, isOpen, item },
     action: { handleNavSheetOpen },
   };
 };

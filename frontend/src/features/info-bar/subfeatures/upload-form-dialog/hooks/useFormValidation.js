@@ -1,30 +1,19 @@
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { getItemType } from "@/services/api_stats_data";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
+
+import {
+  useLotNoMutation,
+  useQueryItem,
+} from "@/features/info-bar/api/info-bar";
+import useBaseStore from "@/store/base";
+import { QUERY_KEYS } from "@/constants/api-keys";
 
 const LOT_NO_REGEX = /^[a-zA-Z0-9]{10}$/;
 
-const useLotNoMutation = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationKey: ["validateLotNo"],
-    mutationFn: async (lotNo) => await getItemType(lotNo),
-    onSuccess: (data) => {
-      queryClient.setQueryData(["item"], data);
-    },
-    onError: (error) => {
-      console.log(error);
-      queryClient.removeQueries(["item"]); // Clear cache on error
-    },
-  });
-};
-
 const useFormValidation = () => {
-  const queryClient = useQueryClient();
-  const { mutate: validateLotNo, isLoading } = useLotNoMutation();
   const uploadFormInfo = {
     lotNo: {
       label: "Lot Number",
@@ -40,7 +29,7 @@ const useFormValidation = () => {
       schema: z.string().min(1, {
         message: "Please key in Item Type.",
       }),
-      disabled: !!queryClient.getQueryData(["item"]),
+      disabled: !!useQueryItem(),
     },
   };
 
@@ -57,6 +46,8 @@ const useFormValidation = () => {
     }, {}),
   });
 
+  const updateError = useBaseStore((state) => state.updateError);
+  const { mutate: validateLotNo } = useLotNoMutation(updateError);
   function onLotNoBlur(e) {
     const value = e.currentTarget.value;
     if (!LOT_NO_REGEX.test(value)) return;
@@ -74,19 +65,20 @@ const useFormValidation = () => {
     });
   }
 
-  const ref = useRef(null);
+  const formRef = useRef(null);
   function onSubmit() {
-    ref?.current.click();
+    formRef?.current.click();
   }
 
+  const queryClient = useQueryClient();
   function onReset() {
-    queryClient.removeQueries(["item"]); // Clear cache on error
+    queryClient.removeQueries([QUERY_KEYS.API_ITEM]);
     uploadForm.reset();
   }
 
   return {
-    state: { ref, uploadFormInfo, isLoading },
-    action: { onSubmit, onReset, uploadForm },
+    state: { formRef, uploadFormInfo },
+    action: { uploadForm, onSubmit, onReset },
   };
 };
 

@@ -1,25 +1,20 @@
-import { useQuery } from "@tanstack/react-query";
-import useMarking from "@/hooks/useMarking";
-import { usePlateNoStore } from "../store/plateNo";
-import { useLotNoStore } from "../store/lotNo";
+import { useQueryImageData } from "../api/info-bar";
+import { useInfoBarContext } from "../contexts/InfoBarContext";
 
 export const useMetrics = () => {
-  const lotNo = useLotNoStore((state) => state.lotNo);
-  const plateNo = usePlateNoStore((state) => state.plateNo);
+  const { lotNo, plateNo } = useInfoBarContext();
 
-  const { data: processImageData } = useQuery({
-    queryKey: ["processedImageData"],
-  });
+  const imageData = useQueryImageData();
 
-  const {
-    state: { marks },
-  } = useMarking();
+  // update marks usage
+  const marks = [];
 
   const marks_count = marks.filter(
     ({ marker }) => marker.name !== "default" && marker.name !== "zoom",
   ).length;
+
   const data_count =
-    processImageData?.file_data_batches?.reduce((count, obj) => {
+    imageData?.file_data_batches?.reduce((count, obj) => {
       return count + (obj.defect_records ? obj.defect_records.length : 0); // Add the length of `list`, handle undefined
     }, 0) ?? 0;
 

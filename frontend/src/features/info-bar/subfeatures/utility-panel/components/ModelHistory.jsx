@@ -1,11 +1,11 @@
 import { MdCompare } from "react-icons/md";
 import { LuArrowUpDown } from "react-icons/lu";
 
-import CustomDialog from "@/components/widgets/custom-dialog/CustomDialog";
-import HoverButton from "@/components/widgets/hover-button/HoverButton";
 import LabelValue from "@/components/static/label-value";
 import { Button } from "@/components/ui/button";
+import CustomDialog from "@/components/widgets/custom-dialog/CustomDialog";
 import { DataTable } from "@/components/widgets/data-table/DataTable";
+import HoverButton from "@/components/widgets/hover-button/HoverButton";
 import useModelHistory from "../hooks/useModelHistory";
 
 const ModelHistory = () => {
@@ -45,7 +45,7 @@ const ModelHistory = () => {
   ];
 
   return (
-    <div className="grid w-full grid-cols-2 items-center">
+    <div className="grid w-full grid-cols-2 items-center gap-2">
       <CustomDialog
         className="h-5/6 w-5/6 max-w-full"
         trigger={
@@ -68,14 +68,15 @@ const ModelHistory = () => {
       </CustomDialog>
       <LabelValue
         className="flex-start"
-        label="Date Created"
+        label="Date Created:"
         value={modelHistoryByItem?.date_install}
         toColumn
       />
       <LabelValue
-        className="col-span-2"
-        label="Model Name"
+        className="flex-start space-x-5"
+        label="Model Name:"
         value={modelHistoryByItem?.model_name}
+        toColumn
       />
     </div>
   );

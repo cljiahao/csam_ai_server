@@ -1,18 +1,18 @@
 import { useState } from "react";
+
+import useBaseStore from "@/store/base";
 import {
   useFetchModelHistory,
   useQueryModelHistory,
-} from "../api/fetchModelHistory";
-import useBaseStore from "@/store/base";
-import { useItemStore } from "@/features/info-bar/store/item";
+} from "@/features/info-bar/api/info-bar";
+import { useInfoBarContext } from "@/features/info-bar/contexts/InfoBarContext";
 
 const useModelHistory = () => {
   const [isDialogOpen, setDialogOpen] = useState();
+  const { item } = useInfoBarContext();
   const updateError = useBaseStore((state) => state.updateError);
-  const { mutateAsync: fetchModelHistory } = useFetchModelHistory({
-    updateError,
-  });
-  const item = useItemStore((state) => state.item);
+
+  const { mutateAsync: fetchModelHistory } = useFetchModelHistory(updateError);
   const modelHistoryByItem = useQueryModelHistory(item);
   const allModelHistory = useQueryModelHistory("");
 
