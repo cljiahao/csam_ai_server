@@ -1,12 +1,19 @@
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
-const LabelValue = ({ label, value, toColumn = false }) => {
+const LabelValue = ({ className, label, value, toColumn = false }) => {
   return (
     <div
-      className={`hw-full flex items-center ${toColumn ? "flex-col" : "grid grid-cols-3"}`}
+      className={cn(
+        "flex h-full w-full items-center",
+        toColumn ? "flex-col" : "grid grid-cols-3",
+        className,
+      )}
     >
-      <Label className="flex h-full items-center font-semibold">{label}</Label>
-      <Label className="flex h-full items-center text-nowrap">{value}</Label>
+      <Label className="flex h-full items-center">{label}</Label>
+      <Label className="col-span-2 flex h-full items-center overflow-hidden text-nowrap">
+        {value}
+      </Label>
     </div>
   );
 };
