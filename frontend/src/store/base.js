@@ -4,7 +4,7 @@ const initBase = {
   error: "",
 };
 
-const useBaseStore = create((set) => ({
+export const useBaseStore = create((set) => ({
   ...initBase,
 
   //Define Actions

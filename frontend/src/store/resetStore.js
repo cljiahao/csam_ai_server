@@ -1,10 +1,9 @@
-import { useColorStore } from "./color";
-import { useCoordStores, useImageStore } from "./display";
-import { useMarkerStore } from "./marker";
+import useBaseStore from "./base";
+import useImageStore from "./image";
+import useMarksStore from "./marks";
 
 export const resetStore = () => {
-  useColorStore.getState().resetColors();
-  useCoordStores.getState().resetCoords();
-  useImageStore.getState().resetImage();
-  useMarkerStore.getState().resetMarks();
+  useBaseStore.getState().resetError();
+  useImageStore.getState().resetStore();
+  useMarksStore.getState().resetStore();
 };
