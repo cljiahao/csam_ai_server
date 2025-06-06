@@ -1,18 +1,21 @@
 import { useMemo } from "react";
 
 import { MARKERS } from "../constants/markers";
+import { useMarkCanvasContext } from "../context/MarkCanvasContext";
 
-const useBoundingBoxMarker = (imageSize, marks, coordinates) => {
+const useBoundingBoxMarker = () => {
+  const { imageSize, marks, coordinates, showStatic } = useMarkCanvasContext();
+
   const generateRectangles = useMemo(() => {
     if (!imageSize || !coordinates) return [];
 
     const marksMap = new Map();
     marks.forEach((mark) => {
-      marksMap.set(mark.fileName, mark);
-      marksMap.set(mark.file_name + MARKERS.zoom.name);
+      marksMap.set(mark.id, mark);
+      marksMap.set(mark.id + MARKERS.zoom.name, mark);
     });
 
-    return (coordinates || []).map((file, index) => {
+    return (coordinates || []).map((file) => {
       const dx =
         Math.round(
           (file.norm_x_center - file.norm_batch_width / 2) *
@@ -31,20 +34,23 @@ const useBoundingBoxMarker = (imageSize, marks, coordinates) => {
         Math.round(file.norm_batch_height * imageSize.height * 100) / 100;
 
       const stored_mark =
-        marksMap.get(file.file_name) ||
-        marksMap.get(file.file_name + MARKERS.zoom.name);
+        marksMap.get(file.id) || marksMap.get(file.id + MARKERS.zoom.name);
 
       return {
-        id: index,
+        id: file.id,
         x_start: dx,
         y_start: dy,
         width: d_width,
         height: d_height,
-        thickness: stored_mark?.marker.radius || MARKERS.static.radius,
-        color: stored_mark?.marker.color || MARKERS.static.color,
+        thickness:
+          stored_mark?.marker.radius ||
+          (showStatic ? MARKERS.static.radius : MARKERS.temp.radius),
+        color:
+          stored_mark?.marker.color ||
+          (showStatic ? MARKERS.static.color : MARKERS.temp.color),
       };
     });
-  }, [coordinates, marks, imageSize]);
+  }, [imageSize, marks, coordinates, showStatic]);
 
   return { state: { generateRectangles } };
 };

@@ -14,26 +14,21 @@ import useImageInfo from "./hooks/useImageInfo";
 
 const ImageHolder = forwardRef(
   ({ className, children, image, placeholder_text }, ref) => {
-    useImperativeHandle(ref, () => ({
-      get moveActive() {
-        return moveActive; // Always gets latest value
-      },
-      updateCoords,
-      updateScale,
-      resetCoords,
-    }));
-
     const panZoomState = usePanZoom();
     const {
       state: { displayRef, moveActive },
-      action: { updateCoords, updateScale, resetCoords },
+      action: { resetCoords, zoomFocus },
     } = panZoomState;
 
     const imageState = useImageInfo();
-
     const {
       state: { imageSize },
     } = imageState;
+
+    useImperativeHandle(ref, () => ({
+      resetCoords,
+      zoomFocus,
+    }));
 
     return (
       <ImageHolderContext.Provider value={{ image, panZoomState, imageState }}>
@@ -49,6 +44,7 @@ const ImageHolder = forwardRef(
             {children && isValidElement(children)
               ? cloneElement(children, {
                   imageSize,
+                  moveActive,
                 })
               : null}
           </PanAndZoom>

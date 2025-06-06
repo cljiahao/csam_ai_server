@@ -1,9 +1,9 @@
 import useDotMarker from "../hooks/useDotMarker";
 
-const DotCanvas = ({ imageSize, marks, coordinates = [] }) => {
+const DotCanvas = ({ handleMark }) => {
   const {
     state: { generateCircles },
-  } = useDotMarker(imageSize, marks, coordinates);
+  } = useDotMarker();
 
   return (
     <>
@@ -18,6 +18,7 @@ const DotCanvas = ({ imageSize, marks, coordinates = [] }) => {
             stroke={circle.color}
             strokeWidth="2"
             fillOpacity="0"
+            onClick={handleMark}
           />
         );
       })}

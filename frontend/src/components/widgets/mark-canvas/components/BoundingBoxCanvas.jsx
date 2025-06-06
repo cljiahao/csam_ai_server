@@ -1,9 +1,9 @@
 import useBoundingBoxMarker from "../hooks/useBoundingBoxMarker";
 
-const BoundingBoxCanvas = ({ imageSize, marks, coordinates }) => {
+const BoundingBoxCanvas = ({ handleMark }) => {
   const {
     state: { generateRectangles },
-  } = useBoundingBoxMarker(imageSize, marks, coordinates);
+  } = useBoundingBoxMarker();
 
   return (
     <>
@@ -19,6 +19,7 @@ const BoundingBoxCanvas = ({ imageSize, marks, coordinates }) => {
             stroke={rectangle.color}
             strokeWidth={rectangle.thickness}
             fill="none"
+            onClick={handleMark}
           />
         );
       })}

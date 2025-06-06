@@ -24,6 +24,8 @@ export const usePanZoom = () => {
   const handlePan = useCallback(
     (e) => {
       e.preventDefault();
+      const dx = e.clientX - panZoomRef.current.oldX;
+      const dy = e.clientY - panZoomRef.current.oldY;
       if (e.type === "mousedown") {
         panZoomRef.current = {
           oldX: e.clientX,
@@ -33,18 +35,21 @@ export const usePanZoom = () => {
         setMoveActive(false);
       } else if (e.type === "mouseup") {
         panZoomRef.current.panActive = false;
+        if (Math.abs(dx) <= 3 || Math.abs(dy) <= 3) setMoveActive(false);
       } else if (e.type === "mousemove") {
         if (panZoomRef.current.panActive) {
-          if (!moveActive) setMoveActive(true);
-          const dx = coords.x + e.clientX - panZoomRef.current.oldX;
-          const dy = coords.y + e.clientY - panZoomRef.current.oldY;
-          updateCoords(dx, dy);
+          if (3 < Math.abs(dx) || 3 < Math.abs(dy)) {
+            if (!moveActive) setMoveActive(true);
+            const newX = coords.x + dx;
+            const newY = coords.y + dy;
+            updateCoords(newX, newY);
 
-          panZoomRef.current = {
-            ...panZoomRef.current,
-            oldX: e.clientX,
-            oldY: e.clientY,
-          };
+            panZoomRef.current = {
+              ...panZoomRef.current,
+              oldX: e.clientX,
+              oldY: e.clientY,
+            };
+          }
         }
       }
     },
@@ -70,8 +75,23 @@ export const usePanZoom = () => {
     [displayRef, coords, scale],
   );
 
+  const zoomFocus = (centerX, centerY) => {
+    const rect = displayRef?.current?.getBoundingClientRect();
+    const dx = (1 / 2 - centerX) * rect.width * ZOOM_SCALE.focus;
+    const dy = (1 / 2 - centerY) * rect.height * ZOOM_SCALE.focus;
+    updateCoords(dx, dy);
+    updateScale(ZOOM_SCALE.focus);
+  };
+
   return {
     state: { ...coords, scale, displayRef, moveActive },
-    action: { updateCoords, updateScale, resetCoords, handlePan, onWheel },
+    action: {
+      updateCoords,
+      updateScale,
+      resetCoords,
+      handlePan,
+      onWheel,
+      zoomFocus,
+    },
   };
 };

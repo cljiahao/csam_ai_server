@@ -1,5 +1,5 @@
 export const MARKERS = {
-  temp: { id: 0, name: "temp", color: "transparent", radius: 3 },
-  static: { id: 0, name: "static", color: "#ffff00", radius: 2 },
-  zoom: { id: 0, name: "zoom", color: "chartreuse", radius: 10 },
+  temp: { name: "temp", color: "transparent", radius: 3 },
+  static: { name: "static", color: "#ffff00", radius: 1 },
+  zoom: { name: "zoom", color: "chartreuse", radius: 10 },
 };

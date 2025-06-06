@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { useEffect } from "react";
 import { useRef, useState } from "react";
 
@@ -5,14 +6,15 @@ const useImageInfo = () => {
   const imageRef = useRef(null);
   const [imageSize, setImagesize] = useState({ width: 0, height: 0 });
 
-  // Update rect when window resizes
-  useEffect(() => {
-    window.addEventListener("resize", handleImageLoad);
-    return () => window.removeEventListener("resize", handleImageLoad);
-  }, []);
+  const getImageBoundingRect = () => {
+    if (imageRef.current) {
+      return imageRef.current.getBoundingClientRect();
+    }
+    return null;
+  };
 
-  const handleImageLoad = () => {
-    const containerRect = imageRef.current?.getBoundingClientRect();
+  const handleImageLoad = useCallback(() => {
+    const containerRect = getImageBoundingRect();
     const imageAspectRatio =
       imageRef.current.naturalWidth / imageRef.current.naturalHeight;
 
@@ -31,7 +33,13 @@ const useImageInfo = () => {
         height: Math.round(containerHeight),
       });
     }
-  };
+  }, []);
+
+  // Update rect when window resizes
+  useEffect(() => {
+    window.addEventListener("resize", handleImageLoad);
+    return () => window.removeEventListener("resize", handleImageLoad);
+  }, [handleImageLoad]);
 
   return {
     state: { imageRef, imageSize },
