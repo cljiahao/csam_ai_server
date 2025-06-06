@@ -1,113 +1,60 @@
-import { forwardRef, useImperativeHandle, useState } from "react";
-import { FaTrash } from "react-icons/fa";
-import { v4 as uuidv4 } from "uuid";
+import { forwardRef, useImperativeHandle } from "react";
 
+import LabelValue from "@/components/static/label-value";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import useColorValidation from "./hooks/useColorPickFormValidate";
+import ColorCard from "./components/ColorCard";
+import ColorPickContext from "./contexts/useColorPickContext";
+import useColorPick from "./hooks/useColorPick";
 
-const ColorPick = forwardRef(({ className, item }, ref) => {
-  const [colors, setColors] = useState([]);
+const ColorPick = forwardRef(({ className, colorData, label, value }, ref) => {
+  const colorPickState = useColorPick(colorData);
+  const {
+    state: { error, labelColors },
+    action: { handleNewAdd, handleDelete, onChangeColor, onChangeLabel },
+  } = colorPickState;
 
   useImperativeHandle(ref, () => ({
-    get colors() {
-      return colors; // Always gets latest value
+    get labelColors() {
+      return labelColors;
     },
-    setColors,
   }));
-
-  const { validateLabelChange, validateColorChange } = useColorValidation();
-
-  const errors = colors.map((color, index) => ({
-    defect_label: validateLabelChange(colors, index, color.defect_label) || "",
-    hex_color: validateColorChange(colors, index, color.hex_color) || "",
-  }));
-
-  const handleAdd = () => {
-    const newColor = { uuid: uuidv4(), defect_label: "", hex_color: "#ffff00" };
-    setColors((prevState) => [...prevState, newColor]);
-  };
-
-  const handleRemove = (index) => {
-    setColors((prevState) => prevState.filter((_, i) => i !== index));
-  };
-
-  const handleLabelChange = (index, newLabel) => {
-    setColors((prevState) =>
-      prevState.map((entry, i) =>
-        i === index ? { ...entry, defect_label: newLabel } : entry,
-      ),
-    );
-  };
-
-  const handleColorChange = (index, newColor) => {
-    setColors((prevState) =>
-      prevState.map((entry, i) =>
-        i === index ? { ...entry, hex_color: newColor } : entry,
-      ),
-    );
-  };
 
   return (
-    <div className={cn("flex h-full w-full flex-col items-center", className)}>
-      <div className="text-m flex h-14 w-full items-center px-3 font-bold">
-        Item: {item}
-      </div>
-      <div className="flex w-full flex-col space-y-2 px-3">
-        <Button onClick={handleAdd} variant="default">
-          Add
-        </Button>
-      </div>
-      {colors.length > 0 && (
-        <div className="mt-4 flex w-full flex-col items-center space-y-4 overflow-y-auto rounded-xl bg-slate-300 py-3">
-          {colors.map((colorEntry, index) => (
-            <div
-              key={colorEntry.uuid}
-              className="relative flex w-full flex-row space-x-4 px-3 pr-8"
-            >
-              <div className="flex flex-col space-y-1">
-                <Input
-                  type="text"
-                  value={colorEntry.defect_label}
-                  onChange={(e) => handleLabelChange(index, e.target.value)}
-                  className="h-11 max-w-xs"
-                  placeholder="Enter defect label"
-                />
-                <div className="h-5">
-                  {errors[index]?.defect_label && (
-                    <p className="text-sm text-red-500">
-                      {errors[index].defect_label}
-                    </p>
-                  )}
-                </div>
-              </div>
-              <div className="flex flex-col space-y-1">
-                <Input
-                  type="color"
-                  value={colorEntry.hex_color}
-                  onChange={(e) => handleColorChange(index, e.target.value)}
-                  className="h-11 w-12 border-none p-0"
-                />
-                <div className="h-5">
-                  {errors[index]?.hex_color && (
-                    <p className="text-sm text-red-500">
-                      {errors[index].hex_color}
-                    </p>
-                  )}
-                </div>
-              </div>
-              <button
-                onClick={() => handleRemove(index)}
-                className="absolute right-0 top-0 p-2"
-              >
-                <FaTrash className="h-4 w-4 text-black" />
-              </button>
-            </div>
-          ))}
+    <ColorPickContext.Provider
+      value={{ labelColors, handleDelete, onChangeColor, onChangeLabel }}
+    >
+      <div
+        className={cn("hw-full flex flex-col gap-1 overflow-hidden", className)}
+      >
+        <div className="flex-between w-full">
+          <LabelValue
+            className="flex-start w-3/4"
+            label={label}
+            value={value}
+            toColumn
+          />
+          <Button
+            className="flex-center w-1/4"
+            onClick={handleNewAdd}
+            variant="default"
+          >
+            Add
+          </Button>
         </div>
-      )}
-    </div>
+        {(error.color || error.label) && (
+          <Label className="flex-center text-lg text-red-500">
+            Duplicate found
+          </Label>
+        )}
+        <div className="hw-full no-scrollbar flex flex-col overflow-y-auto">
+          {labelColors?.map((obj) => {
+            return <ColorCard key={obj?.uuid} id={obj?.uuid} />;
+          })}
+        </div>
+      </div>
+    </ColorPickContext.Provider>
   );
 });
 
