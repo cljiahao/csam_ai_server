@@ -5,5 +5,5 @@ import useMarksStore from "./marks";
 export const resetStore = () => {
   useBaseStore.getState().resetError();
   useImageStore.getState().resetStore();
-  useMarksStore.getState().resetStore();
+  useMarksStore.getState().resetMarks();
 };
