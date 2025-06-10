@@ -3,19 +3,16 @@ import {
   useQueryImageData,
   useSaveUserMutation,
 } from "@/features/info-bar/api/info-bar";
-import useMarking from "@/hooks/useMarking";
 import useBaseStore from "@/store/base";
+import useMarksStore from "@/store/marks";
 
 const useSaveUserInput = () => {
   const [isSaved, setSaved] = useState(true);
 
   const updateError = useBaseStore((state) => state.updateError);
+  const marks = useMarksStore((state) => state.marks);
+
   const imageData = useQueryImageData();
-
-  const {
-    state: { marks },
-  } = useMarking();
-
   const { mutateAsync: processUserInput } = useSaveUserMutation(updateError);
 
   const handleSaveUserInput = async ({ mode, item, lotNo }) => {
@@ -40,12 +37,16 @@ const useSaveUserInput = () => {
         }))
         .filter((batch) => batch.defect_records?.length > 0), // Remove batches with no files
     };
-    if (imageData) processUserInput({ mode, item, lotNo, data: userInputData });
+
+    if (imageData)
+      processUserInput({ mode, item, lotNo, data: userInputData }).then(() =>
+        setSaved(true),
+      );
   };
 
   return {
-    state: {},
-    action: { handleSaveUserInput },
+    state: { isSaved },
+    action: { setSaved, handleSaveUserInput },
   };
 };
 

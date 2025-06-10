@@ -1,10 +1,7 @@
 import { useShallow } from "zustand/react/shallow";
 
 import useImageStore from "@/store/image";
-import {
-  useFetchColors,
-  useImageDataMutation,
-} from "@/features/info-bar/api/info-bar";
+import { useImageDataMutation } from "@/features/info-bar/api/info-bar";
 
 const useImageProcess = () => {
   const { setImage, setError } = useImageStore(
@@ -15,9 +12,8 @@ const useImageProcess = () => {
   );
 
   const { mutateAsync: processImage } = useImageDataMutation(setError);
-  const { mutate: fetchColors } = useFetchColors(setError);
 
-  return { state: {}, action: { fetchColors, processImage, setImage } };
+  return { state: {}, action: { processImage, setImage } };
 };
 
 export default useImageProcess;

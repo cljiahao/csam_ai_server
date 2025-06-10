@@ -7,7 +7,7 @@ import useUploadFormDialog from "./hooks/useUploadFormDialog";
 
 const UploadFormDialog = ({ triggerChildren, mode }) => {
   const {
-    state: { isDialogOpen, ref, uploadFormInfo },
+    state: { isDialogOpen, formRef, uploadFormInfo },
     action: { handleDialogOpen, uploadForm, onSubmit, onReset, onFileChange },
   } = useUploadFormDialog({ mode });
 
@@ -59,7 +59,7 @@ const UploadFormDialog = ({ triggerChildren, mode }) => {
         className="hidden"
         type="file"
         accept=".png, .jpg"
-        ref={ref}
+        ref={formRef}
         onChange={onFileChange}
       />
     </CustomDialog>

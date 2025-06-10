@@ -14,6 +14,7 @@ const InfoBar = () => {
   const nav = navigation_info.find((nav) => nav.name === mode);
 
   const { state: infoBarState, action: infoBarAction } = useInfobar();
+  const { isSaved } = infoBarState;
 
   return (
     <InfoBarContext.Provider value={{ ...infoBarState, ...infoBarAction }}>
@@ -24,7 +25,7 @@ const InfoBar = () => {
           <UploadFormDialog
             triggerChildren={
               <HoverButton
-                // className={isSaved ? "" : "bg-red-300"}
+                className={isSaved ? "" : "bg-red-300"}
                 icon={nav.icon}
                 hoverText={`${nav.name} Upload`}
               />
