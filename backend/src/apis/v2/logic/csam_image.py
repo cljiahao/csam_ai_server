@@ -185,7 +185,10 @@ def write_new_lot_to_db(
 
     bulk_chip_details = [
         {
-            **defect_data.__dict__,
+            "file_name": defect_data.file_name,
+            "defect_mode": defect_data.defect_mode,
+            "norm_x_center": defect_data.norm_x_center,
+            "norm_y_center": defect_data.norm_y_center,
             "batch_no": filtered_defects.batch_no,
         }
         for filtered_defects in chip_details_data
