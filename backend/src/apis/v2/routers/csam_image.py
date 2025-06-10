@@ -93,8 +93,7 @@ def save_local(
     defect_batch_directory: FileDataBatchDirectory,
     db: Session = Depends(get_db),
 ) -> Response:
-
+    set_cache_data(defect_batch_directory, db)
     if train_health_check():
         post_image_file(server_mode.value, item, lot_no, defect_batch_directory)
-    set_cache_data(defect_batch_directory, db)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
