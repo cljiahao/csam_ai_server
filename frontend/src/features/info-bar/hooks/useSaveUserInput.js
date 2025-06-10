@@ -17,7 +17,7 @@ const useSaveUserInput = () => {
 
   const handleSaveUserInput = async ({ mode, item, lotNo }) => {
     const targetFileNames = new Map(
-      marks.map((mark) => [mark.file_name, mark.marker.name]),
+      marks.map((mark) => [mark.id, mark.marker.label]),
     );
 
     const userInputData = {
@@ -26,10 +26,10 @@ const useSaveUserInput = () => {
         .map((batch) => ({
           ...batch,
           defect_records: batch.defect_records.reduce((result, file) => {
-            if (targetFileNames.has(file.file_name)) {
+            if (targetFileNames.has(file.id)) {
               result.push({
                 ...file,
-                defect_mode: targetFileNames.get(file.file_name),
+                defect_mode: targetFileNames.get(file.id),
               });
             }
             return result;
@@ -37,7 +37,6 @@ const useSaveUserInput = () => {
         }))
         .filter((batch) => batch.defect_records?.length > 0), // Remove batches with no files
     };
-
     if (imageData)
       processUserInput({ mode, item, lotNo, data: userInputData }).then(() =>
         setSaved(true),
