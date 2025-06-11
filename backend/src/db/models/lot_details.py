@@ -11,7 +11,7 @@ class LotDetails(Base):
     date_created: Mapped[dt] = mapped_column(default=func.now())
     date_updated: Mapped[dt] = mapped_column(default=func.now(), onupdate=func.now())
     lot_no: Mapped[str] = mapped_column(String(10), index=True)
-    plate_no: Mapped[str] = mapped_column(String, index=True)
+    plate_no: Mapped[str] = mapped_column(index=True)
     item: Mapped[str]
     no_of_chips: Mapped[int] = mapped_column(default=0)
     no_of_batches: Mapped[int] = mapped_column(default=0)
