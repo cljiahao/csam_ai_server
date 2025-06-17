@@ -8,7 +8,11 @@ services:
       target: prod
       tags:
         - "10.50.0.7:5001/csam_ai_server/api:latest"
+<<<<<<< HEAD
         - "10.50.0.7:5001/csam_ai_server/api:2.1.7"
+=======
+        - "10.50.0.7:5001/csam_ai_server/api:2.2.0"
+>>>>>>> d67da58 (BUILD: version 2.2.0)
 
   frontend:
     ports: !override
@@ -19,4 +23,8 @@ services:
       target: prod
       tags:
         - "10.50.0.7:5001/csam_ai_server/app:latest"
+<<<<<<< HEAD
         - "10.50.0.7:5001/csam_ai_server/app:2.1.5"
+=======
+        - "10.50.0.7:5001/csam_ai_server/app:2.2.0"
+>>>>>>> d67da58 (BUILD: version 2.2.0)

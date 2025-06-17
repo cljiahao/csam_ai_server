@@ -1,7 +1,11 @@
 {
   "name": "frontend",
   "private": true,
+<<<<<<< HEAD
   "version": "2.1.5",
+=======
+  "version": "2.2.0",
+>>>>>>> d67da58 (BUILD: version 2.2.0)
   "type": "module",
   "scripts": {
     "dev": "vite --mode dev",
