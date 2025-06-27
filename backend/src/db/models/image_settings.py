@@ -12,9 +12,8 @@ class ImageSettings(Base):
     item: Mapped[str] = mapped_column(String, index=True)
     batch_erode: Mapped[int] = mapped_column(default=0)
     batch_close: Mapped[int] = mapped_column(default=0)
-    chip_noise_erode: Mapped[int] = mapped_column(default=0)
-    chip_dilate: Mapped[int] = mapped_column(default=0)
     chip_erode: Mapped[int] = mapped_column(default=0)
+    chip_close: Mapped[int] = mapped_column(default=0)
     crop_size: Mapped[int] = mapped_column(default=0)
 
     def __repr__(self):

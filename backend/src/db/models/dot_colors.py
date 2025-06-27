@@ -1,4 +1,4 @@
-from uuid import UUID
+from uuid import uuid4, UUID
 from datetime import datetime as dt
 from sqlalchemy import func
 from sqlalchemy.orm import Mapped, mapped_column

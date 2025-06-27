@@ -1,7 +1,6 @@
 export const sendRequest = async (url, options) => {
   try {
     const response = await fetch(url, options);
-    if (response.status === 204) return;
     const result = await response.json();
     if (!response.ok)
       throw new Error(

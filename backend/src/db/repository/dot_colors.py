@@ -8,30 +8,31 @@ class DotColorsRepository(BaseRepository[DotColors]):
     def __init__(self, db: Session):
         super().__init__(db, DotColors)
 
-    def bulk_create_dot_colors(self, dot_colors_list: list[dict]) -> list[DotColors]:
-        """Bulk create new dot colors."""
+    def bulk_create_dot_colors(self, dot_colors_list: list[dict]) -> DotColors:
+        """Bulk create new dot colors details."""
         return self.create(
             dot_colors_list,
-            print_message="Error creating new data into DotColors database.",
+            print_message=f"Error creating dot colors details from the database.",
         )
 
     def read_all_dot_colors(self, filter_conditions: dict) -> list[DotColors]:
-        """Read all dot colors based on filter."""
+        """Read all colors details details based on filter."""
         return self.read(
             filter_conditions,
             return_all=True,
-            print_message="Error reading all data from DotColors database.",
+            print_message=f"Error reading dot colors details from the database.",
         )
 
-    def bulk_update_dot_colors(self, update_lists: list[dict[str, dict]]) -> int:
-        """Bulk update dot colors with provided data."""
+    def bulk_update_dot_colors(self, updates_list: list[dict[str, dict]]) -> DotColors:
+        """Bulk update dot colors details with provided data."""
         return self.update(
-            update_lists, print_message="Error updating data in DotColors database."
+            updates_list,
+            print_message=f"Error updating dot colors details in the database.",
         )
 
-    def bulk_delete_dot_colors(self, filter_conditions: list[dict]) -> int:
-        """Bulk delete dot colors based on filter."""
+    def bulk_delete_dot_colors(self, filter_conditions: list[dict]) -> DotColors:
+        """Bulk delete dot colors details based on filter."""
         return self.delete(
             filter_conditions,
-            print_message="Error deleting data from DotColors database.",
+            print_message=f"Error deleting dot colors details from the database.",
         )

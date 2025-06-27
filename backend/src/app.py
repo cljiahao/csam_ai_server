@@ -4,16 +4,17 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from apis.routes import router
 from core.config import common_settings, api_settings
-from db.base import create_tables
-from error_handler import configure_exceptions
+from db.base import Base
+from db.session import engine
+
+
+def create_tables() -> None:
+    """Create database tables based on the metadata."""
+    Base.metadata.create_all(bind=engine)
 
 
 def configure_cors(app: FastAPI) -> None:
-    """Configures Cross-Origin Resource Sharing (CORS) middleware for the FastAPI application.
-
-    Args:
-        app: The FastAPI application instance.
-    """
+    """Configure CORS settings for the FastAPI application."""
     origins = api_settings.ALLOWED_CORS
 
     app.add_middleware(
@@ -25,17 +26,21 @@ def configure_cors(app: FastAPI) -> None:
     )
 
 
-def start_application() -> FastAPI:
-    """Initialize and configures the FastAPI application.
+def include_router(app: FastAPI) -> None:
+    """Include application routers."""
+    app.include_router(router)
 
-    Returns:
-        The initialized and configured FastAPI application instance.
-    """
+
+# TODO: add metadatas (Tags,Summary,Description) to fastapi
+
+
+def start_application() -> FastAPI:
+    """Initialize and configure the FastAPI application."""
     app = FastAPI(
         title=common_settings.PROJECT_NAME,
         version=common_settings.PROJECT_VERSION,
         description=textwrap.dedent(common_settings.PROJECT_DESCRIPTION),
-        root_path=f"/{api_settings.FASTAPI_ROOT}",
+        root_path="/api",
         swagger_ui_parameters={
             "defaultModelsExpandDepth": -1,  # Hide models section by default
             "docExpansion": "none",  # Collapse all sections by default
@@ -43,8 +48,7 @@ def start_application() -> FastAPI:
     )
 
     configure_cors(app)
-    configure_exceptions(app)
-    app.include_router(router)
+    include_router(app)
     create_tables()
 
     return app
@@ -52,3 +56,14 @@ def start_application() -> FastAPI:
 
 # Initialize the FastAPI application
 app = start_application()
+
+
+@app.get(
+    "/",
+    tags=["home"],
+    summary="Home Route",
+    description="A simple home route returning a welcome message.",
+)
+def home() -> dict[str, str]:
+    """Simple home route."""
+    return {"msg": "Hello Fast_API 🚀"}

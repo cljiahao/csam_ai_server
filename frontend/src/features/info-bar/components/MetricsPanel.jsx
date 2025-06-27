@@ -1,9 +1,14 @@
-import LabelValue from "@/components/static/label-value";
+import { useLocation } from "react-router-dom";
+
+import LabelValue from "@/components/widgets/label_value/LabelValue";
 import { useMetrics } from "../hooks/useMetrics";
 
-const MetricsPanel = ({ mode }) => {
+const MetricsPanel = ({ lotNo, plateNo }) => {
+  const location = useLocation();
+  const mode = location.pathname.split("/").pop();
+
   const {
-    state: { lotNo, plateNo, count_ratio },
+    state: { count_ratio },
   } = useMetrics();
 
   return (
@@ -12,12 +17,13 @@ const MetricsPanel = ({ mode }) => {
         <LabelValue label={"Lot No:"} value={lotNo} />
         <LabelValue label={"Plate No:"} value={plateNo} />
       </div>
-      <LabelValue
-        className="flex-center"
-        label={`Real / ${mode === "CDC" ? "Total" : "Pred"}:`}
-        value={`${count_ratio}`}
-        toColumn
-      />
+      <div className="hw-full">
+        <LabelValue
+          label={`Real / ${mode === "CDC" ? "Total" : "Pred"}`}
+          value={`${count_ratio}`}
+          to_column
+        />
+      </div>
     </div>
   );
 };

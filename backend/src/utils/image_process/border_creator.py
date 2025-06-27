@@ -2,107 +2,60 @@ import cv2
 import numpy as np
 
 from constants.colors import BGRColors
-from utils.debug import error_handler
+from constants.image_thresholds import ImageThreshold
 
 
 class BorderCreator:
-    """A utility class for creating and managing borders around an image."""
+    """A utility class for creating and managing borders around an image.
 
-    @error_handler()
-    @staticmethod
-    def create_border_image(image: np.ndarray, border_padding: int = 0) -> np.ndarray:
-        """Creates an image with a constant color border.
+    Args:
+            image (np.ndarray): The input image to add borders to.
+            crop_size (int): The crop size used to calculate the border padding.
 
-        Args:
-            image: The input image.
-            border_padding: The padding size for all sides of the border.
+    Attributes:
+        image (np.ndarray): The input image for which borders are created.
+        border_pad (int): The calculated padding size for the border.
+        border_image (np.ndarray): The resulting image with the border added.
+    """
 
-        Returns:
-            The image with the added border.
-        """
+    def __init__(
+        self, image: np.ndarray, border_pad: int = 0, crop_size: int = 0
+    ) -> None:
+        """Initializes the BorderCreator with an image and crop size."""
+        self.image = image
+        self.border_pad = border_pad or self._calculate_border_pad(crop_size)
+        self.border_image = self._create_border_image()
+
+    def _calculate_border_pad(self, crop_size: int) -> int:
+        """Calculates the padding size for the border based on the crop size."""
+        return ((crop_size * 141) // 100 + 9) // 10 * 10
+
+    def _create_border_image(self) -> np.ndarray:
+        """Creates an image with a border added to the original image."""
         return cv2.copyMakeBorder(
-            image,
-            border_padding,  # Top
-            border_padding,  # Bottom
-            border_padding,  # Left
-            border_padding,  # Right
+            self.image,
+            self.border_pad,  # Top
+            self.border_pad,  # Bottom
+            self.border_pad,  # Left
+            self.border_pad,  # Right
             cv2.BORDER_CONSTANT,
             value=BGRColors.BACKGROUND.value,
         )
 
-    @error_handler()
-    @staticmethod
-    def convert_background_white(
-        image: np.ndarray, background_threshold: int = 0
-    ) -> np.ndarray:
-        """Converts the background of an image to white based on a threshold.
+    def create_blank_image(self):
+        """Creates a blank image with the same dimensions as the bordered image."""
+        return np.zeros(self.border_image.shape[:2], np.uint8)
 
-        Assumes the background color is close to black.
-
-        Args:
-            image: The input image.
-            background_threshold: The threshold value for each color channel (B, G, R)
-                                  to be considered background.
-
-        Returns:
-            The image with the background pixels set to white.
-        """
-        border_image_copy = image.copy()
-        background = np.all(border_image_copy >= background_threshold, axis=-1)
+    def convert_background_white(self) -> np.ndarray:
+        """Converts the background of the bordered image to white based on a threshold."""
+        border_image_copy = self.border_image.copy()
+        background = np.all(
+            border_image_copy >= ImageThreshold.BACKGROUND_THRESHOLD.value, axis=-1
+        )
         border_image_copy[background] = BGRColors.WHITE.value
         return border_image_copy
 
-    @error_handler()
-    @staticmethod
-    def convert_grayscale(image: np.ndarray) -> np.ndarray:
-        """Converts a BGR image to grayscale.
-
-        Args:
-            image: The input BGR image.
-
-        Returns:
-            The grayscale image.
-        """
-        return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-    @error_handler()
-    @staticmethod
-    def convert_background_white_and_grayscale(
-        image: np.ndarray, background_threshold: int = 0
-    ) -> np.ndarray:
-        """Converts the background of an image to white and then converts it to grayscale.
-
-        Args:
-            image: The input BGR image.
-            background_threshold: The threshold value for each color channel (B, G, R)
-                                  to be considered background.
-
-        Returns:
-            np.ndarray: The grayscale image with a white background.
-        """
-        border_white_bg_image = BorderCreator.convert_background_white(
-            image, background_threshold
-        )
+    def convert_background_white_and_grayscale(self) -> np.ndarray:
+        """Converts the bordered image to grayscale."""
+        border_white_bg_image = self.convert_background_white()
         return cv2.cvtColor(border_white_bg_image, cv2.COLOR_BGR2GRAY)
-
-    @error_handler()
-    @staticmethod
-    def change_border_color(
-        image: np.ndarray, border_width: int, border_color: tuple[int, int, int]
-    ) -> np.ndarray:
-        """Changes the color of the border of an image.
-
-        Args:
-            image: The input image.
-            border_width: The width of the border to change.
-            border_color: The BGR color to set the border to.
-
-        Returns:
-            A copy of the image with the modified border color.
-        """
-        image_copy = image.copy()
-        image_copy[:border_width, :] = border_color
-        image_copy[-border_width:, :] = border_color
-        image_copy[border_width:-border_width, :border_width] = border_color
-        image_copy[border_width:-border_width, -border_width:] = border_color
-        return image_copy
