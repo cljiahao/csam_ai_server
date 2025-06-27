@@ -1,63 +1,51 @@
-import useMarking from "@/hooks/useMarking";
-import { saveFinalJudgement } from "@/services/api_files";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-
-const useSaveUserMutation = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationKey: ["saveUserInput"],
-    mutationFn: async ({ item, lotNo, data }) =>
-      await saveFinalJudgement(item, lotNo, data),
-    onSuccess: (data) => {
-      queryClient.setQueryData(["saveUserInput"], data);
-    },
-    onError: (error) => {
-      console.log(error.message);
-      queryClient.removeQueries(["saveUserInput"]); // Clear cache on error
-    },
-  });
-};
+import { useState } from "react";
+import {
+  useQueryImageData,
+  useSaveUserMutation,
+} from "@/features/info-bar/api/info-bar";
+import useBaseStore from "@/store/base";
+import useMarksStore from "@/store/marks";
 
 const useSaveUserInput = () => {
-  const { data: processImageData } = useQuery({
-    queryKey: ["processedImageData"],
-  });
+  const [isSaved, setSaved] = useState(true);
 
-  const {
-    state: { marks },
-  } = useMarking();
+  const updateError = useBaseStore((state) => state.updateError);
+  const marks = useMarksStore((state) => state.marks);
 
-  const { mutate: processUserInput } = useSaveUserMutation();
+  const imageData = useQueryImageData();
+  const { mutateAsync: processUserInput } = useSaveUserMutation(updateError);
 
-  const handleSaveUserInput = ({ item, lotNo }) => {
+  const handleSaveUserInput = async ({ mode, item, lotNo }) => {
     const targetFileNames = new Map(
-      marks.map((mark) => [mark.file_name, mark.marker.name]),
+      marks.map((mark) => [mark.id, mark.marker.label]),
     );
 
     const userInputData = {
-      ...processImageData,
-      file_data_batches: processImageData?.file_data_batches
+      ...imageData,
+      file_data_batches: imageData?.file_data_batches
         .map((batch) => ({
           ...batch,
-          data_files: batch.data_files.reduce((result, file) => {
-            if (targetFileNames.has(file.file_name)) {
+          defect_records: batch.defect_records.reduce((result, file) => {
+            if (targetFileNames.has(file.id)) {
               result.push({
                 ...file,
-                defect_mode: targetFileNames.get(file.file_name),
+                defect_mode: targetFileNames.get(file.id),
               });
             }
             return result;
           }, []),
         }))
-        .filter((batch) => batch.data_files?.length > 0), // Remove batches with no files
+        .filter((batch) => batch.defect_records?.length > 0), // Remove batches with no files
     };
-    if (processImageData)
-      processUserInput({ item, lotNo, data: userInputData });
+    if (imageData)
+      processUserInput({ mode, item, lotNo, data: userInputData }).then(() =>
+        setSaved(true),
+      );
   };
 
   return {
-    state: {},
-    action: { handleSaveUserInput },
+    state: { isSaved },
+    action: { setSaved, handleSaveUserInput },
   };
 };
 

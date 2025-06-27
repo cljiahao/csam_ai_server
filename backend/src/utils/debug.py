@@ -1,9 +1,9 @@
 import cv2
-import time
 import numpy as np
+import time
 from datetime import timedelta
+from typing import Callable
 
-from core.exceptions import CustomErrorMessage
 from core.logging import logger
 
 
@@ -11,28 +11,27 @@ def cvWin(image: np.ndarray, name: str = "image") -> None:
     """Display an image using OpenCV for debugging purposes.
 
     Args:
-        image : np.ndarray
-            The image to be displayed.
-        name : str
-            The name of the window. Defaults to "image".
+        image: The image to be displayed.
+        name: The name of the window. Defaults to "image".
     """
-
     cv2.namedWindow(name, cv2.WINDOW_FREERATIO)
     cv2.imshow(name, image)
     if cv2.waitKey(0) & 0xFF == ord("q"):
         cv2.destroyAllWindows()
 
 
-def timer(print_message: str = ""):
+def timer(print_message: str = "") -> Callable:
     """A decorator to log the time taken by a function.
 
     Args:
-        print_message : str
-            A custom message to be logged along with the elapsed time.
+        print_message: An optional custom message to be logged along with the elapsed time.
+
+    Returns:
+        A decorator that takes a callable and returns a wrapped callable that logs its execution time.
     """
 
-    def decorator(func):
-        def wrapper(*args, **kwargs):
+    def decorator(func: Callable) -> Callable:
+        def wrapper(*args: any, **kwargs: any) -> any:
             start_time = time.time()
             result = func(*args, **kwargs)
             end_time = time.time()
@@ -49,30 +48,24 @@ def timer(print_message: str = ""):
     return decorator
 
 
-def error_handler(
-    print_message: str = "",
-    custom_error: Exception = None,
-):
+def error_handler() -> Callable:
     """A decorator to log exceptions that occur during the execution of a function.
 
-    Args:
-        print_message (str, optional): A custom message to be logged along with the exception details.
-        custom_error (Exception, optional): A custom exception class to raise instead of the default exception.
-
+    Returns:
+        A decorator that takes a callable and returns a wrapped callable that logs any exceptions raised.
     """
 
-    def decorator(func):
-        def wrapper(*args, **kwargs):
+    def decorator(func: Callable) -> Callable:
+        def wrapper(*args: any, **kwargs: any) -> any:
             try:
                 return func(*args, **kwargs)
-            except CustomErrorMessage as e:
-                if custom_error:
-                    raise custom_error(str(e))
-                raise Exception(str(e))
             except Exception as e:
-                if custom_error:
-                    raise custom_error(print_message if print_message else str(e))
-                raise e
+                logger.error(
+                    f"{type(e).__name__} occurred: {e}",
+                    exc_info=True,
+                    stacklevel=2,
+                )
+                raise
 
         return wrapper
 

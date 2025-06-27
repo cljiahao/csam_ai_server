@@ -1,12 +1,15 @@
-import requests
-
-# from pathlib import Path
+import urllib.parse
 
 from core.config import service_settings
+from core.exceptions import NoResultsFound
 from core.logging import logger
 from services.base import APIClient
+from utils.debug import error_handler
+
+API_PRASS_ITEM_ENDPOINT = "/data"
 
 
+@error_handler()
 def check_lot(lot_no: str) -> str | None:
     """Check if Lot Number input exists in PRASS database."""
 
@@ -15,37 +18,16 @@ def check_lot(lot_no: str) -> str | None:
 
     if not service_settings.PRASS_URL:
         logger.info("PRASS URL is not configured.")
-        return
+        return None
 
     api_client = APIClient(service_settings.PRASS_URL)
-    prass_data = api_client.get(lot_no)
+    search_params = urllib.parse.urlencode({"lotNo": lot_no})
+    prass_data = api_client.get(f"{API_PRASS_ITEM_ENDPOINT}?{search_params}")
 
-    if not prass_data[service_settings.LOT_COLUMN]:
-        raise ValueError(f"Lot number: {lot_no} not found in PRASS Server.")
+    if not isinstance(prass_data, dict):
+        raise NoResultsFound(f"Lot number: {lot_no} not found in PRASS Server.")
 
     item = prass_data[service_settings.ITEM_COLUMN]
-    logger.debug("Lot : %s - Item : %s", lot_no, item)
+    logger.debug(f"Lot : {lot_no} - Item : {item}")
 
     return item
-
-
-# def via_http(file_path: str) -> None:
-#     """To Send via HTTP."""
-
-#     file_path = Path(file_path)
-#     with file_path.open("rb") as file:
-#         files = {"file": file}
-#         response = requests.post(database_settings.REALTIMEDB, files=files)
-#         response.raise_for_status()  # Raise HTTPError for bad responses
-
-#     server_file_size = int(response.content)
-#     actual_file_size = file_path.stat().st_size
-
-#     if server_file_size != actual_file_size:
-#         raise ValueError(
-#             "File size mismatch. File may not have been uploaded correctly."
-#         )
-
-#     logger.info(
-#         "File sent successfully. Server reported file size: %d", server_file_size
-#     )

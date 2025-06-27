@@ -14,9 +14,9 @@ class DotColorsService:
     def _validate_dot_colors_keys(self, dot_colors_data: dict) -> None:
         """Validate the keys in the dot colors data."""
         valid_keys = {
-            "item",
             "defect_label",
             "hex_color",
+            "item",
             "uuid",
         }
 
@@ -43,6 +43,7 @@ class DotColorsService:
 
         return self.repo.read_all_dot_colors(filter_conditions)
 
+    # TODO: create update_list here instead
     def bulk_update_dot_colors(self, update_list: list[dict[str, dict]]) -> int:
         """Service layer method to bulk update dot colors"""
         for update_item in update_list:
