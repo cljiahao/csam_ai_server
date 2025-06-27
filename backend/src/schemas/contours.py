@@ -1,7 +1,6 @@
 import numpy as np
-from cv2.typing import RotatedRect
 from dataclasses import dataclass
-from typing import Iterator
+from cv2.typing import RotatedRect
 
 from core.logging import logger
 
@@ -12,16 +11,16 @@ class ContourInfo:
     rect: RotatedRect
     area: float
 
+    class Config:
+        arbitrary_types_allowed = True
+
 
 @dataclass
-class ContourInfoList:
+class ContourList:
     contours: list[ContourInfo]
 
     def __len__(self) -> int:
         return len(self.contours)
-
-    def __iter__(self) -> Iterator[ContourInfo]:
-        return iter(self.contours)
 
     def get_median_area(self) -> float:
         """Calculate the median area of the contours in the list."""

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from core.exceptions import InvalidInputError, NoResultsFound
+from core.exceptions import InvalidInputError
 from db.models.model_history import ModelHistory
 from db.repository.model_history import ModelHistoryRepository
 
@@ -23,9 +23,13 @@ class ModelHistoryService:
                 f"Unknown keys in model history data: {', '.join(invalid_keys)}"
             )
 
-    def read_all_model_history(self) -> list[ModelHistory]:
+    def read_all_model_history(self, item: str) -> list[ModelHistory]:
         """Service layer method to read all model history"""
-        return self.repo.read_all_model_history({})
+        if not item:
+            raise InvalidInputError("Item cannot be empty.")
+        filter_conditions = {"item": item}
+
+        return self.repo.read_all_model_history(filter_conditions)
 
     def read_model_history(self, item: str) -> ModelHistory:
         """Service layer method to read model history"""
@@ -33,21 +37,11 @@ class ModelHistoryService:
             raise InvalidInputError("Item cannot be empty.")
         filter_conditions = {"item": item}
 
-        return self.repo.read_model_history(filter_conditions)[0]
-
-    def read_model_history_not_empty(self, item: str) -> ModelHistory:
-        """Service layer method to read model history, ensure not empty"""
-        model_history = self.read_model_history(item)
-
-        if model_history is None:
-            raise NoResultsFound(
-                f"Model History for '{item}' not found in API or database."
-            )
-        return model_history
+        return self.repo.read_model_history(filter_conditions)
 
     def create_or_update_model_history(
         self, item: str, model_history_data: dict[str, int]
-    ) -> ModelHistory | int:
+    ) -> ModelHistory:
         """Service layer method to create new or update model history"""
         if not item:
             raise InvalidInputError("Item cannot be empty.")
@@ -57,11 +51,10 @@ class ModelHistoryService:
         data_condition = {"item": item}
 
         existing_settings = self.read_model_history(item)
-        if existing_settings:
-            self.repo.update_model_history(
-                {"filter_conditions": data_condition, "update_data": model_history_data}
-            )
-            return self.read_model_history(item)
+        if not existing_settings:
+            model_history_data.update(data_condition)
+            return self.repo.create_model_history(model_history_data)
 
-        model_history_data.update(data_condition)
-        return self.repo.create_model_history(model_history_data)[0]
+        return self.repo.update_model_history(
+            {"filter_conditions": data_condition, "update_data": model_history_data}
+        )

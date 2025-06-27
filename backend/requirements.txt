@@ -1,29 +1,19 @@
-# API
-requests==2.32.3                        # HTTP request
-httpx==0.28.1                           # HTTP toolkit
-fastapi==0.115.12					    # API Framework
-uvicorn==0.34.1					        # To run FastAPI
-pydantic-settings                       # Settings Management
-python-multipart==0.0.20			    # Form Data Usage
+# API (HTTP)
+fastapi==0.115.6                    # API (Backend <==> Frontend)              
+uvicorn==0.34.0                     # To run FastAPI
+pydantic_settings==2.7.1            # Defining type-checked “settings” objects
+python-multipart==0.0.20            # Form Data Usage
+requests==2.32.3                    # HTTP Request
 
-# Image/Video Manipulation
-opencv-python-headless			        # Computer Vision (Without GUI)
-pillow==11.2.1                          # Processing Image
-
-# Data Science / Machine Learning
-scikit-learn==1.6.1				        # ML algorithm
-
-# Articial Intelligence
-tensorflow==2.15.0  		            # Framework for Deep Learning AI Model
-onnxruntime==1.21.0                     # High-performance engine for ONNX models
-onnx==1.17.0                            # Onnx model format
-tf2onnx==1.16.1                         # Tensorflow to Onnx Convertor
+# Processing
+# opencv-python==4.9.0.80           # Processing Images
+opencv-python-headless==4.11.0.86   # Processing Images
+pillow ==11.1.0                     # Processing Images
+tensorflow==2.15.0                  # AI Model
 
 # Database
-SQLAlchemy==2.0.40                      # Sql Engine (ORM)
-
-# Testing
-pytest==8.3.5                           # For Testing
+SQLAlchemy==2.0.37                  # Sql Engine (ORM)
 
 # Misc
-python-dotenv==1.1.0                    # Env File Reader
+python-dotenv==1.0.1                # Env File Reader
+pytest==8.3.4                       # For Testing

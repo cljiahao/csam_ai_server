@@ -1,8 +1,16 @@
-from pydantic import Field, field_validator
+from pydantic import ConfigDict, Field, field_validator
 from pydantic_settings import BaseSettings
 
 
-class CommonSettings(BaseSettings):
+class Settings(BaseSettings):
+    """Base settings configuration."""
+
+    __config__ = ConfigDict(
+        env_file=".env", env_file_encoding="utf-8", case_sensitive=True
+    )
+
+
+class CommonSettings(Settings):
     """Common settings for the application."""
 
     PROJECT_NAME: str = Field(default="My Project")
@@ -15,10 +23,10 @@ class CommonSettings(BaseSettings):
         - 🐞 [Issues](https://www.github.com/issue)
         """
     )
-    ENV_STAGE: str = Field(default="dev")
+    ENV_STAGE: str = Field(default="stage")
 
 
-class APISettings(BaseSettings):
+class APISettings(Settings):
     """API-specific settings."""
 
     FASTAPI_ROOT: str = Field(default="api")
@@ -27,8 +35,8 @@ class APISettings(BaseSettings):
     SERVER_APP_PORT: int = Field(default=5173)
     ALLOWED_CORS: list[str] = []
 
-    def model_post_init(self, __context):
-        """Compute allowed CORS origins after initialization."""
+    def __init__(self, **data):
+        super().__init__(**data)
         self.ALLOWED_CORS = self._compute_allowed_cors()
 
     def _compute_allowed_cors(self) -> list[str]:
@@ -45,7 +53,7 @@ class APISettings(BaseSettings):
         return value.rstrip("/")
 
 
-class DatabaseSettings(BaseSettings):
+class DatabaseSettings(Settings):
     """Database configuration settings."""
 
     DB_NAME: str = Field(default="local.db")
@@ -53,13 +61,14 @@ class DatabaseSettings(BaseSettings):
     TABLEID_CSAM_SERVER: str = Field(default="")
 
 
-class ServiceSettings(BaseSettings):
+class ServiceSettings(Settings):
     """Service-specific settings."""
 
     TEST_LOT_NO: str = Field(default="1234567890")
     TEST_ITEM: str = Field(default="GCM32ER71E106KA59_+B55-E02GJ")
     AI_TRAIN_URL: str = Field(default="")
     PRASS_URL: str = Field(default="")
+    LOT_COLUMN: str = Field(default="")
     ITEM_COLUMN: str = Field(default="")
 
 

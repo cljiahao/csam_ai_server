@@ -1,40 +1,25 @@
-import { useLocation } from "react-router-dom";
-
-import InfoBarContext from "./contexts/InfoBarContext";
-import useInfobar from "./hooks/useInfobar";
-import UtilityPanel from "./subfeatures/utility-panel/UtilityPanel";
+import { useState } from "react";
 import MetricsPanel from "./components/MetricsPanel";
-import UploadFormDialog from "./subfeatures/upload-form-dialog/UploadFormDialog";
-import HoverButton from "@/components/widgets/hover-button/HoverButton";
-import { navigation_info } from "@/core/navigation";
+import UploadFormDialog from "./components/UploadFormDialog";
+import UtilityPanel from "./components/UtilityPanel";
 
 const InfoBar = () => {
-  const location = useLocation();
-  const mode = location.pathname.split("/").filter((path) => path !== "")[0];
-  const nav = navigation_info.find((nav) => nav.name === mode);
-
-  const { state: infoBarState, action: infoBarAction } = useInfobar();
-  const { isSaved } = infoBarState;
+  const [item, setItem] = useState("");
+  const [lotNo, setLotNo] = useState("");
+  const [plateNo, setPlateNo] = useState("");
 
   return (
-    <InfoBarContext.Provider value={{ ...infoBarState, ...infoBarAction }}>
-      <div className="flex-between h-20 w-full">
-        <UtilityPanel />
-        <MetricsPanel mode={mode} />
-        <div className="px-2">
-          <UploadFormDialog
-            triggerChildren={
-              <HoverButton
-                className={isSaved ? "" : "bg-red-300"}
-                icon={nav.icon}
-                hoverText={`${nav.name} Upload`}
-              />
-            }
-            mode={mode}
-          />
-        </div>
-      </div>
-    </InfoBarContext.Provider>
+    <div className="flex-between h-20 w-full flex-shrink-0 gap-3 px-3">
+      <UtilityPanel item={item} />
+      <MetricsPanel lotNo={lotNo} plateNo={plateNo} />
+      <UploadFormDialog
+        item={item}
+        setItem={setItem}
+        lotNo={lotNo}
+        setLotNo={setLotNo}
+        setPlateNo={setPlateNo}
+      />
+    </div>
   );
 };
 

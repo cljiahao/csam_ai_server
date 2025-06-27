@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from core.exceptions import InvalidInputError, NoResultsFound
+from core.exceptions import InvalidInputError
 from db.models.image_settings import ImageSettings
 from db.repository.image_settings import ImageSettingsRepository
 
@@ -15,9 +15,8 @@ class ImageSettingsService:
         valid_keys = {
             "batch_erode",
             "batch_close",
-            "chip_noise_erode",
-            "chip_dilate",
             "chip_erode",
+            "chip_close",
             "crop_size",
         }
 
@@ -33,21 +32,11 @@ class ImageSettingsService:
             raise InvalidInputError("Item cannot be empty.")
         filter_conditions = {"item": item}
 
-        return self.repo.read_image_settings(filter_conditions)[0]
-
-    def read_image_settings_not_empty(self, item: str) -> ImageSettings:
-        """Service layer method to read image settings, ensure not empty"""
-        image_settings = self.read_image_settings(item)
-
-        if image_settings is None:
-            raise NoResultsFound(
-                f"Image settings for '{item}' not found in API or database."
-            )
-        return image_settings
+        return self.repo.read_image_settings(filter_conditions)
 
     def create_or_update_image_settings(
         self, item: str, image_settings_data: dict[str, int]
-    ) -> ImageSettings | int:
+    ) -> ImageSettings:
         """Service layer method to create new or update image settings"""
         if not item:
             raise InvalidInputError("Item cannot be empty.")
@@ -57,14 +46,10 @@ class ImageSettingsService:
         data_condition = {"item": item}
 
         existing_settings = self.read_image_settings(item)
-        if existing_settings:
-            self.repo.update_image_settings(
-                {
-                    "filter_conditions": data_condition,
-                    "update_data": image_settings_data,
-                }
-            )
-            return self.read_image_settings_not_empty(item)
+        if not existing_settings:
+            image_settings_data.update(data_condition)
+            return self.repo.create_image_settings(image_settings_data)
 
-        image_settings_data.update(data_condition)
-        return self.repo.create_image_settings(image_settings_data)[0]
+        return self.repo.update_image_settings(
+            {"filter_conditions": data_condition, "update_data": image_settings_data}
+        )
