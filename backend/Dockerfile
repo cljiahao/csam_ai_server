@@ -6,7 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 WORKDIR /api
 COPY ./requirements.txt ./requirements.txt
-RUN pip install --no-cache-dir --upgrade -r ./requirements.txt
+RUN pip install --no-cache-dir -r ./requirements.txt
 COPY ./src ./src
 WORKDIR /api/src
 

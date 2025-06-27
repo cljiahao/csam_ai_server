@@ -18,7 +18,7 @@ const MediaCard = ({
     <Card
       className={cn("flex-center h-full w-full flex-col space-y-2", className)}
     >
-      <CardContent className="flex-center p-0">{children}</CardContent>
+      <CardContent className="flex-center w-full p-0">{children}</CardContent>
       <CardHeader className="flex-center p-0">
         <CardTitle className="break-all text-center">{title}</CardTitle>
         <CardDescription className={cn("text-wrap", descClassName)}>

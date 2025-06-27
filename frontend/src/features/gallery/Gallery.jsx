@@ -10,31 +10,31 @@ const Gallery = () => {
   const mode = location.pathname.split("/").pop();
 
   const {
-    state: { processImageData, marksFileNames },
+    state: { imageData, marksID },
   } = useThumbnailHandlers();
 
   return (
     <div className="no-scrollbar hw-full flex flex-grow flex-col gap-3 overflow-y-scroll p-3">
-      {processImageData?.file_data_batches?.map((defect_batch) => (
-        <div key={defect_batch.batch_no} className="flex flex-col gap-2">
+      {imageData?.file_data_batches?.map((defect_batch) => (
+        <div key={defect_batch?.batch_no} className="flex flex-col gap-2">
           <Label className="text-xl font-semibold">
-            Batch: {defect_batch.batch_no}
+            Batch: {defect_batch?.batch_no}
           </Label>
           <Separator className="h-[0.15em] rounded-xl" />
           <div className="hw-full grid grid-cols-8 gap-3">
-            {defect_batch?.data_files
+            {defect_batch?.defect_records
               ?.filter((file) => {
                 if (mode === "CAI") return true;
-                if (mode === "CDC" && marksFileNames.has(file.file_name))
-                  return true;
+                if (mode === "CDC" && marksID.has(file?.id)) return true;
               })
               .map((file) => {
                 return (
                   <Thumbnail
-                    key={file.file_name}
-                    directory={processImageData?.directory}
+                    key={file?.id}
+                    id={file?.id}
+                    directory={imageData?.directory}
                     defect_mode={file.defect_mode}
-                    file_name={file.file_name}
+                    file_name={file?.file_name}
                   />
                 );
               })}
