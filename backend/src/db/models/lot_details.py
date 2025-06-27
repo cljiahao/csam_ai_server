@@ -1,7 +1,14 @@
-from uuid import uuid4, UUID
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
+
+if TYPE_CHECKING:
+    from db.models.chip_details import ChipDetails
+
 from datetime import datetime as dt
 from sqlalchemy import String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from uuid import uuid4, UUID
 
 from db.base import Base
 
@@ -20,7 +27,7 @@ class LotDetails(Base):
     is_ai: Mapped[int] = mapped_column(default=0)
 
     # Relationship to ChipDetails
-    chip_details: Mapped[list["ChipDetails"]] = relationship(
+    chip_details: Mapped[list[ChipDetails]] = relationship(
         "ChipDetails", back_populates="lot_details"
     )
 
