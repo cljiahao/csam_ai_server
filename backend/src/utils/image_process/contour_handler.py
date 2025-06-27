@@ -88,7 +88,7 @@ class ContourHandler:
 
     @error_handler()
     @staticmethod
-    def rotate_contour_upright(contours: list[np.ndarray] | ContourInfoList):
+    def rotate_contour_upright(contours: ContourInfoList) -> ContourInfoList:
         """Rotate contours upright based on width and height.
 
         Args:
