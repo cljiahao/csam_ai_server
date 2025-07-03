@@ -1,0 +1,13 @@
+[tool.pytest.ini_options]
+
+pythonpath = ["src"]
+
+markers = [
+    "unit: unit tests",
+    "end_to_end: end to end tests",
+    "skip: slow tests",
+]
+
+addopts = [
+    "--import-mode=importlib",
+]
