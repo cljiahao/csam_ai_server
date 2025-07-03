@@ -6,8 +6,6 @@ from core.logging import logger
 from services.base import APIClient
 from utils.debug import error_handler
 
-API_PRASS_ITEM_ENDPOINT = "/data"
-
 
 @error_handler()
 def check_lot(lot_no: str) -> str | None:
@@ -22,7 +20,7 @@ def check_lot(lot_no: str) -> str | None:
 
     api_client = APIClient(service_settings.PRASS_URL)
     search_params = urllib.parse.urlencode({"lotNo": lot_no})
-    prass_data = api_client.get(f"{API_PRASS_ITEM_ENDPOINT}?{search_params}")
+    prass_data = api_client.get(f"?{search_params}")
 
     if not isinstance(prass_data, dict):
         raise NoResultsFound(f"Lot number: {lot_no} not found in PRASS Server.")
